@@ -10,8 +10,22 @@ summary: Template for requirement brief
 
 ## Goal
 
+## Business Context
+
 ## Scope
+
+## Non Scope
+
+## Current State
+
+## Desired Outcome
+
+## Constraints
 
 ## Open Questions
 
 ## Risks
+
+## Signals Of Value
+
+## Recommended Next Step

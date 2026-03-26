@@ -13,3 +13,7 @@ summary: Template for release planning
 ## Verification
 
 ## Rollback
+
+## Monitoring
+
+## Communication

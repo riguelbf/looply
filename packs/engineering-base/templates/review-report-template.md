@@ -11,3 +11,7 @@ summary: Template for review report
 ## Risks
 
 ## Approval Status
+
+## Required Fixes
+
+## Follow Up Recommendations

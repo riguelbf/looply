@@ -12,6 +12,8 @@ summary: Template for a single delivery story
 
 ## Linked PRD
 
+## Story Type
+
 ## Scope
 
 ## Out Of Scope
@@ -20,6 +22,12 @@ summary: Template for a single delivery story
 
 ## Dependencies
 
+## Impacted Areas
+
 ## Technical Notes
 
 ## Risks
+
+## Test Notes
+
+## Rollout Notes

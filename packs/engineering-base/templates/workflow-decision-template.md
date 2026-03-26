@@ -38,3 +38,5 @@ summary: Visual response template for workflow decisions in host conversations
 ## Missing Artifacts
 
 ## Blockers
+
+## Session Guidance

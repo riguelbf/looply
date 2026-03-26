@@ -13,3 +13,7 @@ summary: Template for architecture decision record
 ## Decision
 
 ## Consequences
+
+## Validation Plan
+
+## Follow Up Actions

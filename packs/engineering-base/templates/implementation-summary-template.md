@@ -8,8 +8,14 @@ summary: Template for implementation summary
 
 ## Changed Areas
 
+## Delivered Scope
+
+## Deferred Scope
+
 ## Tests
 
 ## Risks
 
 ## Follow Ups
+
+## Release Notes Input
