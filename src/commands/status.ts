@@ -18,8 +18,14 @@ interface FeatureStatusEntry {
   phase: string;
   currentStage: string;
   currentGate: string;
+  activeArtifact: string;
+  selectedStory: string;
+  readyForNextGate: string;
   nextAgent: string;
   nextTask: string;
+  blockedBy: string[];
+  missingOutputs: string[];
+  decisionRationale: string;
   recommendedNextWorkflow: string;
   lastUpdated: string;
   file: string;
@@ -106,23 +112,59 @@ export function registerStatusCommand(program: Command): void {
         console.log(chalk.dim("No feature workflow states found."));
       } else {
         for (const feature of featureStates.slice(0, featureLimit)) {
-          console.log(
-            `- ${chalk.cyan(feature.feature)}  workflow ${chalk.cyan(feature.workflow)}  phase ${chalk.cyan(feature.phase)}`
-          );
-          console.log(
-            chalk.dim(
-              `  stage ${feature.currentStage || "unknown"}  gate ${feature.currentGate || "unknown"}  next ${feature.nextAgent || "unknown"} -> ${feature.nextTask || "unknown"}`
-            )
-          );
+          const linkedSessions = sessions.sessions.filter((session) => session.feature === feature.feature);
+          const rows: Array<[string, string]> = [
+            ["Feature", feature.feature || "unknown"],
+            ["Workflow", feature.workflow || "unknown"],
+            ["Phase", feature.phase || "unknown"],
+            ["Current Stage", feature.currentStage || "unknown"],
+            ["Current Gate", feature.currentGate || "unknown"],
+            ["Active Artifact", feature.activeArtifact || "unknown"],
+            ["Selected Story", feature.selectedStory || "n/a"],
+            ["Next Workflow", feature.recommendedNextWorkflow || "unknown"],
+            ["Next Agent", feature.nextAgent || "unknown"],
+            ["Next Task", feature.nextTask || "unknown"],
+            ["Ready For Next Gate", feature.readyForNextGate || "unknown"],
+            ["Sessions", linkedSessions.length > 0 ? linkedSessions.map((session) => session.label).join(", ") : "none"]
+          ];
+
+          console.log(chalk.cyan(feature.feature));
+          console.log(renderKeyValueTable(rows));
+
+          if (feature.blockedBy.length > 0) {
+            console.log(chalk.bold("Blocked By"));
+            for (const blocker of feature.blockedBy.slice(0, 4)) {
+              console.log(`- ${blocker}`);
+            }
+          }
+
+          if (feature.missingOutputs.length > 0) {
+            console.log(chalk.bold("Missing Outputs"));
+            for (const output of feature.missingOutputs.slice(0, 6)) {
+              console.log(`- ${output}`);
+            }
+          }
+
+          if (feature.decisionRationale) {
+            console.log(chalk.bold("Decision"));
+            console.log(chalk.dim(feature.decisionRationale));
+          }
+
           if (feature.recommendedNextWorkflow) {
-            console.log(chalk.dim(`  recommended workflow: ${feature.recommendedNextWorkflow}`));
+            console.log(chalk.bold("Next Step"));
+            console.log(
+              chalk.dim(
+                `${feature.recommendedNextWorkflow} -> ${feature.nextAgent || "unknown"} -> ${feature.nextTask || "unknown"}`
+              )
+            );
           }
           if (feature.lastUpdated) {
-            console.log(chalk.dim(`  updated ${feature.lastUpdated}`));
+            console.log(chalk.dim(`updated ${feature.lastUpdated}`));
           }
+          console.log(chalk.dim(`state file: ${path.relative(targetRoot, feature.file)}`));
+          console.log("");
         }
       }
-      console.log("");
 
       console.log(chalk.bold("Recent History"));
       if (history.entries.length === 0) {
@@ -157,8 +199,14 @@ async function readFeatureStates(targetRoot: string): Promise<FeatureStatusEntry
       phase: extractSection(body, "Phase"),
       currentStage: extractSection(body, "Current Stage"),
       currentGate: extractSection(body, "Current Gate"),
+      activeArtifact: extractSection(body, "Active Artifact"),
+      selectedStory: extractSection(body, "Selected Story"),
+      readyForNextGate: extractSection(body, "Ready For Next Gate"),
       nextAgent: extractSection(body, "Next Agent"),
       nextTask: extractSection(body, "Next Task"),
+      blockedBy: extractListSection(body, "Blocked By"),
+      missingOutputs: extractListSection(body, "Missing Outputs"),
+      decisionRationale: extractSection(body, "Decision Rationale"),
       recommendedNextWorkflow: extractSection(body, "Recommended Next Workflow"),
       lastUpdated: extractSection(body, "Last Updated"),
       file
@@ -169,13 +217,12 @@ async function readFeatureStates(targetRoot: string): Promise<FeatureStatusEntry
 }
 
 function extractSection(body: string, title: string): string {
-  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = body.match(new RegExp(`^## ${escaped}\\n\\n([\\s\\S]*?)(?=\\n## |$)`, "m"));
-  if (!match) {
+  const section = extractSectionRaw(body, title);
+  if (!section) {
     return "";
   }
 
-  return match[1]
+  return section
     .trim()
     .split("\n")
     .map((line) => line.trim())
@@ -183,7 +230,49 @@ function extractSection(body: string, title: string): string {
     .join(" ");
 }
 
+function extractSectionRaw(body: string, title: string): string {
+  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = body.match(new RegExp(`(?:^|\\n)## ${escaped}\\n\\n([\\s\\S]*?)(?=\\n## |$)`));
+  if (!match) {
+    return "";
+  }
+
+  return match[1];
+}
+
 function toPositiveNumber(value: unknown, fallback: number): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : fallback;
+}
+
+function extractListSection(body: string, title: string): string[] {
+  const section = extractSectionRaw(body, title);
+  if (!section) {
+    return [];
+  }
+
+  return section
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- "))
+    .map((line) => line.slice(2).trim())
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
+}
+
+function renderKeyValueTable(rows: Array<[string, string]>): string {
+  const labelWidth = Math.max(...rows.map(([label]) => label.length), "Field".length);
+  const valueWidth = Math.max(...rows.map(([, value]) => value.length), "Value".length);
+  const divider = `+${"-".repeat(labelWidth + 2)}+${"-".repeat(valueWidth + 2)}+`;
+
+  const renderRow = (label: string, value: string) =>
+    `| ${label.padEnd(labelWidth)} | ${value.padEnd(valueWidth)} |`;
+
+  return [
+    divider,
+    renderRow("Field", "Value"),
+    divider,
+    ...rows.map(([label, value]) => renderRow(label, value)),
+    divider
+  ].join("\n");
 }

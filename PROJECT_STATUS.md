@@ -19,16 +19,17 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## In Progress
 
-- publicar a documentacao no GitHub Pages e estabilizar a experiencia de `docs open`
+- consolidar o proximo corte de heuristicas e cobertura do `refresh-context`
 
 ## Next Up
 
-- enriquecer `status` por feature e gate
 - adicionar um exemplo real ponta a ponta em `examples/`
 - consolidar heuristicas e cobertura do `refresh-context`
+- aprofundar o `status` com leitura mais rica de contexto e integracoes quando existirem
 
 ## Recently Completed
 
+- `status` enriquecido com tabela por feature, sessoes ligadas, bloqueios, missing outputs e proximo passo
 - primeiro corte de `refresh-context` implementado com `project-context.md` e `project-inventory.md`
 - workflow do GitHub Pages adicionado para publicar `docs-site` automaticamente a partir da `main`
 - `docs open` voltou a priorizar `127.0.0.1` com fallback para arquivo local
