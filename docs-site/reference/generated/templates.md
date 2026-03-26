@@ -14,6 +14,12 @@ Template for implementation summary
 
 - arquivo: `packs/engineering-base/templates/implementation-summary-template.md`
 
+## [operability-report-template](./templates/operability-report-template)
+
+Template for operational readiness and reliability assessment
+
+- arquivo: `packs/engineering-base/templates/operability-report-template.md`
+
 ## [prd-template](./templates/prd-template)
 
 Template for product requirement document

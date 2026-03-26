@@ -18,6 +18,10 @@ Template for release planning
 
 ## Rollback
 
+## Monitoring
+
+## Communication
+
 ## Arquivo
 
 - `packs/engineering-base/templates/release-plan-template.md`

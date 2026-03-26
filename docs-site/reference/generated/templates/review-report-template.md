@@ -16,6 +16,10 @@ Template for review report
 
 ## Approval Status
 
+## Required Fixes
+
+## Follow Up Recommendations
+
 ## Arquivo
 
 - `packs/engineering-base/templates/review-report-template.md`

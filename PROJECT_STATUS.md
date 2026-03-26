@@ -25,10 +25,12 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 - consolidar heuristicas e cobertura do `refresh-context`
 - aprofundar o `status` com leitura mais rica de contexto e integracoes quando existirem
-- revisar como os hosts devem consumir esses templates mais ricos nos workflows
+- revisar se precisamos de mais especializacao operacional antes da v3 de personas e dominio
 
 ## Recently Completed
 
+- `devops` e `sre` adicionados ao `engineering-base`, com tasks e operabilidade entrando no `story-to-production`
+- hosts reforcados para consumir `knowledge_sources`, `best-practices`, templates e checklists como contrato de execucao
 - camada de `best-practices` por especialista adicionada e ligada aos agentes do `engineering-base`
 - templates principais enriquecidos para discovery, planning, delivery, review e release
 - exemplo ponta a ponta adicionado em `examples/pix-webhook-retry/` com discovery, planning, delivery e workflow status

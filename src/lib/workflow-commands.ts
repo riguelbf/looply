@@ -144,13 +144,15 @@ export function renderClaudeWorkflowCommand(input: {
     "7. Fill only the phase-relevant block in the workflow state file: Discovery Focus, Planning Focus or Delivery Focus.",
     "8. Update the feature state file after every relevant transition.",
     "9. Preserve managed files as canonical and place local overrides only in `.looply/custom`.",
-    `10. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
-    `11. When project mode is \`${input.projectMode}\`, treat the local project root as the default feature context unless the user points to another folder.`,
+    "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
+    "11. When the current task declares templates or checklists, use them as the default output contract and quality bar.",
+    `12. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+    `13. When project mode is \`${input.projectMode}\`, treat the local project root as the default feature context unless the user points to another folder.`,
     input.projectMode === "existing-project"
-      ? "12. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
-      : "12. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
-    "13. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it before trusting it.",
-    `14. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`
+      ? "14. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "14. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "15. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it before trusting it.",
+    `16. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`
   );
 
   return lines.join("\n");
@@ -253,13 +255,15 @@ export function renderCodexWorkflowCommand(input: {
     "7. Update the feature state file after every relevant transition.",
     "8. Use managed pack files as the canonical process definition.",
     "9. Read execution hints only as advisory metadata for cost and context selection.",
-    `10. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
-    `11. When project mode is ${input.projectMode}, treat the local project root as the default feature context unless the user points to another folder.`,
+    "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
+    "11. When the current task declares templates or checklists, use them as the default output contract and quality bar.",
+    `12. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
+    `13. When project mode is ${input.projectMode}, treat the local project root as the default feature context unless the user points to another folder.`,
     input.projectMode === "existing-project"
-      ? "12. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
-      : "12. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
-    "13. If a context file has `status: empty`, `status: draft` or `status: stale`, inspect the codebase before trusting it.",
-    `14. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`
+      ? "14. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "14. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "15. If a context file has `status: empty`, `status: draft` or `status: stale`, inspect the codebase before trusting it.",
+    `16. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`
   );
 
   return lines.join("\n");
@@ -414,9 +418,11 @@ export function renderCodexLauncherSkillDocument(input: {
     "3. If the user already has a PRD, recommend `prd-to-stories`.",
     "4. If the user already has a story and wants to implement, recommend `story-to-production`.",
     "5. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
-    "6. Prefer explicit next-step guidance over generic explanations.",
-    `7. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
-    `8. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
+    "6. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
+    "7. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
+    "8. Prefer explicit next-step guidance over generic explanations.",
+    `9. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
+    `10. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
     "",
     "Available workflows:"
   ];

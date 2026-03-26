@@ -16,6 +16,8 @@ Template for product requirement document
 
 ## Success Metrics
 
+## Strategic Fit
+
 ## Scope
 
 ## Non Scope
@@ -26,6 +28,10 @@ Template for product requirement document
 
 ## Business Rules
 
+## Functional Requirements
+
+## Non Functional Requirements
+
 ## Risks
 
 ## Dependencies
@@ -33,6 +39,10 @@ Template for product requirement document
 ## Open Questions
 
 ## Candidate Stories
+
+## Rollout Considerations
+
+## Observability Notes
 
 ## Delivery Entry Criteria
 

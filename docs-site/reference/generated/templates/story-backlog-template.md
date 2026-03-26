@@ -10,6 +10,8 @@ Template for a PRD story backlog
 
 # Story Backlog
 
+## Backlog Objective
+
 ## Story Order
 
 ## Story 1
@@ -17,6 +19,12 @@ Template for a PRD story backlog
 ## Story 2
 
 ## Story 3
+
+## Cross Story Dependencies
+
+## Sequencing Rationale
+
+## Suggested First Slice
 
 ## Notes
 

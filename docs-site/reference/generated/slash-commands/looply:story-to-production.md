@@ -35,6 +35,7 @@ Execute delivery for a single approved story until release planning
 ## Outputs esperados
 
 - `release-plan`
+- `operability-report`
 
 ## Exemplo
 

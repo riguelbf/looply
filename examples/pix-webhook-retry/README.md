@@ -17,6 +17,7 @@ Demonstrar como o `looply` organiza discovery, planning e delivery em um projeto
 - `delivery/implementation-summary.md`
 - `delivery/review-report.md`
 - `delivery/release-plan.md`
+- `delivery/operability-report.md`
 - `state/workflow-status.md`
 
 ## Recommended Reading Order
@@ -27,4 +28,5 @@ Demonstrar como o `looply` organiza discovery, planning e delivery em um projeto
 4. `planning/stories/story-01-retry-automatico.md`
 5. `delivery/tech-spec.md`
 6. `delivery/adr.md`
-7. `state/workflow-status.md`
+7. `delivery/operability-report.md`
+8. `state/workflow-status.md`

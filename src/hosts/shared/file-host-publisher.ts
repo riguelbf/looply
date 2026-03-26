@@ -781,16 +781,18 @@ export class FileHostPublisher implements HostPublisher {
             "3. Treat `/looply:*` strings as looply workflow aliases even if the Codex slash-command picker does not list them.",
             "4. Open `LOOPLY_COMMANDS.md` when you need the command index and `./.looply/state/commands/codex/` for command-specific help.",
             "5. Prefer the generated Codex skills in `./.agents/skills/` for explicit skill invocation and native skill discovery.",
-            "6. If the user writes `/looply:... help`, explain the alias instead of executing it.",
-            `7. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
-            `8. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
+            "6. Before acting as a specialist, inspect the current agent `knowledge_sources`, especially specialist `best-practices` files.",
+            "7. If the current task declares templates or checklists, use them as the default artifact contract and quality bar.",
+            "8. If the user writes `/looply:... help`, explain the alias instead of executing it.",
+            `9. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+            `10. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
             input.projectMode === "existing-project"
-              ? "9. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
-              : "9. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
-            "10. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
-            "11. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
-            `12. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
-            "13. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
+              ? "11. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
+              : "11. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
+            "12. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
+            "13. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
+            `14. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
+            "15. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
           ]
         : []),
       "",

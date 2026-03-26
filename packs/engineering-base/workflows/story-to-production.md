@@ -1,7 +1,7 @@
 ---
 schema: looply/workflow@v1
 name: story-to-production
-summary: Delivery workflow from approved story to release plan
+summary: Delivery workflow from approved story to release readiness
 execution:
   profile: publishing
   reasoning_effort: medium
@@ -54,14 +54,26 @@ stages:
     outputs:
       - review-report
   - name: release-preparation
-    task: publish-service
-    agent: reviewer
+    task: prepare-service-release
+    agent: devops
     depends_on:
       - technical-review
     inputs:
       - review-report
+      - implementation-summary
     outputs:
       - release-plan
+  - name: operability-review
+    task: assess-service-operability
+    agent: sre
+    depends_on:
+      - release-preparation
+      - implementation
+    inputs:
+      - release-plan
+      - implementation-summary
+    outputs:
+      - operability-report
 handoffs:
   - from: architect
     to: backend
@@ -70,7 +82,10 @@ handoffs:
     to: reviewer
     artifact: implementation-summary
   - from: reviewer
-    to: reviewer
+    to: devops
+    artifact: review-report
+  - from: devops
+    to: sre
     artifact: release-plan
 gates:
   - name: design-approved
@@ -89,10 +104,11 @@ gates:
     checklist: code-review-checklist
     blocks_on_failure: true
   - name: release-ready
-    after_stage: release-preparation
-    owner: reviewer
+    after_stage: operability-review
+    owner: sre
     requires_outputs:
       - release-plan
+      - operability-report
     checklist: definition-of-done
     blocks_on_failure: true
 command:
@@ -112,19 +128,21 @@ command:
       variadic: true
 outputs:
   - release-plan
+  - operability-report
 tasks:
   - create-tech-spec
   - create-adr
   - implement-api
   - review-code
-  - publish-service
+  - prepare-service-release
+  - assess-service-operability
 ---
 
 # Workflow: story-to-production
 
 ## Objective
 
-Executar delivery de uma story aprovada ate um plano claro de release.
+Executar delivery de uma story aprovada ate readiness de release com validacao operacional.
 
 ## Orchestrator
 
@@ -140,10 +158,11 @@ Usar backlog pronto como entrada e evitar misturar discovery com delivery.
 2. `architecture-decision` by `architect`
 3. `implementation` by `backend`
 4. `technical-review` by `reviewer`
-5. `release-preparation` by `reviewer`
+5. `release-preparation` by `devops`
+6. `operability-review` by `sre`
 
 ## Quality Gates
 
 - `design-approved` bloqueia implementacao sem `tech-spec` e `adr`
 - `implementation-reviewed` bloqueia publicacao sem `review-report`
-- `release-ready` bloqueia encerramento sem `release-plan`
+- `release-ready` bloqueia encerramento sem `release-plan` e `operability-report`

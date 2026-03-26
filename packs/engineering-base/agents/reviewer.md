@@ -16,7 +16,6 @@ execution:
     family: gpt-5
 supported_tasks:
   - review-code
-  - publish-service
 knowledge_sources:
   - ../knowledge/coding-standards.md
   - ../knowledge/architecture-principles.md
@@ -41,4 +40,4 @@ Prioriza revisao objetiva com custo moderado.
 
 - revisar aderencia arquitetural
 - validar testes e riscos
-- aprovar ou bloquear publicacao
+- aprovar ou bloquear readiness tecnica

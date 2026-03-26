@@ -8,6 +8,12 @@ Transform an idea into a clear requirement brief
 
 - arquivo: `packs/engineering-base/tasks/analyze-requirement.md`
 
+## [assess-service-operability](./tasks/assess-service-operability)
+
+Assess service operability and production readiness before release
+
+- arquivo: `packs/engineering-base/tasks/assess-service-operability.md`
+
 ## [break-prd-into-stories](./tasks/break-prd-into-stories)
 
 Decompose an approved PRD into delivery-ready stories
@@ -44,11 +50,11 @@ Coordinate the current workflow stage, gate status and next handoff
 
 - arquivo: `packs/engineering-base/tasks/orchestrate-delivery.md`
 
-## [publish-service](./tasks/publish-service)
+## [prepare-service-release](./tasks/prepare-service-release)
 
-Prepare and describe the publication path for an approved change
+Prepare the service release path from an approved technical review
 
-- arquivo: `packs/engineering-base/tasks/publish-service.md`
+- arquivo: `packs/engineering-base/tasks/prepare-service-release.md`
 
 ## [report-workflow-status](./tasks/report-workflow-status)
 

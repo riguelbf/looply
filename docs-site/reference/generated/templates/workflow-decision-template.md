@@ -43,6 +43,8 @@ Visual response template for workflow decisions in host conversations
 
 ## Blockers
 
+## Session Guidance
+
 ## Arquivo
 
 - `packs/engineering-base/templates/workflow-decision-template.md`

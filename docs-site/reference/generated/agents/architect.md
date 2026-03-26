@@ -15,6 +15,7 @@ Sem summary declarada.
 ## Knowledge sources
 
 - `../knowledge/architecture-principles.md`
+- `../knowledge/specialists/architect-best-practices.md`
 
 ## Constraints
 

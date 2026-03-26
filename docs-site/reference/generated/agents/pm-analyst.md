@@ -16,6 +16,7 @@ Sem summary declarada.
 ## Knowledge sources
 
 - `../knowledge/glossary.md`
+- `../knowledge/specialists/pm-analyst-best-practices.md`
 
 ## Constraints
 

@@ -14,6 +14,8 @@ Sem summary declarada.
 ## Knowledge sources
 
 - `../knowledge/coding-standards.md`
+- `../knowledge/architecture-principles.md`
+- `../knowledge/specialists/backend-best-practices.md`
 
 ## Constraints
 

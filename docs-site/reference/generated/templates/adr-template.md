@@ -18,6 +18,10 @@ Template for architecture decision record
 
 ## Consequences
 
+## Validation Plan
+
+## Follow Up Actions
+
 ## Arquivo
 
 - `packs/engineering-base/templates/adr-template.md`

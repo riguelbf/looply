@@ -1,6 +1,6 @@
 # story-to-production
 
-Delivery workflow from approved story to release plan
+Delivery workflow from approved story to release readiness
 
 ## Metadados
 
@@ -28,6 +28,7 @@ Delivery workflow from approved story to release plan
 ## Outputs
 
 - `release-plan`
+- `operability-report`
 
 ## Stages
 
@@ -64,23 +65,32 @@ Delivery workflow from approved story to release plan
 
 ### release-preparation
 
-- task: `publish-service`
-- agent: `reviewer`
+- task: `prepare-service-release`
+- agent: `devops`
 - depends_on: `technical-review`
-- inputs: `review-report`
+- inputs: `review-report`, `implementation-summary`
 - outputs: `release-plan`
+
+### operability-review
+
+- task: `assess-service-operability`
+- agent: `sre`
+- depends_on: `release-preparation`, `implementation`
+- inputs: `release-plan`, `implementation-summary`
+- outputs: `operability-report`
 
 ## Handoffs
 
 - `architect` -> `backend` via `tech-spec`
 - `backend` -> `reviewer` via `implementation-summary`
-- `reviewer` -> `reviewer` via `release-plan`
+- `reviewer` -> `devops` via `review-report`
+- `devops` -> `sre` via `release-plan`
 
 ## Gates
 
 - `design-approved` after `architecture-decision` owner `architect`
 - `implementation-reviewed` after `technical-review` owner `reviewer`
-- `release-ready` after `release-preparation` owner `reviewer`
+- `release-ready` after `operability-review` owner `sre`
 
 ## Conteudo do artefato
 
@@ -88,7 +98,7 @@ Delivery workflow from approved story to release plan
 
 ## Objective
 
-Executar delivery de uma story aprovada ate um plano claro de release.
+Executar delivery de uma story aprovada ate readiness de release com validacao operacional.
 
 ## Orchestrator
 
@@ -104,13 +114,14 @@ Usar backlog pronto como entrada e evitar misturar discovery com delivery.
 2. `architecture-decision` by `architect`
 3. `implementation` by `backend`
 4. `technical-review` by `reviewer`
-5. `release-preparation` by `reviewer`
+5. `release-preparation` by `devops`
+6. `operability-review` by `sre`
 
 ## Quality Gates
 
 - `design-approved` bloqueia implementacao sem `tech-spec` e `adr`
 - `implementation-reviewed` bloqueia publicacao sem `review-report`
-- `release-ready` bloqueia encerramento sem `release-plan`
+- `release-ready` bloqueia encerramento sem `release-plan` e `operability-report`
 
 ## Arquivo
 

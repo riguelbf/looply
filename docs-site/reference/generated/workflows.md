@@ -18,7 +18,7 @@ Delivery planning workflow from approved PRD to story backlog
 
 ## [story-to-production](./workflows/story-to-production)
 
-Delivery workflow from approved story to release plan
+Delivery workflow from approved story to release readiness
 
 - phase: `delivery`
 - alias principal: `/looply:story-to-production`

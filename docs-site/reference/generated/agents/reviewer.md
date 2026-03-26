@@ -10,11 +10,12 @@ Sem summary declarada.
 ## Tasks suportadas
 
 - `review-code`
-- `publish-service`
 
 ## Knowledge sources
 
 - `../knowledge/coding-standards.md`
+- `../knowledge/architecture-principles.md`
+- `../knowledge/specialists/reviewer-best-practices.md`
 
 ## Constraints
 
@@ -40,7 +41,7 @@ Prioriza revisao objetiva com custo moderado.
 
 - revisar aderencia arquitetural
 - validar testes e riscos
-- aprovar ou bloquear publicacao
+- aprovar ou bloquear readiness tecnica
 
 ## Arquivo
 
