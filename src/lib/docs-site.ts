@@ -19,7 +19,17 @@ export function docsDistExists(sourceRoot: string): boolean {
 }
 
 export async function runDocsScript(sourceRoot: string, script: "generate" | "build" | "dev" | "preview"): Promise<void> {
-  await runCommand("npm", ["run", script], resolveDocsSiteRoot(sourceRoot));
+  const env = script === "dev"
+    ? {
+        ...process.env,
+        LOOPLY_DOCS_USE_POLLING: process.env.LOOPLY_DOCS_USE_POLLING ?? "true",
+        LOOPLY_DOCS_POLL_INTERVAL: process.env.LOOPLY_DOCS_POLL_INTERVAL ?? "1000",
+        CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? "true",
+        CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? "1000"
+      }
+    : process.env;
+
+  await runCommand("npm", ["run", script], resolveDocsSiteRoot(sourceRoot), env);
 }
 
 export async function openDocsIndex(sourceRoot: string): Promise<{ opened: boolean; target: string; targetUrl: string }> {
@@ -85,12 +95,12 @@ function toFileUrl(target: string): string {
   return `file://${normalized}`;
 }
 
-function runCommand(command: string, args: string[], cwd: string): Promise<void> {
+function runCommand(command: string, args: string[], cwd: string, env: NodeJS.ProcessEnv): Promise<void> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd,
       stdio: "inherit",
-      env: process.env
+      env
     });
 
     child.on("error", reject);

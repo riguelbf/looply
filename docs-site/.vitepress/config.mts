@@ -1,5 +1,8 @@
 import { defineConfig } from "vitepress";
 
+const usePolling = process.env.LOOPLY_DOCS_USE_POLLING !== "false";
+const pollInterval = Number(process.env.LOOPLY_DOCS_POLL_INTERVAL ?? "1000");
+
 export default defineConfig({
   title: "looply",
   description: "Portal de documentacao da plataforma de artefatos para engenharia assistida por IA.",
@@ -12,6 +15,21 @@ export default defineConfig({
   head: [
     ["meta", { name: "theme-color", content: "#0B0F1A" }]
   ],
+  vite: {
+    server: {
+      watch: {
+        usePolling,
+        interval: Number.isFinite(pollInterval) && pollInterval > 0 ? pollInterval : 1000,
+        ignored: [
+          "**/.git/**",
+          "**/.looply/**",
+          "**/.llaios/**",
+          "**/dist/**",
+          "**/node_modules/**"
+        ]
+      }
+    }
+  },
   themeConfig: {
     logo: { src: "/mark.svg", alt: "looply" },
     nav: [
