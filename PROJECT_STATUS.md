@@ -23,12 +23,13 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Next Up
 
-- adicionar um exemplo real ponta a ponta em `examples/`
 - consolidar heuristicas e cobertura do `refresh-context`
 - aprofundar o `status` com leitura mais rica de contexto e integracoes quando existirem
+- enriquecer os templates principais para outputs mais prescritivos e reutilizaveis
 
 ## Recently Completed
 
+- exemplo ponta a ponta adicionado em `examples/pix-webhook-retry/` com discovery, planning, delivery e workflow status
 - `status` enriquecido com tabela por feature, sessoes ligadas, bloqueios, missing outputs e proximo passo
 - primeiro corte de `refresh-context` implementado com `project-context.md` e `project-inventory.md`
 - workflow do GitHub Pages adicionado para publicar `docs-site` automaticamente a partir da `main`
