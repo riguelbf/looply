@@ -2,7 +2,9 @@
   <img src="./assets/looply-banner.svg" alt="Looply" width="760" />
 </p>
 
-# looply
+# Looply AI OS
+
+`looply` e a CLI do produto **Looply AI OS**.
 
 Plataforma de artefatos para engenharia com IA assistida. O `looply` organiza `agents`, `tasks`, `workflows`, `knowledge`, `templates`, `checklists` e contexto operacional em Markdown, publica isso para hosts como `Codex` e `Claude Code`, e ajuda o time a sair de discovery ate delivery com um fluxo consistente.
 

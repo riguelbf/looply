@@ -1,31 +1,25 @@
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="160" y1="72" x2="1024" y2="558" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="140" y1="60" x2="1060" y2="570" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0B0F1A"/>
       <stop offset="1" stop-color="#111827"/>
     </linearGradient>
-    <linearGradient id="loopA" x1="310" y1="195" x2="602" y2="382" gradientUnits="userSpaceOnUse">
+    <linearGradient id="loopStroke" x1="288" y1="150" x2="918" y2="414" gradientUnits="userSpaceOnUse">
       <stop stop-color="#C084FC"/>
-      <stop offset="0.52" stop-color="#7C3AED"/>
-      <stop offset="1" stop-color="#2563EB"/>
+      <stop offset="0.32" stop-color="#7C3AED"/>
+      <stop offset="0.66" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#22D3EE"/>
     </linearGradient>
-    <linearGradient id="loopB" x1="892" y1="195" x2="600" y2="382" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#67E8F9"/>
-      <stop offset="0.48" stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#2563EB"/>
-    </linearGradient>
-    <filter id="softGlow" x="185" y="122" width="830" height="325" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <filter id="glow" x="154" y="96" width="892" height="393" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feFlood flood-opacity="0" result="BackgroundImageFix"/>
       <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-      <feGaussianBlur stdDeviation="18" result="effect1_foregroundBlur"/>
+      <feGaussianBlur stdDeviation="26" result="effect1_foregroundBlur"/>
     </filter>
   </defs>
   <rect width="1200" height="630" rx="40" fill="url(#bg)"/>
-  <g filter="url(#softGlow)" opacity="0.72">
-    <path d="M264 282C264 217.383 316.383 165 381 165C455.15 165 500.793 226.701 547.313 282C500.793 337.299 455.15 399 381 399C316.383 399 264 346.617 264 282Z" stroke="#7C3AED" stroke-width="18"/>
-    <path d="M936 282C936 346.617 883.617 399 819 399C744.85 399 699.207 337.299 652.688 282C699.207 226.701 744.85 165 819 165C883.617 165 936 217.383 936 282Z" stroke="#22D3EE" stroke-width="18"/>
+  <g filter="url(#glow)" opacity="0.7">
+    <path d="M288 282C288 217.383 340.383 165 405 165C478.63 165 525.531 219.854 582.8 262.109C588.97 266.661 595.721 271.678 600 276C604.279 271.678 611.03 266.661 617.2 262.109C674.469 219.854 721.37 165 795 165C859.617 165 912 217.383 912 282C912 346.617 859.617 399 795 399C721.37 399 674.469 344.146 617.2 301.891C611.03 297.339 604.279 292.322 600 288C595.721 292.322 588.97 297.339 582.8 301.891C525.531 344.146 478.63 399 405 399C340.383 399 288 346.617 288 282Z" stroke="#7C3AED" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <path d="M264 282C264 217.383 316.383 165 381 165C455.15 165 500.793 226.701 547.313 282C500.793 337.299 455.15 399 381 399C316.383 399 264 346.617 264 282Z" stroke="url(#loopA)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M936 282C936 346.617 883.617 399 819 399C744.85 399 699.207 337.299 652.688 282C699.207 226.701 744.85 165 819 165C883.617 165 936 217.383 936 282Z" stroke="url(#loopB)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M288 282C288 217.383 340.383 165 405 165C478.63 165 525.531 219.854 582.8 262.109C588.97 266.661 595.721 271.678 600 276C604.279 271.678 611.03 266.661 617.2 262.109C674.469 219.854 721.37 165 795 165C859.617 165 912 217.383 912 282C912 346.617 859.617 399 795 399C721.37 399 674.469 344.146 617.2 301.891C611.03 297.339 604.279 292.322 600 288C595.721 292.322 588.97 297.339 582.8 301.891C525.531 344.146 478.63 399 405 399C340.383 399 288 346.617 288 282Z" stroke="url(#loopStroke)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
   <text x="600" y="535" text-anchor="middle" fill="#F9FAFB" font-size="128" font-weight="700" font-family="Inter,Segoe UI,Arial,sans-serif" letter-spacing="-4">Looply</text>
 </svg>

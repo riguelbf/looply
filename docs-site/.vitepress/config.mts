@@ -93,7 +93,7 @@ export default defineConfig({
       ]
     },
     socialLinks: [
-      { icon: "github", link: "https://github.com/lastlink/looply" }
+      { icon: "github", link: "https://github.com/riguelbf/looply" }
     ],
     search: {
       provider: "local"
