@@ -12,23 +12,27 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Snapshot
 
 - Project: `looply`
-- Stage: `v1 foundation`
+- Stage: `v1 validated, planning v2`
 - Primary focus: plataforma de artefatos para engenharia com IA assistida
 - Hosts: `Claude Code`, `Codex`
 - Main pack: `engineering-base`
 
 ## In Progress
 
-- avaliar a adaptacao de `Codex` para `skills` sem perder alinhamento com os aliases `/looply:*` do Claude
+- iniciar o primeiro slice da `v2` com `Codex skills`
 
 ## Next Up
 
-- decidir a estrategia de extensao do `Codex` com `skills`
-- consolidar a experiencia equivalente entre `Claude` e `Codex`
-- seguir refinando a documentacao e o onboarding conforme o uso real
+- finalizar a estrategia oficial de extensao do `Codex` com `skills`
+- implementar `refresh-context`
+- enriquecer `status` por feature e gate
+- adicionar um exemplo real ponta a ponta em `examples/`
 
 ## Recently Completed
 
+- roadmap de `v2` e `v3` publicado em `docs/releases/`
+- primeira camada de `Codex skills` adicionada ao publish do `looply`
+- validacao manual de uma feature ponta a ponta na `v1`
 - rename completo de `llaios` para `looply`
 - CLI principal publicada como `looply`
 - paths operacionais migrados para `.looply`
@@ -56,11 +60,14 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Open Questions
 
-- qual deve ser a experiencia oficial do `Codex`: apenas convencao via `AGENTS.md` ou publicacao adicional via `skills`
+- qual deve ser a combinacao final entre `AGENTS.md`, `LOOPLY_COMMANDS.md` e `skills` no `Codex`
 - como manter a melhor paridade possivel entre `Claude` e `Codex`
-- quando introduzir especializacoes de dominio alem do `engineering-base`
+- como desenhar a fase de especializacao profunda sem acoplar cedo demais o produto
+- quando iniciar a estrategia de personas e engenharia reversa de dominio
 
 ## Notes
 
 - este arquivo e deliberadamente humano e resumido
 - detalhes estruturais continuam em `docs/`, `docs-site/`, `platform/` e `packs/`
+- `release-2` cobre hardening do produto e paridade entre hosts
+- `release-3` fica reservado para especializacao profunda, personas e dominio

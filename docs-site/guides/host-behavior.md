@@ -107,7 +107,9 @@ Comandos principais:
 
 - consome `AGENTS.md` como surface principal
 - usa `LOOPLY_COMMANDS.md` como indice operacional
+- consome `.agents/skills/*` como camada oficial de extensao do host
 - trata `/looply:*` como alias operacional documentado
+- usa `$looply-*` para invocacao explicita de skills quando necessario
 
 ### Claude Code
 

@@ -13,6 +13,10 @@ export function resolveGlobalHostRoot(host: "codex" | "claude"): string {
     : path.join(homeDirectory, ".claude");
 }
 
+export function resolveGlobalCodexSkillsRoot(): string {
+  return path.join(os.homedir(), ".agents", "skills");
+}
+
 export function resolveTargetRoot(
   scope: InstallScope,
   currentWorkingDirectory: string,

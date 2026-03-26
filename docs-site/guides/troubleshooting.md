@@ -14,18 +14,19 @@ Esta pagina cobre os problemas mais comuns no uso do looply com `Codex`, `Claude
 Hoje a experiencia dos hosts e diferente:
 
 - `Claude Code` usa `.claude/commands`
-- `Codex` usa `AGENTS.md` e `LOOPLY_COMMANDS.md` como convencao operacional
+- `Codex` usa `AGENTS.md`, `LOOPLY_COMMANDS.md` e `.agents/skills`
 
 ### O que fazer
 
 1. confirme que o projeto foi instalado para `codex`
 2. abra `AGENTS.md`
 3. abra `LOOPLY_COMMANDS.md`
-4. rode `looply doctor --host codex --scope project`
+4. confira `.agents/skills`
+5. rode `looply doctor --host codex --scope project`
 
 ### O que esperar
 
-No Codex, os comandos do looply funcionam como aliases operacionais documentados. A descoberta visual pode nao ser igual ao Claude.
+No Codex, os comandos do looply continuam funcionando como aliases operacionais documentados, mas a camada oficial de extensao do host agora fica em `.agents/skills`.
 
 ## `workflow-status` nao encontra a feature
 

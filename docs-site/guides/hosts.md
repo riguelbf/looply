@@ -24,12 +24,14 @@ looply hoje publica artefatos para dois hosts:
 
 - usa `AGENTS.md` como fonte principal de instrucao de projeto
 - o publish do looply reforca aliases operacionais em `AGENTS.md` e `LOOPLY_COMMANDS.md`
-- os slash commands do looply funcionam como convencao operacional documentada
+- publica `skills` em `.agents/skills`
+- os slash commands do looply continuam como convencao operacional documentada
+- o caminho mais nativo de extensao do host passa a ser via skill
 
 ## Como pensar o uso
 
 - se voce quer a experiencia mais direta com slash commands, `Claude Code` hoje fica mais natural
-- se voce esta em `Codex`, trate `AGENTS.md` e `LOOPLY_COMMANDS.md` como a surface principal do host
+- se voce esta em `Codex`, trate `AGENTS.md` como contrato raiz, `LOOPLY_COMMANDS.md` como indice e `.agents/skills` como camada oficial de extensao
 - em ambos os casos, o pack, os workflows e os artefatos sao os mesmos
 
 ## Arquivos publicados por host
@@ -38,6 +40,7 @@ looply hoje publica artefatos para dois hosts:
 
 - `AGENTS.md`
 - `LOOPLY_COMMANDS.md`
+- `.agents/skills/*`
 - `.looply/state/commands/codex/*`
 
 ### Claude Code

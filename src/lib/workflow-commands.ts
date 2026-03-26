@@ -27,6 +27,18 @@ export interface WorkflowCommandReference {
   reference: string;
 }
 
+export interface CodexSkillDefinition {
+  workflowName: string;
+  phase?: string;
+  orchestrator?: string;
+  name: string;
+  displayName: string;
+  description: string;
+  argumentHint: string;
+  alias: string;
+  arguments: WorkflowCommandArgument[];
+}
+
 export function listWorkflowCommands(input: {
   pack: string;
   artifacts: CatalogArtifact[];
@@ -253,6 +265,118 @@ export function renderCodexWorkflowCommand(input: {
   return lines.join("\n");
 }
 
+export function listCodexSkills(input: {
+  commands: WorkflowCommandDefinition[];
+}): CodexSkillDefinition[] {
+  return input.commands.map((command) => ({
+    workflowName: command.workflowName,
+    phase: command.phase,
+    orchestrator: command.orchestrator,
+    name: command.alias.replaceAll(":", "-"),
+    displayName: `$${command.alias.replaceAll(":", "-")}`,
+    description: renderCodexSkillDescription(command),
+    argumentHint: command.argumentHint,
+    alias: command.alias,
+    arguments: command.arguments
+  }));
+}
+
+export function renderCodexSkillDocument(input: {
+  skill: CodexSkillDefinition;
+  outputLocale: "en" | "pt-BR";
+  projectMode: "existing-project" | "greenfield";
+  interactionMode: "guided" | "balanced" | "autonomous";
+  playbookReference: string;
+  packReference: string;
+  customReference: string;
+  hintsReference: string;
+  stateTemplateReference: string;
+  contextIndexReference: string;
+  projectContextReference: string;
+  sessionContextReference: string;
+}): string {
+  const { skill } = input;
+  const commandForExample: WorkflowCommandDefinition = {
+    workflowName: skill.workflowName,
+    phase: skill.phase,
+    orchestrator: skill.orchestrator,
+    name: skill.alias.replace(/^looply:/, ""),
+    canonicalName: skill.alias.replace(/^looply:/, ""),
+    alias: skill.alias,
+    description: skill.description,
+    argumentHint: skill.argumentHint,
+    arguments: skill.arguments
+  };
+
+  const lines = [
+    "---",
+    `name: ${skill.name}`,
+    `description: ${skill.description}`,
+    "---",
+    "",
+    `Use this skill when the user explicitly invokes \`$${skill.name}\`, asks to run \`/${skill.alias}\`, or clearly requests the \`${skill.workflowName}\` workflow.`,
+    skill.phase ? `Workflow phase: \`${skill.phase}\`.` : "",
+    skill.orchestrator ? `Primary orchestrator: \`${skill.orchestrator}\`.` : "",
+    "",
+    "Primary references:",
+    `- Workflow playbook: ${input.playbookReference}`,
+    `- Managed pack: ${input.packReference}`,
+    `- Workflow state template: ${input.stateTemplateReference}`,
+    `- Custom overrides: ${input.customReference}`,
+    `- Execution hints: ${input.hintsReference}`,
+    `- Context index: ${input.contextIndexReference}`,
+    `- Project context: ${input.projectContextReference}`,
+    `- Session context: ${input.sessionContextReference}`,
+    "",
+    "Usage:",
+    `- Explicit mention: \`$${skill.name}\``,
+    `- Workflow alias to honor: \`/${skill.alias}\``,
+    `- Syntax: \`/${skill.alias} ${skill.argumentHint}\``,
+    "",
+    "Example:",
+    `- ${renderExampleInvocation(commandForExample)}`,
+    "",
+    "Execution rules:",
+    "1. Start by reading the workflow playbook and the feature state file if it already exists.",
+    "2. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.",
+    "3. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.",
+    "4. Respect blocking gates and do not skip required artifacts.",
+    "5. Use managed pack files as canonical process definition and write local state only under `.looply/custom`.",
+    `6. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
+    input.projectMode === "existing-project"
+      ? "7. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "7. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "8. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.",
+    `9. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`,
+    "10. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
+    "11. Do not use emojis."
+  ];
+
+  if (skill.arguments.length > 0) {
+    lines.push("", "Arguments:");
+    for (const argument of skill.arguments) {
+      lines.push(`- ${argument.name}: ${argument.description} (${argument.required ? "required" : "optional"})`);
+    }
+  }
+
+  return lines.filter((line) => line !== "").join("\n");
+}
+
+export function renderCodexSkillMetadata(input: {
+  skill: CodexSkillDefinition;
+}): string {
+  return [
+    "interface:",
+    `  display_name: \"${input.skill.displayName}\"`,
+    `  short_description: \"${escapeYamlDoubleQuoted(input.skill.description)}\"`,
+    "  brand_color: \"#7C3AED\"",
+    `  default_prompt: \"$${input.skill.name}\"`,
+    "",
+    "policy:",
+    "  allow_implicit_invocation: false"
+  ].join("\n");
+}
+
 export function renderHelpCommandDocument(input: {
   host: "codex" | "claude";
   pack: string;
@@ -413,6 +537,29 @@ function renderAliasDescription(alias: string, fallback: string): string {
     default:
       return fallback;
   }
+}
+
+function renderCodexSkillDescription(command: WorkflowCommandDefinition): string {
+  switch (command.name) {
+    case "idea-to-prd":
+      return "Use for discovery work that turns a feature idea into a PRD. Do not use for story breakdown or implementation.";
+    case "prd-to-stories":
+      return "Use when a PRD already exists and needs to be broken into delivery stories. Do not use for raw idea discovery or implementation.";
+    case "story-to-production":
+      return "Use when a delivery story already exists and needs technical design, implementation, review and release preparation. Do not use before discovery and planning are complete.";
+    case "workflow-status":
+      return "Use to inspect the persisted state of a feature workflow and decide the next recommended step.";
+    case "resume":
+      return "Use to resume a persisted feature workflow from its saved state, especially when multiple sessions exist.";
+    case "next":
+      return "Use to show the next recommended step for a persisted feature workflow without restarting the whole flow.";
+    default:
+      return command.description;
+  }
+}
+
+function escapeYamlDoubleQuoted(value: string): string {
+  return value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"");
 }
 
 function renderWhenToUse(command: WorkflowCommandDefinition): string {

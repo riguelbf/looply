@@ -133,13 +133,18 @@ Exemplo:
 
 ### Codex
 
-No Codex, o `looply` publica convencoes operacionais, playbooks e entrypoints por meio de:
+No Codex, o `looply` publica convencoes operacionais, playbooks, entrypoints e skills por meio de:
 
 - `AGENTS.md`
 - `LOOPLY_COMMANDS.md`
+- `.agents/skills/*`
 - `.looply/state/commands/codex/`
 
-Hoje a descoberta nativa nao e identica ao Claude, mas o projeto ja publica os mesmos workflows e a mesma estrutura operacional para uso no host.
+O caminho recomendado no Codex agora e:
+
+- usar `AGENTS.md` como contrato raiz
+- usar `LOOPLY_COMMANDS.md` como indice operacional
+- usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 
 ## Fluxo recomendado da v1
 
@@ -278,6 +283,7 @@ looply/
 
 - `idea.md`: visao ampla e roadmap
 - `docs/specs/`: especificacao implementavel
+- `docs/releases/`: cortes planejados de evolucao do produto
 - `docs-site/`: documentacao para usuarios da ferramenta
 - `platform/contracts/`: contratos canonicos
 - `packs/`: artefatos publicados para os hosts

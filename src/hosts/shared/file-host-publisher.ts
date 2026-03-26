@@ -7,8 +7,11 @@ import { loadArtifactCatalog } from "../../lib/artifact-catalog.js";
 import { buildExecutionHintsDocument } from "../../lib/execution-hints.js";
 import { buildWorkflowPlaybookDocument } from "../../lib/workflow-playbook.js";
 import {
+  listCodexSkills,
   listWorkflowCommands,
   relativePathForDisplay,
+  renderCodexSkillDocument,
+  renderCodexSkillMetadata,
   renderHelpCommandDocument,
   renderCodexCommandIndex,
   renderClaudeWorkflowCommand,
@@ -36,7 +39,7 @@ import type { InstallManifest, UninstallResult } from "../../lib/publishing-mode
 import { readInteractionPolicyFile, resolveInteractionPolicyFile, writeInteractionPolicyFile } from "../../lib/interaction-policy.js";
 import { readLocaleFile, resolveLocaleFile, writeLocaleFile } from "../../lib/locale.js";
 import { readProjectContextFile, resolveProjectContextFile, writeProjectContextFile } from "../../lib/project-context.js";
-import { resolveTargetRoot } from "../../lib/runtime-paths.js";
+import { resolveGlobalCodexSkillsRoot, resolveTargetRoot } from "../../lib/runtime-paths.js";
 import { ensureSessionLinksFile, resolveSessionLinksFile } from "../../lib/session-links.js";
 import {
   resolveContextIndexFile,
@@ -759,6 +762,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/custom/session-context.md`,
       `- ./.looply/custom/session-links.json`,
       ...(input.host === "codex" ? ["- ./LOOPLY_COMMANDS.md"] : []),
+      ...(input.host === "codex" ? ["- ./.agents/skills/"] : []),
       "",
       `Default output locale: \`${input.outputLocale}\``,
       `Project mode: \`${input.projectMode}\``,
@@ -772,16 +776,17 @@ export class FileHostPublisher implements HostPublisher {
             "Alias policy for Codex:",
             "1. Treat `/looply:*` strings as looply workflow aliases even if the Codex slash-command picker does not list them.",
             "2. Open `LOOPLY_COMMANDS.md` when you need the command index and `./.looply/state/commands/codex/` for command-specific help.",
-            "3. If the user writes `/looply:... help`, explain the alias instead of executing it.",
-            `4. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
-            `5. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
+            "3. Prefer the generated Codex skills in `./.agents/skills/` for explicit skill invocation and native skill discovery.",
+            "4. If the user writes `/looply:... help`, explain the alias instead of executing it.",
+            `5. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+            `6. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
             input.projectMode === "existing-project"
-              ? "6. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
-              : "6. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
-            "7. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
-            "8. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
-            `9. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
-            "10. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
+              ? "7. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
+              : "7. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
+            "8. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
+            "9. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
+            `10. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
+            "11. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
           ]
         : []),
       "",
@@ -915,6 +920,19 @@ export class FileHostPublisher implements HostPublisher {
       });
       await fs.writeFile(codexIndexFile, codexIndexContent, "utf8");
       additionalFiles.push(codexIndexFile);
+
+      const skillFiles = await this.writeCodexSkills({
+        targetRoot: input.targetRoot,
+        scope: path.basename(input.targetRoot) === ".codex" ? "global" : "project",
+        outputLocale: input.outputLocale,
+        projectMode: input.projectMode,
+        interactionMode: input.interactionMode,
+        pack: input.pack,
+        commands,
+        workflowPlaybookFile: input.workflowPlaybookFile,
+        executionHintsFile: input.executionHintsFile
+      });
+      additionalFiles.push(...skillFiles);
     }
 
     return {
@@ -936,6 +954,67 @@ export class FileHostPublisher implements HostPublisher {
     return isGlobalRoot
       ? path.join(targetRoot, "looply", "commands")
       : path.join(targetRoot, ".looply", "state", "commands", "codex");
+  }
+
+  private resolveCodexSkillsRoot(targetRoot: string, scope: "project" | "global"): string {
+    if (scope === "global") {
+      return resolveGlobalCodexSkillsRoot();
+    }
+
+    return path.join(targetRoot, ".agents", "skills");
+  }
+
+  private async writeCodexSkills(input: {
+    targetRoot: string;
+    scope: "project" | "global";
+    outputLocale: "en" | "pt-BR";
+    projectMode: "existing-project" | "greenfield";
+    interactionMode: "guided" | "balanced" | "autonomous";
+    pack: string;
+    commands: WorkflowCommandDefinition[];
+    workflowPlaybookFile: string;
+    executionHintsFile: string;
+  }): Promise<string[]> {
+    const skillsRoot = this.resolveCodexSkillsRoot(input.targetRoot, input.scope);
+    const packRoot = path.join(input.targetRoot, ".looply", "managed", "packs", input.pack);
+    const customRoot = path.join(input.targetRoot, ".looply", "custom");
+    const stateTemplateFile = path.join(packRoot, "templates", "workflow-status-template.md");
+    const skills = listCodexSkills({ commands: input.commands });
+    const writtenFiles: string[] = [];
+
+    await fs.ensureDir(skillsRoot);
+
+    for (const skill of skills) {
+      const skillRoot = path.join(skillsRoot, skill.name);
+      const agentsRoot = path.join(skillRoot, "agents");
+      await fs.ensureDir(agentsRoot);
+
+      const skillFile = path.join(skillRoot, "SKILL.md");
+      const metadataFile = path.join(agentsRoot, "openai.yaml");
+
+      await fs.writeFile(
+        skillFile,
+        renderCodexSkillDocument({
+          skill,
+          outputLocale: input.outputLocale,
+          projectMode: input.projectMode,
+          interactionMode: input.interactionMode,
+          playbookReference: relativePathForDisplay(skillRoot, input.workflowPlaybookFile),
+          packReference: relativePathForDisplay(skillRoot, packRoot),
+          customReference: relativePathForDisplay(skillRoot, customRoot),
+          hintsReference: relativePathForDisplay(skillRoot, input.executionHintsFile),
+          stateTemplateReference: relativePathForDisplay(skillRoot, stateTemplateFile),
+          contextIndexReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "context-index.md")),
+          projectContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "project-context.md")),
+          sessionContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "session-context.md"))
+        }),
+        "utf8"
+      );
+      await fs.writeFile(metadataFile, renderCodexSkillMetadata({ skill }), "utf8");
+      writtenFiles.push(skillFile, metadataFile);
+    }
+
+    return writtenFiles;
   }
 
   private toRelativeTargetPath(targetRoot: string, absolutePath: string): string {
