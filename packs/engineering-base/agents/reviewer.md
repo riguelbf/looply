@@ -19,6 +19,8 @@ supported_tasks:
   - publish-service
 knowledge_sources:
   - ../knowledge/coding-standards.md
+  - ../knowledge/architecture-principles.md
+  - ../knowledge/specialists/reviewer-best-practices.md
 constraints:
   - Do not redefine architecture during review without justification
 escalation_rules:

@@ -17,6 +17,8 @@ supported_tasks:
   - implement-api
 knowledge_sources:
   - ../knowledge/coding-standards.md
+  - ../knowledge/architecture-principles.md
+  - ../knowledge/specialists/backend-best-practices.md
 constraints:
   - Do not change domain rules without explicit guidance
 escalation_rules:

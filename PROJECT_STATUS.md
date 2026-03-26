@@ -29,6 +29,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Recently Completed
 
+- camada de `best-practices` por especialista adicionada e ligada aos agentes do `engineering-base`
 - templates principais enriquecidos para discovery, planning, delivery, review e release
 - exemplo ponta a ponta adicionado em `examples/pix-webhook-retry/` com discovery, planning, delivery e workflow status
 - `status` enriquecido com tabela por feature, sessoes ligadas, bloqueios, missing outputs e proximo passo

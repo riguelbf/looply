@@ -19,6 +19,7 @@ supported_tasks:
   - create-adr
 knowledge_sources:
   - ../knowledge/architecture-principles.md
+  - ../knowledge/specialists/architect-best-practices.md
 constraints:
   - Do not invent business rules
 escalation_rules:

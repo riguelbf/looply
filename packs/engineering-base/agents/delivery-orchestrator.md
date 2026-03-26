@@ -20,6 +20,7 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/glossary.md
   - ../knowledge/architecture-principles.md
+  - ../knowledge/specialists/delivery-orchestrator-best-practices.md
 constraints:
   - Do not implement feature code directly
   - Do not skip blocking gates

@@ -20,6 +20,7 @@ supported_tasks:
   - break-prd-into-stories
 knowledge_sources:
   - ../knowledge/glossary.md
+  - ../knowledge/specialists/pm-analyst-best-practices.md
 constraints:
   - Do not define technical architecture
   - Do not approve implementation tradeoffs
