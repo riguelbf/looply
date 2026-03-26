@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "pack": "engineering-base",
+  "scope": "project",
+  "host": "codex",
+  "managedFiles": [
+    ".looply/managed/packs/engineering-base/pack.md",
+    ".looply/managed/packs/engineering-base/tasks/implement-api.md"
+  ],
+  "mergeableFiles": [
+    "AGENTS.md"
+  ],
+  "customFiles": [
+    ".looply/custom/tasks/custom-task.md"
+  ]
+}

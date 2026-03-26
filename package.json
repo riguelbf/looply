@@ -1,0 +1,36 @@
+{
+  "name": "looply",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "looply": "./bin/run.js"
+  },
+  "scripts": {
+    "build:cli": "tsc -p tsconfig.json",
+    "build": "npm run build:cli && npm run docs:generate && npm run docs:check",
+    "dev": "node ./bin/dev.js",
+    "docs:generate": "npm --prefix ./docs-site run generate",
+    "docs:check": "npm --prefix ./docs-site run check",
+    "docs:dev": "npm --prefix ./docs-site run dev",
+    "docs:build": "npm --prefix ./docs-site run build",
+    "docs:preview": "npm --prefix ./docs-site run preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
+    "globby": "^14.1.0",
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.8.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.13.14",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
