@@ -1,52 +1,245 @@
+<p align="center">
+  <img src="./assets/looply-banner.svg" alt="Looply" width="760" />
+</p>
+
 # looply
 
-Plataforma de artefatos para engenharia assistida por IA.
+Plataforma de artefatos para engenharia com IA assistida. O `looply` organiza `agents`, `tasks`, `workflows`, `knowledge`, `templates`, `checklists` e contexto operacional em Markdown, publica isso para hosts como `Codex` e `Claude Code`, e ajuda o time a sair de discovery ate delivery com um fluxo consistente.
 
-O foco atual do projeto e criar uma base versionada de:
+## O que o looply resolve
 
-- agents
-- tasks
-- workflows
-- squads
-- knowledge packs
-- templates
-- checklists
+- padroniza como a engenharia descreve discovery, planning e delivery
+- publica o mesmo pack para mais de um host
+- instala contexto reutilizavel por projeto ou globalmente
+- preserva customizacoes do projeto em `.looply/custom`
+- mantem artefatos versionados e validaveis
+- organiza sessoes, retomadas, updates e status operacional
 
-Esses artefatos sao publicados para hosts como Codex e Claude Code, que passam a consumir as instrucoes e convencoes geradas pelo LOOPLY.
+## O que existe hoje
 
-## O que o projeto e
+- CLI `looply`
+- portal de documentacao com `VitePress`
+- pack base `engineering-base`
+- suporte a `Claude Code` e `Codex`
+- workflows principais:
+  - `idea-to-prd`
+  - `prd-to-stories`
+  - `story-to-production`
+  - `workflow-status`
+- agentes principais:
+  - `pm-analyst`
+  - `architect`
+  - `backend`
+  - `reviewer`
+  - `delivery-orchestrator`
 
-- plataforma de artefatos Markdown com frontmatter
-- modelo canonico para packs e squads
-- camada de publicacao para hosts
-- CLI para install, sync, validate, doctor, list e inspect
+## O que nao existe na v1
 
-## Stack ativa
+- runtime proprio de LLM
+- automacao autonoma ponta a ponta
+- execucao nativa de tasks sem host
+- SaaS ou painel web de operacao
 
-- Node.js
-- TypeScript
-- Commander
-- @clack/prompts
-- Zod
-- gray-matter
-- fs-extra
-- globby
+## Instalacao para desenvolvimento
 
-## O que o projeto nao e na v1
+Requisitos:
 
-- runtime proprio de tasks
-- orchestrator autonomo de agentes
-- chat interface
-- plataforma SaaS
+- Node.js 22+
+- npm
+- `codex` e/ou `claude` instalados se voce quiser publicar para esses hosts
 
-## Direcao atual
+Clone o projeto e prepare a CLI:
 
-A implementacao ativa do projeto agora e exclusivamente em Node.js. O foco esta centrado na plataforma LOOPLY descrita em [idea.md](./idea.md).
+```bash
+git clone git@github.com:riguelbf/looply.git
+cd looply
+npm install
+npm run build
+npm link
+```
 
-## Estrutura atual
+Depois disso, o comando `looply` fica disponivel no shell.
+
+Se preferir sem `npm link`, voce pode usar:
+
+```bash
+node ./bin/run.js --help
+```
+
+## Instalando o looply em um projeto existente
+
+Dentro do projeto alvo, rode:
+
+```bash
+looply install \
+  --host codex,claude \
+  --scope project \
+  --pack engineering-base \
+  --locale pt-BR \
+  --project-mode existing-project \
+  --interaction-mode balanced
+```
+
+O comando acima:
+
+- instala o pack `engineering-base`
+- publica para `Codex` e `Claude Code`
+- grava estado em `.looply/`
+- preserva espaco de customizacao em `.looply/custom/`
+- considera o codebase local como base principal quando o projeto ja existe
+
+Se quiser um fluxo guiado, basta rodar:
+
+```bash
+looply install
+```
+
+## Primeiros comandos uteis
+
+```bash
+looply validate
+looply doctor --host codex,claude --scope project
+looply status
+looply list workflow
+looply inspect workflow idea-to-prd
+looply docs open
+```
+
+## Como usar os workflows
+
+### Claude Code
+
+O Claude recebe comandos publicados em `.claude/commands`. Os aliases principais sao:
+
+- `/looply:help`
+- `/looply:idea-to-prd`
+- `/looply:prd-to-stories`
+- `/looply:story-to-production`
+- `/looply:workflow-status`
+- `/looply:resume`
+- `/looply:next`
+
+Exemplo:
+
+```text
+/looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram conciliacao manual" "manter compatibilidade com contrato atual"
+```
+
+### Codex
+
+No Codex, o `looply` publica convencoes operacionais, playbooks e entrypoints por meio de:
+
+- `AGENTS.md`
+- `LOOPLY_COMMANDS.md`
+- `.looply/state/commands/codex/`
+
+Hoje a descoberta nativa nao e identica ao Claude, mas o projeto ja publica os mesmos workflows e a mesma estrutura operacional para uso no host.
+
+## Fluxo recomendado da v1
+
+1. `idea-to-prd`
+2. `prd-to-stories`
+3. `story-to-production`
+4. `workflow-status`
+
+Exemplo de sequencia:
+
+```text
+/looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram conciliacao manual"
+/looply:prd-to-stories pix-webhook-retry prd-pix-webhook-retry
+/looply:story-to-production pix-webhook-retry story-01-retry-automatico
+/looply:workflow-status pix-webhook-retry
+```
+
+## Modos operacionais
+
+### `project-mode`
+
+- `existing-project`: usa o codebase local como fonte principal de verdade
+- `greenfield`: trabalha mais a partir de artefatos e premissas explicitas
+
+### `interaction-mode`
+
+- `guided`: pergunta mais antes de avancar
+- `balanced`: equilibra autonomia e confirmacoes
+- `autonomous`: evita clarificacoes repetidas e avanca quando o contexto estiver suficiente
+
+### `locale`
+
+- `pt-BR`
+- `en`
+
+O idioma e persistido na instalacao e influencia o output esperado do host.
+
+## Estado e arquivos gerados
+
+O `looply` organiza o estado do projeto em:
+
+```text
+.looply/
+  managed/
+  state/
+  custom/
+```
+
+Arquivos importantes:
+
+- `.looply/state/install-manifest.json`
+- `.looply/state/execution-hints.json`
+- `.looply/state/locale.json`
+- `.looply/state/project-context.json`
+- `.looply/state/interaction-policy.json`
+- `.looply/state/context-index.md`
+- `.looply/custom/project-context.md`
+- `.looply/custom/session-context.md`
+- `.looply/custom/features/<feature>/workflow-status.md`
+
+## Comandos principais da CLI
+
+- `looply init`
+- `looply install`
+- `looply uninstall`
+- `looply reinstall`
+- `looply validate`
+- `looply doctor`
+- `looply status`
+- `looply sync`
+- `looply check-updates`
+- `looply upgrade`
+- `looply history`
+- `looply sessions`
+- `looply integrations`
+- `looply docs`
+
+Veja todos:
+
+```bash
+looply --help
+looply docs --help
+looply integrations --help
+```
+
+## Documentacao
+
+O portal vive em `docs-site/` e pode ser aberto localmente com:
+
+```bash
+looply docs open
+```
+
+Outros comandos:
+
+```bash
+looply docs generate
+looply docs build
+looply docs serve
+```
+
+## Estrutura do projeto
 
 ```text
 looply/
+  assets/
   bin/
   docs/
     adr/
@@ -56,6 +249,7 @@ looply/
     .vitepress/
     guides/
     overview/
+    playbooks/
     reference/
     specs/
     scripts/
@@ -76,23 +270,24 @@ looply/
 
 ## Fonte da verdade
 
-- `idea.md`: visao ampla, backlog e roadmap
+- `idea.md`: visao ampla e roadmap
 - `docs/specs/`: especificacao implementavel
-- `docs-site/`: portal de documentacao em VitePress
-- `platform/contracts/`: contratos canonicos dos artefatos
-- `packs/`: artefatos reais publicados para os hosts
-- `src/`: implementacao Node da CLI e da camada de publicacao
+- `docs-site/`: documentacao para usuarios da ferramenta
+- `platform/contracts/`: contratos canonicos
+- `packs/`: artefatos publicados para os hosts
+- `src/`: implementacao da CLI e da camada de publicacao
 
-## Modulo de documentacao
+## Stack
 
-O portal de documentacao agora vive em `docs-site/` como um modulo separado do projeto.
-
-Scripts da raiz:
-
-- `npm run docs:generate`
-- `npm run docs:dev`
-- `npm run docs:build`
-- `npm run docs:preview`
+- Node.js
+- TypeScript
+- Commander
+- @clack/prompts
+- Zod
+- gray-matter
+- fs-extra
+- globby
+- VitePress
 
 ## Principios
 
@@ -101,13 +296,16 @@ Scripts da raiz:
 - workflow com handoff explicito
 - host-agnostic no core
 - host-aware na publicacao
+- codebase-first em projetos existentes
 - customizacao do usuario preservada
 - sync incremental por ownership de arquivo
 
-## Proximo passo de implementacao
+## Scripts de desenvolvimento
 
-1. consolidar contratos canonicos
-2. validar artefatos
-3. publicar `engineering-base`
-4. adicionar camada de publicacao para hosts
-5. evoluir CLI Node de install/sync/validate
+```bash
+npm run typecheck
+npm run build
+npm run docs:generate
+npm run docs:check
+npm run docs:build
+```

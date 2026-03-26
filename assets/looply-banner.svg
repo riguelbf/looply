@@ -1,0 +1,31 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="72" x2="1024" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B0F1A"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="loopA" x1="310" y1="195" x2="602" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C084FC"/>
+      <stop offset="0.52" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="loopB" x1="892" y1="195" x2="600" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67E8F9"/>
+      <stop offset="0.48" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <filter id="softGlow" x="185" y="122" width="830" height="325" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur stdDeviation="18" result="effect1_foregroundBlur"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="40" fill="url(#bg)"/>
+  <g filter="url(#softGlow)" opacity="0.72">
+    <path d="M264 282C264 217.383 316.383 165 381 165C455.15 165 500.793 226.701 547.313 282C500.793 337.299 455.15 399 381 399C316.383 399 264 346.617 264 282Z" stroke="#7C3AED" stroke-width="18"/>
+    <path d="M936 282C936 346.617 883.617 399 819 399C744.85 399 699.207 337.299 652.688 282C699.207 226.701 744.85 165 819 165C883.617 165 936 217.383 936 282Z" stroke="#22D3EE" stroke-width="18"/>
+  </g>
+  <path d="M264 282C264 217.383 316.383 165 381 165C455.15 165 500.793 226.701 547.313 282C500.793 337.299 455.15 399 381 399C316.383 399 264 346.617 264 282Z" stroke="url(#loopA)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M936 282C936 346.617 883.617 399 819 399C744.85 399 699.207 337.299 652.688 282C699.207 226.701 744.85 165 819 165C883.617 165 936 217.383 936 282Z" stroke="url(#loopB)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="535" text-anchor="middle" fill="#F9FAFB" font-size="128" font-weight="700" font-family="Inter,Segoe UI,Arial,sans-serif" letter-spacing="-4">Looply</text>
+</svg>
