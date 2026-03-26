@@ -6,6 +6,21 @@ summary: Template for persisted feature workflow state
 
 # Workflow Status
 
+## Summary Table
+
+| Field | Value |
+| --- | --- |
+| Feature |  |
+| Phase |  |
+| Workflow |  |
+| Current Stage |  |
+| Current Gate |  |
+| Active Artifact |  |
+| Next Workflow |  |
+| Next Agent |  |
+| Next Task |  |
+| Ready For Next Gate |  |
+
 ## Feature
 
 ## Workflow

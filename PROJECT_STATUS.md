@@ -19,17 +19,18 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## In Progress
 
-- iniciar o primeiro slice da `v2` com `Codex skills`
+- preparar o proximo slice da `v2` com `refresh-context`
 
 ## Next Up
 
-- finalizar a estrategia oficial de extensao do `Codex` com `skills`
 - implementar `refresh-context`
 - enriquecer `status` por feature e gate
 - adicionar um exemplo real ponta a ponta em `examples/`
 
 ## Recently Completed
 
+- UX de descoberta do `Codex` reforcada com skill raiz `$looply`
+- `workflow-status` evoluido para resposta com tabela no topo
 - roadmap de `v2` e `v3` publicado em `docs/releases/`
 - primeira camada de `Codex skills` adicionada ao publish do `looply`
 - validacao manual de uma feature ponta a ponta na `v1`

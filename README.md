@@ -145,6 +145,8 @@ O caminho recomendado no Codex agora e:
 - usar `AGENTS.md` como contrato raiz
 - usar `LOOPLY_COMMANDS.md` como indice operacional
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
+- abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
+- começar por `$looply` como skill de descoberta e roteamento
 
 ## Fluxo recomendado da v1
 

@@ -71,18 +71,21 @@ Usar o minimo de contexto necessario para ler workflow, status atual e outputs e
 Responder na conversa usando estes titulos em Markdown, nesta ordem:
 
 1. `# Workflow Update`
-2. `## Workflow`
-3. `## Stage`
-4. `## Current Task`
-5. `## Gate`
-6. `## Active Artifact`
-7. `## Decision`
-8. `## Next Step`
-9. `## Missing Artifacts`
-10. `## Blockers`
+2. `## Summary Table`
+3. `## Workflow`
+4. `## Stage`
+5. `## Current Task`
+6. `## Gate`
+7. `## Active Artifact`
+8. `## Decision`
+9. `## Next Step`
+10. `## Missing Artifacts`
+11. `## Blockers`
 
 Regras visuais:
 
+- abrir a resposta com uma tabela Markdown de duas colunas `Field | Value`
+- na tabela, incluir no minimo `Feature`, `Phase`, `Workflow`, `Current Stage`, `Current Gate`, `Active Artifact`, `Next Workflow`, `Next Agent`, `Next Task` e `Ready For Next Gate`
 - destacar nome de workflow, stage e task em negrito dentro das secoes
 - manter uma linha em branco entre secoes
 - nao usar emojis

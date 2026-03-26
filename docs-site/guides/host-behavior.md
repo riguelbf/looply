@@ -110,6 +110,7 @@ Comandos principais:
 - consome `.agents/skills/*` como camada oficial de extensao do host
 - trata `/looply:*` como alias operacional documentado
 - usa `$looply-*` para invocacao explicita de skills quando necessario
+- usa `$looply` como skill principal de descoberta, ajuda e roteamento
 
 ### Claude Code
 
@@ -118,6 +119,15 @@ Comandos principais:
 - usa os slash commands do looply de forma mais direta
 
 ## O que o usuario deve esperar
+
+### Descoberta no Codex
+
+Quando o usuario nao souber os workflows:
+
+1. abrir `/skills`
+2. procurar `looply`
+3. iniciar por `$looply`
+4. seguir para a skill ou alias sugerido
 
 Em `existing-project` com `autonomous`:
 

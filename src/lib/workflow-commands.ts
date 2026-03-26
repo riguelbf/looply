@@ -377,6 +377,82 @@ export function renderCodexSkillMetadata(input: {
   ].join("\n");
 }
 
+export function renderCodexLauncherSkillDocument(input: {
+  pack: string;
+  outputLocale: "en" | "pt-BR";
+  projectMode: "existing-project" | "greenfield";
+  interactionMode: "guided" | "balanced" | "autonomous";
+  playbookReference: string;
+  commandsIndexReference: string;
+  commands: WorkflowCommandDefinition[];
+}): string {
+  const lines = [
+    "---",
+    "name: looply",
+    "description: Use when the user asks what looply can do, how to start a workflow, which workflow to use, or how to continue a feature in Codex.",
+    "---",
+    "",
+    "Use this skill as the main entrypoint for Looply inside Codex.",
+    "",
+    "Primary references:",
+    `- Workflow playbook: ${input.playbookReference}`,
+    `- Command index: ${input.commandsIndexReference}`,
+    "- Project contract: ../../../AGENTS.md",
+    "",
+    "When to use:",
+    "- The user does not know which looply workflow to start.",
+    "- The user asks how to continue a feature.",
+    "- The user wants the available looply workflows.",
+    "- The user asks for help with looply in Codex.",
+    "",
+    "Behavior:",
+    "1. If the user asks what Looply can do, list the available workflows and when to use each one.",
+    "2. If the user describes a raw idea, recommend `idea-to-prd`.",
+    "3. If the user already has a PRD, recommend `prd-to-stories`.",
+    "4. If the user already has a story and wants to implement, recommend `story-to-production`.",
+    "5. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
+    "6. Prefer explicit next-step guidance over generic explanations.",
+    `7. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
+    `8. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
+    "",
+    "Available workflows:"
+  ];
+
+  for (const command of input.commands) {
+    if (command.canonicalName === "help") {
+      continue;
+    }
+    lines.push(`- \`/${command.alias}\` ${command.argumentHint}`.trimEnd());
+    lines.push(`  ${command.description}`);
+  }
+
+  lines.push(
+    "",
+    "Recommended sequence:",
+    "1. `/looply:idea-to-prd <feature-name> [problem-statement] [constraints...]`",
+    "2. `/looply:prd-to-stories <feature-name> [prd-reference] [notes...]`",
+    "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`",
+    "4. `/looply:workflow-status <feature-name> [notes...]`",
+    "",
+    "Presentation rules:",
+    "- Use clear Markdown section titles.",
+    "- Prefer concise recommendations.",
+    "- Do not use emojis."
+  );
+
+  return lines.join("\n");
+}
+
+export function renderCodexLauncherSkillMetadata(): string {
+  return [
+    "interface:",
+    "  display_name: \"$looply\"",
+    "  short_description: \"Looply entrypoint for workflow discovery and next-step guidance in Codex.\"",
+    "  brand_color: \"#7C3AED\"",
+    "  default_prompt: \"$looply\""
+  ].join("\n");
+}
+
 export function renderHelpCommandDocument(input: {
   host: "codex" | "claude";
   pack: string;

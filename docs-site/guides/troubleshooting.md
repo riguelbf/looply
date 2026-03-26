@@ -23,6 +23,7 @@ Hoje a experiencia dos hosts e diferente:
 3. abra `LOOPLY_COMMANDS.md`
 4. confira `.agents/skills`
 5. rode `looply doctor --host codex --scope project`
+6. no host, rode `/skills` e procure `looply`
 
 ### O que esperar
 

@@ -27,11 +27,13 @@ looply hoje publica artefatos para dois hosts:
 - publica `skills` em `.agents/skills`
 - os slash commands do looply continuam como convencao operacional documentada
 - o caminho mais nativo de extensao do host passa a ser via skill
+- o melhor ponto de entrada para descoberta e `/skills` seguido da skill `$looply`
 
 ## Como pensar o uso
 
 - se voce quer a experiencia mais direta com slash commands, `Claude Code` hoje fica mais natural
 - se voce esta em `Codex`, trate `AGENTS.md` como contrato raiz, `LOOPLY_COMMANDS.md` como indice e `.agents/skills` como camada oficial de extensao
+- para descoberta, comece em `/skills` e escolha `$looply`
 - em ambos os casos, o pack, os workflows e os artefatos sao os mesmos
 
 ## Arquivos publicados por host
