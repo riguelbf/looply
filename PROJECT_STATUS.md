@@ -19,7 +19,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## In Progress
 
-- preparar o proximo refinamento do `refresh-context`
+- publicar a documentacao no GitHub Pages e estabilizar a experiencia de `docs open`
 
 ## Next Up
 
@@ -30,6 +30,8 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Recently Completed
 
 - primeiro corte de `refresh-context` implementado com `project-context.md` e `project-inventory.md`
+- workflow do GitHub Pages adicionado para publicar `docs-site` automaticamente a partir da `main`
+- `docs open` voltou a priorizar `127.0.0.1` com fallback para arquivo local
 - descoberta do `Codex` melhorada com placeholders em `default_prompt` e `Quick usage` nas skills
 - UX de descoberta do `Codex` reforcada com skill raiz `$looply`
 - `workflow-status` evoluido para resposta com tabela no topo

@@ -2,13 +2,14 @@ import { defineConfig } from "vitepress";
 
 const usePolling = process.env.LOOPLY_DOCS_USE_POLLING !== "false";
 const pollInterval = Number(process.env.LOOPLY_DOCS_POLL_INTERVAL ?? "1000");
+const docsBase = process.env.LOOPLY_DOCS_BASE ?? "/";
 
 export default defineConfig({
   title: "looply",
   description: "Portal de documentacao da plataforma de artefatos para engenharia assistida por IA.",
   lang: "pt-BR",
   appearance: "dark",
-  base: "/",
+  base: docsBase,
   srcDir: ".",
   cleanUrls: false,
   lastUpdated: true,

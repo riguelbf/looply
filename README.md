@@ -243,6 +243,8 @@ O portal vive em `docs-site/` e pode ser aberto localmente com:
 looply docs open
 ```
 
+Por padrao, `looply docs open` prioriza um servidor local em `127.0.0.1` para uma experiencia mais confiavel no browser. Se a build ainda nao existir, o comando gera a documentacao antes de abrir.
+
 Outros comandos:
 
 ```bash
@@ -250,6 +252,22 @@ looply docs generate
 looply docs build
 looply docs serve
 ```
+
+## GitHub Pages
+
+O repositorio ja possui pipeline para publicar a documentacao no GitHub Pages a cada push na `main`:
+
+- workflow: `.github/workflows/docs-pages.yml`
+- base publica: `/looply/`
+- artefato publicado: `docs-site/.vitepress/dist`
+
+Para o deploy funcionar no GitHub:
+
+1. abra `Settings > Pages`
+2. selecione `Build and deployment`
+3. escolha `GitHub Actions`
+
+Depois disso, cada push na `main` publica a docs automaticamente.
 
 ## Estrutura do projeto
 
