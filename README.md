@@ -105,6 +105,7 @@ looply install
 ```bash
 looply validate
 looply doctor --host codex,claude --scope project
+looply refresh-context
 looply status
 looply list workflow
 looply inspect workflow idea-to-prd
@@ -203,6 +204,7 @@ Arquivos importantes:
 - `.looply/state/project-context.json`
 - `.looply/state/interaction-policy.json`
 - `.looply/state/context-index.md`
+- `.looply/state/project-inventory.md`
 - `.looply/custom/project-context.md`
 - `.looply/custom/session-context.md`
 - `.looply/custom/features/<feature>/workflow-status.md`
@@ -213,6 +215,7 @@ Arquivos importantes:
 - `looply install`
 - `looply uninstall`
 - `looply reinstall`
+- `looply refresh-context`
 - `looply validate`
 - `looply doctor`
 - `looply status`

@@ -19,16 +19,18 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## In Progress
 
-- preparar o proximo slice da `v2` com `refresh-context`
+- preparar o proximo refinamento do `refresh-context`
 
 ## Next Up
 
-- implementar `refresh-context`
 - enriquecer `status` por feature e gate
 - adicionar um exemplo real ponta a ponta em `examples/`
+- consolidar heuristicas e cobertura do `refresh-context`
 
 ## Recently Completed
 
+- primeiro corte de `refresh-context` implementado com `project-context.md` e `project-inventory.md`
+- descoberta do `Codex` melhorada com placeholders em `default_prompt` e `Quick usage` nas skills
 - UX de descoberta do `Codex` reforcada com skill raiz `$looply`
 - `workflow-status` evoluido para resposta com tabela no topo
 - roadmap de `v2` e `v3` publicado em `docs/releases/`

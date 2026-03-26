@@ -41,5 +41,6 @@ Em `existing-project`, o host deve:
 
 1. rode `looply validate`
 2. rode `looply doctor`
-3. abra [Hosts Suportados](/guides/hosts)
-4. inicie o fluxo com [Slash Commands](/guides/slash-commands)
+3. rode `looply refresh-context`
+4. abra [Hosts Suportados](/guides/hosts)
+5. inicie o fluxo com [Slash Commands](/guides/slash-commands)

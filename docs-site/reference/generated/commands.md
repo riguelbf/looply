@@ -56,6 +56,12 @@ List available packs and artifacts
 
 - options: 1
 
+## [refresh-context](./commands/refresh-context)
+
+Refresh project context and inventory from the current repository
+
+- options: 1
+
 ## [reinstall](./commands/reinstall)
 
 Reinstall looply for selected hosts using the current pack and locale
