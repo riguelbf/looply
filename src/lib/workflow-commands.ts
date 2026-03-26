@@ -318,6 +318,9 @@ export function renderCodexSkillDocument(input: {
     skill.phase ? `Workflow phase: \`${skill.phase}\`.` : "",
     skill.orchestrator ? `Primary orchestrator: \`${skill.orchestrator}\`.` : "",
     "",
+    "Quick usage:",
+    `- \`${renderCodexSkillPrompt(skill)}\``,
+    "",
     "Primary references:",
     `- Workflow playbook: ${input.playbookReference}`,
     `- Managed pack: ${input.packReference}`,
@@ -370,7 +373,7 @@ export function renderCodexSkillMetadata(input: {
     `  display_name: \"${input.skill.displayName}\"`,
     `  short_description: \"${escapeYamlDoubleQuoted(input.skill.description)}\"`,
     "  brand_color: \"#7C3AED\"",
-    `  default_prompt: \"$${input.skill.name}\"`,
+    `  default_prompt: \"${escapeYamlDoubleQuoted(renderCodexSkillPrompt(input.skill))}\"`,
     "",
     "policy:",
     "  allow_implicit_invocation: false"
@@ -636,6 +639,24 @@ function renderCodexSkillDescription(command: WorkflowCommandDefinition): string
 
 function escapeYamlDoubleQuoted(value: string): string {
   return value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"");
+}
+
+function renderCodexSkillPrompt(skill: CodexSkillDefinition): string {
+  const placeholders = skill.arguments.map((argument) => {
+    const base = argument.variadic
+      ? `[${argument.name}...]`
+      : argument.required
+        ? `<${argument.name}>`
+        : `[${argument.name}]`;
+
+    const quoted = argument.name.includes("problem") || argument.name.includes("story") || argument.name.includes("constraints") || argument.name.includes("notes")
+      ? `"${base}"`
+      : base;
+
+    return quoted;
+  });
+
+  return [`$${skill.name}`, ...placeholders].join(" ").trim();
 }
 
 function renderWhenToUse(command: WorkflowCommandDefinition): string {
