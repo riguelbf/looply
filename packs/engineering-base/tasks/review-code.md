@@ -45,3 +45,8 @@ Prioriza equilibrio entre custo e profundidade de revisao.
 2. Validar testes e tratamento de erro.
 3. Revisar aderencia arquitetural.
 4. Emitir parecer com bloqueios ou aprovacao.
+
+## Deliverables
+
+- review report com findings e decisao
+- tabela final da etapa com itens concluidos e pendentes

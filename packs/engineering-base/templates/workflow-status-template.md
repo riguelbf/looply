@@ -71,6 +71,14 @@ summary: Template for persisted feature workflow state
 
 ## Missing Outputs
 
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Completed outputs reconciled | Done |  |
+| Missing outputs listed | Pending |  |
+| Next gate readiness confirmed | Pending |  |
+
 ## Recommended Next Workflow
 
 ## Ready For Next Gate

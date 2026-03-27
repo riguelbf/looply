@@ -51,3 +51,4 @@ Prioriza risco operacional, observabilidade, verificacao e rollback.
 - operability report
 - riscos operacionais
 - status de release readiness
+- tabela final da etapa com itens concluidos e pendentes

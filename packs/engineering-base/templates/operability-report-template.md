@@ -15,3 +15,11 @@ summary: Template for operational readiness and reliability assessment
 ## Rollback Confidence
 
 ## Approval Notes
+
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Operability assessed | Done |  |
+| Residual risks accepted | Pending |  |
+| Release readiness | Pending |  |

@@ -2,11 +2,11 @@ import chalk from "chalk";
 
 export function renderLogo(): string {
   return [
-    chalk.cyan(" _     _       _           "),
-    chalk.cyan("| |   | | __ _(_)_ __  ___ "),
-    chalk.blue("| |   | |/ _` | | '_ \\/ __|"),
-    chalk.blue("| |___| | (_| | | | | \\__ \\"),
-    chalk.magenta("|_____|_|\\__,_|_|_| |_|___/")
+    chalk.hex("#C084FC")(" _     ___   ___  ____  _    __   __"),
+    chalk.hex("#7C3AED")("| |   / _ \\ / _ \\|  _ \\| |   \\ \\ / /"),
+    chalk.hex("#2563EB")("| |  | | | | | | | |_) | |    \\ V / "),
+    chalk.hex("#22D3EE")("| |__| |_| | |_| |  __/| |___  | |  "),
+    chalk.hex("#F9FAFB")("|_____\\___/ \\___/|_|   |_____| |_|  ")
   ].join("\n");
 }
 

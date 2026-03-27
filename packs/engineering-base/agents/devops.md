@@ -18,6 +18,7 @@ supported_tasks:
   - prepare-service-release
 knowledge_sources:
   - ../knowledge/architecture-principles.md
+  - ../knowledge/cloud-operating-model.md
   - ../knowledge/specialists/devops-best-practices.md
 constraints:
   - Do not redefine feature scope during release preparation
@@ -42,3 +43,4 @@ Prioriza readiness operacional, rollout e previsibilidade de entrega.
 - validar pre-condicoes de publicacao
 - organizar rollout e rollback
 - preparar handoff para avaliacao de operabilidade
+- operar dentro dos guardrails definidos por plataforma, governanca e cloud architecture

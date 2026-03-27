@@ -10,8 +10,15 @@ includes:
     - delivery-orchestrator
     - pm-analyst
     - architect
+    - cloud-architect
+    - platform-engineer
+    - cloud-governance
+    - finops
     - backend
+    - frontend
+    - devops
     - reviewer
+    - sre
   tasks:
     - orchestrate-delivery
     - report-workflow-status
@@ -20,9 +27,16 @@ includes:
     - break-prd-into-stories
     - create-tech-spec
     - create-adr
+    - create-cloud-architecture
+    - create-cloud-adr
+    - design-platform-foundation
+    - assess-cloud-governance
+    - review-workload-cost
     - implement-api
+    - implement-frontend
     - review-code
-    - publish-service
+    - prepare-service-release
+    - assess-service-operability
   workflows:
     - idea-to-prd
     - prd-to-stories

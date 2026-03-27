@@ -17,3 +17,11 @@ summary: Template for release planning
 ## Monitoring
 
 ## Communication
+
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Preconditions mapped | Done |  |
+| Verification defined | Pending |  |
+| Rollback ready | Pending |  |

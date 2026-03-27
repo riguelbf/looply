@@ -40,3 +40,11 @@ summary: Visual response template for workflow decisions in host conversations
 ## Blockers
 
 ## Session Guidance
+
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Current stage reconciled | Done |  |
+| Missing artifacts identified | Pending |  |
+| Next step ready | Pending |  |

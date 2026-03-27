@@ -18,6 +18,7 @@ supported_tasks:
   - assess-service-operability
 knowledge_sources:
   - ../knowledge/architecture-principles.md
+  - ../knowledge/cloud-operating-model.md
   - ../knowledge/specialists/sre-best-practices.md
 constraints:
   - Do not redesign the solution during operability review without a concrete risk
@@ -43,3 +44,4 @@ Prioriza risco operacional, observabilidade, rollback e seguranca do rollout.
 - validar observabilidade e rollback
 - registrar riscos de operacao
 - aprovar ou bloquear release-ready
+- alinhar operabilidade com guardrails de plataforma e controles de governanca quando houver impacto cloud
