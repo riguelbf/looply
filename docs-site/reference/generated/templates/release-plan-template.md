@@ -22,6 +22,14 @@ Template for release planning
 
 ## Communication
 
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Preconditions mapped | Done |  |
+| Verification defined | Pending |  |
+| Rollback ready | Pending |  |
+
 ## Arquivo
 
 - `packs/engineering-base/templates/release-plan-template.md`

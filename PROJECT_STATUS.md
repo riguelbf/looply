@@ -15,7 +15,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - Stage: `v1 validated, planning v2`
 - Primary focus: plataforma de artefatos para engenharia com IA assistida
 - Hosts: `Claude Code`, `Codex`
-- Main pack: `engineering-base`
+- Main pack: `software-delivery-suite`
 
 ## In Progress
 
@@ -23,13 +23,14 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Next Up
 
-- consolidar heuristicas e cobertura do `refresh-context`
-- aprofundar o `status` com leitura mais rica de contexto e integracoes quando existirem
+- aprofundar o `status` com leitura mais rica de contexto, features e integracoes quando existirem
 - revisar se precisamos de mais especializacao operacional antes da v3 de personas e dominio
+- revisar como expor melhor o `refresh-context` na documentacao e no onboarding
 
 ## Recently Completed
 
 - separacao de packs concluida em `product-base`, `engineering-base` e `software-delivery-suite`
+- `refresh-context` agora gera `architecture-context.md` e detecta melhor sinais de stack, automacao, testes, infra e workspace
 - `devops` e `sre` adicionados ao `engineering-base`, com tasks e operabilidade entrando no `story-to-production`
 - hosts reforcados para consumir `knowledge_sources`, `best-practices`, templates e checklists como contrato de execucao
 - camada de `best-practices` por especialista adicionada e ligada aos agentes do `engineering-base`
@@ -64,6 +65,10 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
   - install, sync, upgrade, doctor, validate, status, docs, integrations, sessions
 - `Artifacts`
   - agents, tasks, workflows, knowledge, templates, checklists
+- `Packs`
+  - `product-base`
+  - `engineering-base`
+  - `software-delivery-suite`
 - `Hosts`
   - Claude com slash commands publicados
   - Codex com entrypoints, playbooks e convencoes publicadas

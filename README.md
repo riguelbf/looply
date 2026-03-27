@@ -206,8 +206,17 @@ Arquivos importantes:
 - `.looply/state/context-index.md`
 - `.looply/state/project-inventory.md`
 - `.looply/custom/project-context.md`
+- `.looply/custom/architecture-context.md`
 - `.looply/custom/session-context.md`
 - `.looply/custom/features/<feature>/workflow-status.md`
+
+O comando `looply refresh-context` agora atualiza:
+
+- `project-context.md`
+- `architecture-context.md`
+- `project-inventory.md`
+
+Para projetos existentes, esses arquivos funcionam como aceleradores de contexto. O codebase real continua sendo a fonte principal de verdade.
 
 ## Comandos principais da CLI
 

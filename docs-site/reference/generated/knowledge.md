@@ -20,6 +20,24 @@ Best practices for backend implementation and code changes
 
 - arquivo: `packs/engineering-base/knowledge/specialists/backend-best-practices.md`
 
+## [cloud-architect-best-practices](./knowledge/cloud-architect-best-practices)
+
+Best practices for cloud workload topology, resilience and service interaction design
+
+- arquivo: `packs/engineering-base/knowledge/specialists/cloud-architect-best-practices.md`
+
+## [cloud-governance-best-practices](./knowledge/cloud-governance-best-practices)
+
+Best practices for cloud governance, posture, auditability and policy control
+
+- arquivo: `packs/engineering-base/knowledge/specialists/cloud-governance-best-practices.md`
+
+## [cloud-operating-model](./knowledge/cloud-operating-model)
+
+Recommended cloud operating model and team boundaries for platform-oriented delivery
+
+- arquivo: `packs/engineering-base/knowledge/cloud-operating-model.md`
+
 ## [coding-standards](./knowledge/coding-standards)
 
 Shared coding expectations for implementation tasks
@@ -38,11 +56,29 @@ Best practices for release preparation, rollout and operational delivery
 
 - arquivo: `packs/engineering-base/knowledge/specialists/devops-best-practices.md`
 
+## [finops-best-practices](./knowledge/finops-best-practices)
+
+Best practices for cost visibility, attribution and cloud optimization
+
+- arquivo: `packs/engineering-base/knowledge/specialists/finops-best-practices.md`
+
+## [frontend-best-practices](./knowledge/frontend-best-practices)
+
+Best practices for frontend implementation, UI architecture and client delivery
+
+- arquivo: `packs/engineering-base/knowledge/specialists/frontend-best-practices.md`
+
 ## [glossary](./knowledge/glossary)
 
 Shared vocabulary for product and planning artifacts
 
 - arquivo: `packs/product-base/knowledge/glossary.md`
+
+## [platform-engineer-best-practices](./knowledge/platform-engineer-best-practices)
+
+Best practices for platform foundations, templates and shared cloud guardrails
+
+- arquivo: `packs/engineering-base/knowledge/specialists/platform-engineer-best-practices.md`
 
 ## [pm-analyst-best-practices](./knowledge/pm-analyst-best-practices)
 

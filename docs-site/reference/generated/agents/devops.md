@@ -14,6 +14,7 @@ Sem summary declarada.
 ## Knowledge sources
 
 - `../knowledge/architecture-principles.md`
+- `../knowledge/cloud-operating-model.md`
 - `../knowledge/specialists/devops-best-practices.md`
 
 ## Constraints
@@ -43,6 +44,7 @@ Prioriza readiness operacional, rollout e previsibilidade de entrega.
 - validar pre-condicoes de publicacao
 - organizar rollout e rollback
 - preparar handoff para avaliacao de operabilidade
+- operar dentro dos guardrails definidos por plataforma, governanca e cloud architecture
 
 ## Arquivo
 

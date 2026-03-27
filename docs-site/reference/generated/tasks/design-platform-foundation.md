@@ -1,33 +1,38 @@
----
-schema: looply/task@v1
-name: design-platform-foundation
-agent: platform-engineer
-summary: Define or evolve shared platform foundation, templates and engineering guardrails
-execution:
-  profile: structured-analysis
-  reasoning_effort: high
-  context_budget: large
-  latency_priority: medium
-  preferred_hosts:
-    - codex
-    - claude
-  model_hint:
-    provider: openai
-    family: gpt-5
-inputs:
-  - requirement-brief
-  - tech-spec
-context:
-  - architecture-principles
-  - cloud-operating-model
-outputs:
-  - tech-spec
-templates:
-  - tech-spec-template
-checklists:
-  - definition-of-done
-dependencies: []
----
+# design-platform-foundation
+
+Define or evolve shared platform foundation, templates and engineering guardrails
+
+## Ownership
+
+- agent: `platform-engineer`
+
+## Inputs
+
+- `requirement-brief`
+- `tech-spec`
+
+## Context
+
+- `architecture-principles`
+- `cloud-operating-model`
+
+## Outputs
+
+- `tech-spec`
+
+## Templates
+
+- `tech-spec-template`
+
+## Checklists
+
+- `definition-of-done`
+
+## Dependencies
+
+- Nenhum item declarado.
+
+## Conteudo do artefato
 
 # Task: design-platform-foundation
 
@@ -57,3 +62,9 @@ Prioriza padronizacao, reaproveitamento, automacao e clareza de ownership.
 - plano de foundation e guardrails
 - ownership do baseline compartilhado
 - tabela final da etapa com itens concluidos e pendentes
+
+## Arquivo
+
+- `packs/engineering-base/tasks/design-platform-foundation.md`
+
+[Voltar para tasks](../tasks)

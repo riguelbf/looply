@@ -28,6 +28,10 @@ export interface ProjectContextRefreshData {
   keyDirectories: string[];
   moduleHints: string[];
   integrationHints: string[];
+  workspaceHints: string[];
+  testingSignals: string[];
+  infrastructureSignals: string[];
+  automationSignals: string[];
   architectureNotes: string[];
   domainNotes: string[];
   riskNotes: string[];
@@ -43,6 +47,10 @@ export function resolveProjectContextMarkdownFile(targetRoot: string): string {
 
 export function resolveSessionContextMarkdownFile(targetRoot: string): string {
   return path.join(targetRoot, ".looply", "custom", "session-context.md");
+}
+
+export function resolveArchitectureContextMarkdownFile(targetRoot: string): string {
+  return path.join(targetRoot, ".looply", "custom", "architecture-context.md");
 }
 
 export function resolveProjectInventoryMarkdownFile(targetRoot: string): string {
@@ -67,6 +75,15 @@ export async function writeSessionContextMarkdown(input: ContextIndexInput): Pro
   const file = resolveSessionContextMarkdownFile(input.targetRoot);
   await fs.ensureDir(path.dirname(file));
   await fs.writeFile(file, renderSessionContextMarkdown(input), "utf8");
+  return file;
+}
+
+export async function writeArchitectureContextMarkdown(input: ProjectContextMarkdownInput & {
+  data: ProjectContextRefreshData;
+}): Promise<string> {
+  const file = resolveArchitectureContextMarkdownFile(input.targetRoot);
+  await fs.ensureDir(path.dirname(file));
+  await fs.writeFile(file, renderArchitectureContextMarkdown(input), "utf8");
   return file;
 }
 
@@ -120,11 +137,12 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "1. Feature workflow status: `.looply/custom/features/<feature-name>/workflow-status.md`",
     "2. Feature context: `.looply/custom/features/<feature-name>/feature-context.md`",
     "3. Project context: `.looply/custom/project-context.md`",
-    "4. Relevant integration context files under `.looply/custom/integrations/`",
+    "4. Architecture context: `.looply/custom/architecture-context.md`",
+    "5. Relevant integration context files under `.looply/custom/integrations/`",
     input.projectMode === "existing-project"
-      ? "5. Real local codebase under the primary context root"
-      : "5. User instructions and managed artifacts until code exists",
-    "6. Session context: `.looply/custom/session-context.md`",
+      ? "6. Real local codebase under the primary context root"
+      : "6. User instructions and managed artifacts until code exists",
+    "7. Session context: `.looply/custom/session-context.md`",
     "",
     "## Validation Rules",
     "",
@@ -136,6 +154,7 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "## Registered Context Files",
     "",
     "- `.looply/custom/project-context.md`",
+    "- `.looply/custom/architecture-context.md`",
     "- `.looply/state/project-inventory.md`",
     "- `.looply/custom/session-context.md`",
     "- `.looply/custom/integrations/integrations-index.md`",
@@ -192,6 +211,17 @@ function renderRefreshedProjectContextMarkdown(input: ProjectContextMarkdownInpu
     "",
     ...toBulletLines(input.data.architectureNotes),
     "",
+    "## Delivery Signals",
+    "",
+    "- Workspace and repo shape:",
+    ...toIndentedBulletLines(input.data.workspaceHints),
+    "- Testing signals:",
+    ...toIndentedBulletLines(input.data.testingSignals),
+    "- Infrastructure signals:",
+    ...toIndentedBulletLines(input.data.infrastructureSignals),
+    "- Automation signals:",
+    ...toIndentedBulletLines(input.data.automationSignals),
+    "",
     "## Domain Notes",
     "",
     ...toBulletLines(input.data.domainNotes),
@@ -229,6 +259,22 @@ function renderProjectInventoryMarkdown(input: ProjectContextMarkdownInput & {
     "## Frameworks And Tooling",
     "",
     ...toBulletLines(input.data.frameworks),
+    "",
+    "## Workspace Hints",
+    "",
+    ...toBulletLines(input.data.workspaceHints),
+    "",
+    "## Testing Signals",
+    "",
+    ...toBulletLines(input.data.testingSignals),
+    "",
+    "## Infrastructure Signals",
+    "",
+    ...toBulletLines(input.data.infrastructureSignals),
+    "",
+    "## Automation Signals",
+    "",
+    ...toBulletLines(input.data.automationSignals),
     "",
     "## Key Directories",
     "",
@@ -338,10 +384,59 @@ function renderSessionContextMarkdown(input: ContextIndexInput): string {
   ].join("\n");
 }
 
-function toBulletLines(values: string[]): string[] {
-  return values.length > 0 ? values.map((value) => `- ${value}`) : ["- None recorded yet."];
+function renderArchitectureContextMarkdown(input: ProjectContextMarkdownInput & {
+  data: ProjectContextRefreshData;
+}): string {
+  return [
+    "---",
+    "schema: looply/architecture-context@v1",
+    "name: architecture-context",
+    `status: ${input.data.status}`,
+    `coverage: ${input.data.coverage}`,
+    `project_mode: ${input.projectMode}`,
+    `primary_context_root: ${input.primaryContextRoot}`,
+    `last_validated_at: ${input.data.lastValidatedAt}`,
+    "---",
+    "",
+    "# Architecture Context",
+    "",
+    "## Current Shape",
+    "",
+    ...toBulletLines(input.data.architectureNotes),
+    "",
+    "## Module And Domain Hints",
+    "",
+    ...toBulletLines(input.data.domainNotes),
+    "",
+    "## Delivery And Operability Signals",
+    "",
+    "- Workspace and repo shape:",
+    ...toIndentedBulletLines(input.data.workspaceHints),
+    "- Testing signals:",
+    ...toIndentedBulletLines(input.data.testingSignals),
+    "- Infrastructure signals:",
+    ...toIndentedBulletLines(input.data.infrastructureSignals),
+    "- Automation signals:",
+    ...toIndentedBulletLines(input.data.automationSignals),
+    "",
+    "## Risks And Follow-up",
+    "",
+    ...toBulletLines(input.data.riskNotes)
+  ].join("\n");
 }
 
-function toIndentedBulletLines(values: string[]): string[] {
-  return values.length > 0 ? values.map((value) => `  - ${value}`) : ["  - None recorded yet."];
+function toBulletLines(items: string[]): string[] {
+  if (items.length === 0) {
+    return ["- none"];
+  }
+
+  return items.map((item) => `- ${item}`);
+}
+
+function toIndentedBulletLines(items: string[]): string[] {
+  if (items.length === 0) {
+    return ["  - none"];
+  }
+
+  return items.map((item) => `  - ${item}`);
 }

@@ -56,6 +56,7 @@ Prioriza clareza operacional e sequencia segura de release.
 - sequencia de publicacao
 - verificacoes pos-release
 - rollback explicito
+- tabela final da etapa com itens concluidos e pendentes
 
 ## Arquivo
 

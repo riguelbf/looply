@@ -14,6 +14,18 @@ Sem summary declarada.
 
 - arquivo: `packs/engineering-base/agents/backend.md`
 
+## [cloud-architect](./agents/cloud-architect)
+
+Sem summary declarada.
+
+- arquivo: `packs/engineering-base/agents/cloud-architect.md`
+
+## [cloud-governance](./agents/cloud-governance)
+
+Sem summary declarada.
+
+- arquivo: `packs/engineering-base/agents/cloud-governance.md`
+
 ## [delivery-orchestrator](./agents/delivery-orchestrator)
 
 Sem summary declarada.
@@ -25,6 +37,24 @@ Sem summary declarada.
 Sem summary declarada.
 
 - arquivo: `packs/engineering-base/agents/devops.md`
+
+## [finops](./agents/finops)
+
+Sem summary declarada.
+
+- arquivo: `packs/engineering-base/agents/finops.md`
+
+## [frontend](./agents/frontend)
+
+Sem summary declarada.
+
+- arquivo: `packs/engineering-base/agents/frontend.md`
+
+## [platform-engineer](./agents/platform-engineer)
+
+Sem summary declarada.
+
+- arquivo: `packs/engineering-base/agents/platform-engineer.md`
 
 ## [pm-analyst](./agents/pm-analyst)
 

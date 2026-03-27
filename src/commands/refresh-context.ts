@@ -27,6 +27,7 @@ export function registerRefreshContextCommand(program: Command): void {
       console.log(chalk.bold("Updated Files"));
       console.log(`- ${result.contextIndexFile}`);
       console.log(`- ${result.projectContextFile}`);
+      console.log(`- ${result.architectureContextFile}`);
       console.log(`- ${result.projectInventoryFile}`);
 
       showOutro("Project context refreshed");

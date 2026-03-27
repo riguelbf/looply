@@ -20,6 +20,14 @@ Template for review report
 
 ## Follow Up Recommendations
 
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Review performed | Done |  |
+| Blocking issues addressed | Pending |  |
+| Release approval | Pending |  |
+
 ## Arquivo
 
 - `packs/engineering-base/templates/review-report-template.md`

@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "fs-extra";
 import {
   refreshProjectContextMarkdown,
+  writeArchitectureContextMarkdown,
   writeContextIndexMarkdown,
   writeProjectInventoryMarkdown
 } from "./context-documents.js";
@@ -10,6 +11,38 @@ import { readInteractionPolicyFile } from "./interaction-policy.js";
 import { readLocaleFile } from "./locale.js";
 import type { InteractionMode, OutputLocale, ProjectMode } from "./host-publisher.js";
 
+const IGNORED_DIRECTORIES = new Set([
+  ".git",
+  ".idea",
+  ".vscode",
+  ".looply",
+  ".claude",
+  ".agents",
+  "node_modules",
+  "dist",
+  "build",
+  "coverage",
+  ".next",
+  ".nuxt",
+  ".turbo",
+  ".vercel",
+  ".pnpm-store",
+  "vendor",
+  "target",
+  "bin",
+  "obj"
+]);
+
+const MAX_DISCOVERED_FILES = 800;
+const MAX_DISCOVERY_DEPTH = 3;
+
+interface DiscoveredFile {
+  relativePath: string;
+  name: string;
+  extension: string;
+  depth: number;
+}
+
 export interface RefreshContextResult {
   targetRoot: string;
   projectMode: ProjectMode;
@@ -17,6 +50,7 @@ export interface RefreshContextResult {
   interactionMode: InteractionMode;
   contextIndexFile: string;
   projectContextFile: string;
+  architectureContextFile: string;
   projectInventoryFile: string;
   detectedLanguages: string[];
   detectedFrameworks: string[];
@@ -57,6 +91,16 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     data: analysis
   });
 
+  const architectureContextFile = await writeArchitectureContextMarkdown({
+    targetRoot,
+    projectMode,
+    outputLocale,
+    interactionMode,
+    inferencePolicy,
+    primaryContextRoot,
+    data: analysis
+  });
+
   const projectInventoryFile = await writeProjectInventoryMarkdown({
     targetRoot,
     projectMode,
@@ -74,6 +118,7 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     interactionMode,
     contextIndexFile,
     projectContextFile,
+    architectureContextFile,
     projectInventoryFile,
     detectedLanguages: analysis.languages,
     detectedFrameworks: analysis.frameworks,
@@ -84,54 +129,79 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
 }
 
 async function analyzeProject(root: string, projectMode: ProjectMode) {
-  const entries = await fs.readdir(root).catch(() => []);
-  const files = new Set(entries);
-  const now = new Date().toISOString();
+  const topLevelEntries = await fs.readdir(root).catch(() => []);
+  const topLevelFiles = new Set(topLevelEntries);
   const packageJson = await readPackageJson(root);
+  const discoveredFiles = await walkRepository(root);
+  const now = new Date().toISOString();
 
-  const languages = detectLanguages(files, packageJson);
-  const frameworks = detectFrameworks(files, packageJson);
-  const keyDirectories = entries
-    .filter((entry) => ["src", "app", "apps", "packages", "services", "libs", "modules", "infra", "scripts", "prisma", "migrations"].includes(entry))
-    .sort();
-
-  const moduleHints = await detectModuleHints(root, keyDirectories);
-  const integrationHints = detectIntegrationHints(files, packageJson, entries);
+  const languages = detectLanguages(topLevelFiles, packageJson, discoveredFiles);
+  const frameworks = detectFrameworks(topLevelFiles, packageJson, discoveredFiles);
+  const keyDirectories = detectKeyDirectories(topLevelEntries, discoveredFiles);
+  const workspaceHints = detectWorkspaceHints(topLevelFiles, packageJson, discoveredFiles);
+  const testingSignals = detectTestingSignals(topLevelFiles, packageJson, discoveredFiles);
+  const infrastructureSignals = detectInfrastructureSignals(topLevelFiles, packageJson, discoveredFiles);
+  const automationSignals = detectAutomationSignals(topLevelFiles, packageJson, discoveredFiles);
+  const moduleHints = detectModuleHints(keyDirectories, discoveredFiles);
+  const integrationHints = detectIntegrationHints(topLevelFiles, packageJson, topLevelEntries, discoveredFiles);
   const repositorySummary = buildRepositorySummary({
     projectMode,
     languages,
     frameworks,
     keyDirectories,
-    moduleHints,
-    integrationHints
+    integrationHints,
+    workspaceHints,
+    infrastructureSignals
   });
 
   const architectureNotes = [
-    `Detected stack: ${languages.join(", ") || "unknown"}.`,
+    languages.length > 0
+      ? `Primary implementation languages: ${languages.join(", ")}.`
+      : "Primary implementation languages were not inferred confidently yet.",
     frameworks.length > 0
-      ? `Framework and tooling signals: ${frameworks.join(", ")}.`
-      : "Framework and tooling signals are still weak; validate directly in the codebase.",
-    keyDirectories.length > 0
-      ? `Primary directories to inspect first: ${keyDirectories.join(", ")}.`
-      : "No strong top-level directory conventions detected yet."
+      ? `Application and tooling stack signals: ${frameworks.join(", ")}.`
+      : "Application framework signals are still weak; inspect the codebase directly.",
+    workspaceHints.length > 0
+      ? `Workspace shape: ${workspaceHints.join(", ")}.`
+      : "Workspace shape is still unclear from repository signals.",
+    infrastructureSignals.length > 0
+      ? `Operational and infrastructure signals: ${infrastructureSignals.join(", ")}.`
+      : "Infrastructure footprint is still weakly mapped."
   ];
 
   const domainNotes = moduleHints.length > 0
     ? moduleHints.map((hint) => `Potential module or bounded context: ${hint}.`)
-    : ["No strong domain partitions were inferred yet. Inspect business modules directly in the repository."];
+    : ["No strong domain partitions were inferred yet. Inspect the business-facing modules directly in the repository."];
 
   const riskNotes = [
     projectMode === "existing-project"
-      ? "This context is derived from heuristics and must be validated against the current codebase before major design decisions."
-      : "This context is bootstrapped from artifacts and assumptions; keep it updated as code appears.",
+      ? "This context is heuristic and must be validated against the live codebase before design or implementation decisions."
+      : "This context starts from artifacts and assumptions; refresh it once real code, infra and tests appear.",
+    testingSignals.length > 0
+      ? `Quality gates appear to rely on: ${testingSignals.join(", ")}. Validate current test coverage before large changes.`
+      : "Testing signals are weak; verify how quality gates actually run before relying on them.",
+    automationSignals.length > 0
+      ? `Automation surface detected: ${automationSignals.join(", ")}. Check current CI and release expectations before shipping.`
+      : "Automation and release surface still need validation.",
     integrationHints.length > 0
-      ? "External integration signals were detected; validate contracts before implementation changes."
-      : "Integration surface still appears limited or not yet mapped."
+      ? "Integration surface is non-trivial. Validate contracts, credentials and rollout risk before delivery."
+      : "Integration footprint appears limited or not yet mapped."
   ];
+
+  const signalCount = [
+    languages.length,
+    frameworks.length,
+    keyDirectories.length,
+    moduleHints.length,
+    integrationHints.length,
+    testingSignals.length,
+    infrastructureSignals.length,
+    automationSignals.length
+  ].reduce((total, value) => total + value, 0);
 
   return {
     status: projectMode === "existing-project" ? "active" : "draft",
-    coverage: keyDirectories.length > 0 || frameworks.length > 0 ? "medium" : "low",
+    coverage: signalCount >= 12 ? "high" : signalCount >= 6 ? "medium" : "low",
     lastValidatedAt: now,
     repositorySummary,
     languages,
@@ -139,10 +209,52 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     keyDirectories,
     moduleHints,
     integrationHints,
+    workspaceHints,
+    testingSignals,
+    infrastructureSignals,
+    automationSignals,
     architectureNotes,
     domainNotes,
     riskNotes
   } as const;
+}
+
+async function walkRepository(root: string): Promise<DiscoveredFile[]> {
+  const discovered: DiscoveredFile[] = [];
+
+  async function visit(currentDirectory: string, depth: number): Promise<void> {
+    if (depth > MAX_DISCOVERY_DEPTH || discovered.length >= MAX_DISCOVERED_FILES) {
+      return;
+    }
+
+    const entries = await fs.readdir(currentDirectory, { withFileTypes: true }).catch(() => []);
+    for (const entry of entries) {
+      if (discovered.length >= MAX_DISCOVERED_FILES) {
+        break;
+      }
+
+      const absolutePath = path.join(currentDirectory, entry.name);
+      const relativePath = path.relative(root, absolutePath);
+
+      if (entry.isDirectory()) {
+        if (IGNORED_DIRECTORIES.has(entry.name)) {
+          continue;
+        }
+        await visit(absolutePath, depth + 1);
+        continue;
+      }
+
+      discovered.push({
+        relativePath,
+        name: entry.name,
+        extension: path.extname(entry.name).toLowerCase(),
+        depth
+      });
+    }
+  }
+
+  await visit(root, 0);
+  return discovered;
 }
 
 async function readPackageJson(root: string): Promise<Record<string, unknown> | null> {
@@ -158,90 +270,226 @@ async function readPackageJson(root: string): Promise<Record<string, unknown> | 
   }
 }
 
-function detectLanguages(files: Set<string>, packageJson: Record<string, unknown> | null): string[] {
+function detectLanguages(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
   const languages = new Set<string>();
-  if (packageJson) {
-    languages.add("JavaScript");
-  }
-  if (files.has("tsconfig.json")) {
-    languages.add("TypeScript");
-  }
-  if (files.has("pyproject.toml") || files.has("requirements.txt")) {
-    languages.add("Python");
-  }
-  if (files.has("go.mod")) {
-    languages.add("Go");
-  }
-  if (files.has("Cargo.toml")) {
-    languages.add("Rust");
-  }
-  if (files.has("pom.xml") || files.has("build.gradle")) {
-    languages.add("Java");
-  }
-  if ([...files].some((entry) => entry.endsWith(".sln") || entry.endsWith(".csproj"))) {
-    languages.add(".NET");
-  }
+  const extensions = new Set(discoveredFiles.map((file) => file.extension));
+
+  if (packageJson) languages.add("JavaScript");
+  if (files.has("tsconfig.json") || extensions.has(".ts") || extensions.has(".tsx")) languages.add("TypeScript");
+  if (files.has("pyproject.toml") || files.has("requirements.txt") || extensions.has(".py")) languages.add("Python");
+  if (files.has("go.mod") || extensions.has(".go")) languages.add("Go");
+  if (files.has("Cargo.toml") || extensions.has(".rs")) languages.add("Rust");
+  if (files.has("pom.xml") || files.has("build.gradle") || files.has("build.gradle.kts") || extensions.has(".java")) languages.add("Java");
+  if ([...files].some((entry) => entry.endsWith(".sln") || entry.endsWith(".csproj")) || extensions.has(".cs")) languages.add(".NET");
+  if (extensions.has(".rb")) languages.add("Ruby");
+  if (extensions.has(".php")) languages.add("PHP");
+  if (extensions.has(".tf")) languages.add("Terraform");
+  if (extensions.has(".sh")) languages.add("Shell");
 
   return [...languages];
 }
 
-function detectFrameworks(files: Set<string>, packageJson: Record<string, unknown> | null): string[] {
+function detectFrameworks(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
   const frameworks = new Set<string>();
   const deps = {
     ...toRecord(packageJson?.dependencies),
     ...toRecord(packageJson?.devDependencies)
   };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
 
   if ("next" in deps) frameworks.add("Next.js");
   if ("react" in deps) frameworks.add("React");
   if ("vue" in deps) frameworks.add("Vue");
+  if ("svelte" in deps) frameworks.add("Svelte");
   if ("express" in deps) frameworks.add("Express");
   if ("fastify" in deps) frameworks.add("Fastify");
   if ("nestjs" in deps || "@nestjs/core" in deps) frameworks.add("NestJS");
+  if ("@tanstack/react-query" in deps) frameworks.add("TanStack Query");
   if ("prisma" in deps || files.has("prisma")) frameworks.add("Prisma");
+  if ("typeorm" in deps) frameworks.add("TypeORM");
+  if ("drizzle-orm" in deps) frameworks.add("Drizzle");
   if ("typescript" in deps || files.has("tsconfig.json")) frameworks.add("TypeScript");
   if ("vitest" in deps) frameworks.add("Vitest");
   if ("jest" in deps) frameworks.add("Jest");
+  if ("playwright" in deps || "@playwright/test" in deps) frameworks.add("Playwright");
+  if ("cypress" in deps) frameworks.add("Cypress");
   if ("vite" in deps) frameworks.add("Vite");
+  if ("turbo" in deps || files.has("turbo.json")) frameworks.add("Turborepo");
+  if ("nx" in deps || files.has("nx.json")) frameworks.add("Nx");
+  if (files.has("pnpm-workspace.yaml")) frameworks.add("pnpm workspace");
   if (files.has("docker-compose.yml") || files.has("docker-compose.yaml")) frameworks.add("Docker Compose");
-  if (files.has("Dockerfile")) frameworks.add("Docker");
+  if (files.has("Dockerfile") || hasMatchingPath(filePaths, /^Dockerfile(\..+)?$/i)) frameworks.add("Docker");
   if (files.has("pyproject.toml")) frameworks.add("Python project");
   if (files.has("go.mod")) frameworks.add("Go modules");
+  if (files.has("pom.xml") || files.has("build.gradle") || files.has("build.gradle.kts")) frameworks.add("JVM build");
+  if (hasMatchingPath(filePaths, /^infra\/terraform\//) || hasMatchingPath(filePaths, /\.tf$/)) frameworks.add("Terraform");
+  if (hasMatchingPath(filePaths, /^charts\//) || hasMatchingPath(filePaths, /k8s|kubernetes/i)) frameworks.add("Kubernetes");
+  if (hasMatchingPath(filePaths, /^\.github\/workflows\//)) frameworks.add("GitHub Actions");
 
   return [...frameworks];
 }
 
-async function detectModuleHints(root: string, keyDirectories: string[]): Promise<string[]> {
-  const searchRoots = keyDirectories.filter((entry) => ["src", "app", "apps", "packages", "services", "libs", "modules"].includes(entry));
-  const hints = new Set<string>();
+function detectKeyDirectories(entries: string[], discoveredFiles: DiscoveredFile[]): string[] {
+  const importantTopLevel = ["src", "app", "apps", "packages", "services", "libs", "modules", "infra", "scripts", "prisma", "migrations", "tests", ".github", "charts"];
+  const result = new Set(entries.filter((entry) => importantTopLevel.includes(entry)));
 
-  for (const directory of searchRoots.slice(0, 4)) {
-    const absolute = path.join(root, directory);
-    const items = await fs.readdir(absolute).catch(() => []);
-    for (const item of items.slice(0, 12)) {
-      if (item.startsWith(".") || item === "node_modules") continue;
-      hints.add(`${directory}/${item}`);
+  for (const file of discoveredFiles) {
+    const firstSegment = file.relativePath.split(path.sep)[0];
+    if (importantTopLevel.includes(firstSegment)) {
+      result.add(firstSegment);
     }
   }
 
-  return [...hints].slice(0, 12);
+  return [...result].sort();
 }
 
-function detectIntegrationHints(files: Set<string>, packageJson: Record<string, unknown> | null, entries: string[]): string[] {
+function detectWorkspaceHints(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const packageManager = typeof packageJson?.packageManager === "string" ? packageJson.packageManager : null;
+  const workspaces = packageJson && Array.isArray(packageJson.workspaces) ? packageJson.workspaces.length : 0;
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if (files.has("pnpm-workspace.yaml")) hints.add("monorepo with pnpm workspace");
+  if (files.has("turbo.json")) hints.add("monorepo with Turborepo");
+  if (files.has("nx.json")) hints.add("workspace managed by Nx");
+  if (workspaces > 0) hints.add(`package.json workspaces (${workspaces})`);
+  if (packageManager) hints.add(`package manager: ${packageManager}`);
+  if (hasMatchingPath(filePaths, /^apps\//)) hints.add("application folders under apps/");
+  if (hasMatchingPath(filePaths, /^packages\//)) hints.add("shared packages under packages/");
+  if (hasMatchingPath(filePaths, /^services\//)) hints.add("service-oriented layout under services/");
+  if (hasMatchingPath(filePaths, /^libs\//)) hints.add("shared libraries under libs/");
+
+  return [...hints];
+}
+
+function detectTestingSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
   const hints = new Set<string>();
   const deps = {
     ...toRecord(packageJson?.dependencies),
     ...toRecord(packageJson?.devDependencies)
   };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("vitest" in deps) hints.add("unit or integration tests via Vitest");
+  if ("jest" in deps) hints.add("unit or integration tests via Jest");
+  if ("playwright" in deps || "@playwright/test" in deps) hints.add("browser or end-to-end tests via Playwright");
+  if ("cypress" in deps) hints.add("browser tests via Cypress");
+  if (files.has("tests") || hasMatchingPath(filePaths, /^tests\//) || hasMatchingPath(filePaths, /__tests__\//)) hints.add("repository-level test directories");
+  if (files.has("coverage")) hints.add("coverage artifacts or directory");
+
+  return [...hints];
+}
+
+function detectInfrastructureSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if (files.has("Dockerfile") || hasMatchingPath(filePaths, /^Dockerfile(\..+)?$/i)) hints.add("docker image build");
+  if (files.has("docker-compose.yml") || files.has("docker-compose.yaml")) hints.add("docker compose setup");
+  if (hasMatchingPath(filePaths, /\.tf$/)) hints.add("terraform infrastructure");
+  if (hasMatchingPath(filePaths, /^charts\//)) hints.add("helm charts");
+  if (hasMatchingPath(filePaths, /(^|\/)(k8s|kubernetes)\//i)) hints.add("kubernetes manifests");
+  if ("@aws-sdk/client-sqs" in deps || "@aws-sdk/client-s3" in deps || "@aws-sdk/client-secrets-manager" in deps) hints.add("aws service clients");
+  if ("stripe" in deps) hints.add("payment provider usage");
+  if ("pg" in deps || "mysql2" in deps || "mongoose" in deps || "@prisma/client" in deps) hints.add("persistent storage client");
+
+  return [...hints];
+}
+
+function detectAutomationSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const scripts = toRecord(packageJson?.scripts);
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if (hasMatchingPath(filePaths, /^\.github\/workflows\//)) hints.add("github actions workflows");
+  if ("build" in scripts) hints.add("build script in package.json");
+  if ("test" in scripts) hints.add("test script in package.json");
+  if ("lint" in scripts) hints.add("lint script in package.json");
+  if ("deploy" in scripts) hints.add("deploy script in package.json");
+  if (files.has("Makefile")) hints.add("makefile automation");
+  if (hasMatchingPath(filePaths, /^scripts\//)) hints.add("repository automation scripts");
+
+  return [...hints];
+}
+
+function detectModuleHints(keyDirectories: string[], discoveredFiles: DiscoveredFile[]): string[] {
+  const hints = new Set<string>();
+  const searchRoots = new Set(["src", "app", "apps", "packages", "services", "libs", "modules"]);
+
+  for (const file of discoveredFiles) {
+    const parts = file.relativePath.split(path.sep);
+    const root = parts[0];
+    if (!searchRoots.has(root)) {
+      continue;
+    }
+
+    if (parts.length >= 2) {
+      hints.add(`${root}/${parts[1]}`);
+    }
+  }
+
+  if (hints.size === 0) {
+    for (const directory of keyDirectories) {
+      if (searchRoots.has(directory)) {
+        hints.add(`${directory}/(inspect directly)`);
+      }
+    }
+  }
+
+  return [...hints].slice(0, 16);
+}
+
+function detectIntegrationHints(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  entries: string[],
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
 
   if ("@prisma/client" in deps || "prisma" in deps) hints.add("database via Prisma");
   if ("pg" in deps || "mysql2" in deps || "mongoose" in deps) hints.add("database client detected");
-  if ("@aws-sdk/client-sqs" in deps || "@aws-sdk/client-s3" in deps) hints.add("AWS SDK integration");
+  if ("@aws-sdk/client-sqs" in deps || "@aws-sdk/client-s3" in deps || "@aws-sdk/client-secrets-manager" in deps) hints.add("AWS SDK integration");
   if ("stripe" in deps) hints.add("Stripe");
   if ("axios" in deps || "node-fetch" in deps || "undici" in deps) hints.add("HTTP API integrations");
-  if (entries.includes("openapi") || entries.includes("swagger")) hints.add("OpenAPI or Swagger assets");
+  if ("amqplib" in deps || "kafkajs" in deps || "bullmq" in deps) hints.add("queue or event integration");
+  if (entries.includes("openapi") || entries.includes("swagger") || hasMatchingPath(filePaths, /openapi|swagger/i)) hints.add("OpenAPI or Swagger assets");
   if (entries.includes("prisma")) hints.add("database schema directory");
   if (entries.includes("migrations")) hints.add("migrations directory");
+  if (hasMatchingPath(filePaths, /^\.looply\/custom\/integrations\//)) hints.add("looply integration context files");
 
   return [...hints];
 }
@@ -251,12 +499,13 @@ function buildRepositorySummary(input: {
   languages: string[];
   frameworks: string[];
   keyDirectories: string[];
-  moduleHints: string[];
   integrationHints: string[];
+  workspaceHints: string[];
+  infrastructureSignals: string[];
 }): string[] {
   return [
     input.projectMode === "existing-project"
-      ? "Existing project context refreshed from current repository signals."
+      ? "Existing project context refreshed from current repository signals and shallow repository inspection."
       : "Greenfield project context refreshed from available artifacts and repository signals.",
     input.languages.length > 0
       ? `Primary languages detected: ${input.languages.join(", ")}.`
@@ -264,9 +513,15 @@ function buildRepositorySummary(input: {
     input.frameworks.length > 0
       ? `Framework and tooling signals: ${input.frameworks.join(", ")}.`
       : "Framework signals are still weak.",
+    input.workspaceHints.length > 0
+      ? `Workspace shape: ${input.workspaceHints.join(", ")}.`
+      : "Workspace shape was not inferred strongly yet.",
     input.keyDirectories.length > 0
       ? `Key directories: ${input.keyDirectories.join(", ")}.`
       : "No key top-level directories were inferred yet.",
+    input.infrastructureSignals.length > 0
+      ? `Infrastructure and operability signals: ${input.infrastructureSignals.join(", ")}.`
+      : "Infrastructure footprint is still weakly mapped.",
     input.integrationHints.length > 0
       ? `Potential integrations: ${input.integrationHints.join(", ")}.`
       : "No strong integration signals were inferred yet."
@@ -275,4 +530,14 @@ function buildRepositorySummary(input: {
 
 function toRecord(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null ? value as Record<string, unknown> : {};
+}
+
+function hasMatchingPath(filePaths: Set<string>, pattern: RegExp): boolean {
+  for (const filePath of filePaths) {
+    if (pattern.test(filePath)) {
+      return true;
+    }
+  }
+
+  return false;
 }
