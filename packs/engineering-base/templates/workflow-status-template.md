@@ -12,6 +12,7 @@ summary: Template for persisted feature workflow state
 | --- | --- |
 | Feature |  |
 | Phase |  |
+| Host |  |
 | Workflow |  |
 | Current Stage |  |
 | Current Gate |  |
@@ -19,6 +20,7 @@ summary: Template for persisted feature workflow state
 | Next Workflow |  |
 | Next Agent |  |
 | Next Task |  |
+| Next Command |  |
 | Ready For Next Gate |  |
 
 ## Feature
@@ -83,9 +85,13 @@ summary: Template for persisted feature workflow state
 
 ## Ready For Next Gate
 
+## Host
+
 ## Next Agent
 
 ## Next Task
+
+## Next Command
 
 ## Next Handoff
 

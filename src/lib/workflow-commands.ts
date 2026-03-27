@@ -66,7 +66,7 @@ export function renderClaudeWorkflowCommand(input: {
 }): string {
   const { command } = input;
   const stateFileHint = ".looply/custom/features/$1/workflow-status.md";
-  const exampleInvocation = renderExampleInvocation(command);
+  const exampleInvocation = renderExampleInvocation(command, "claude");
   const lines = [
     "---",
     `description: ${command.description}`,
@@ -107,8 +107,9 @@ export function renderClaudeWorkflowCommand(input: {
   lines.push(
     "",
     "Usage:",
-    `- Alias: \`/${command.alias}\``,
-    `- Syntax: \`/${command.alias} ${command.argumentHint}\``,
+    `- Host: \`Claude Code\``,
+    `- Alias: \`${formatCommandForHost("claude", command)}\``,
+    `- Syntax: \`${formatCommandForHost("claude", command, command.argumentHint)}\``,
     "",
     "Example:",
     `- \`${exampleInvocation}\``,
@@ -120,7 +121,7 @@ export function renderClaudeWorkflowCommand(input: {
     renderExpectedOutput(command),
     "",
     "Suggested next step:",
-    renderSuggestedNextStep(command)
+    renderSuggestedNextStep(command, "claude")
   );
 
   lines.push(
@@ -173,12 +174,12 @@ export function renderCodexWorkflowCommand(input: {
 }): string {
   const { command } = input;
   const stateFileHint = ".looply/custom/features/<feature-name>/workflow-status.md";
-  const exampleInvocation = renderExampleInvocation(command);
+  const exampleInvocation = renderExampleInvocation(command, "codex");
 
   const lines = [
     `# ${command.alias}`,
     "",
-    `Invoke this workflow when the user asks for \`${command.alias}\` or \`/${command.alias}\`.`,
+    `Invoke this workflow when the user asks for \`${command.alias}\`, \`/${command.alias}\`, or the Codex skill \`${formatCommandForHost("codex", command)}\`.`,
     "",
     `Workflow: \`${command.workflowName}\``,
     command.phase ? `Phase: \`${command.phase}\`` : "",
@@ -209,8 +210,9 @@ export function renderCodexWorkflowCommand(input: {
   lines.push(
     "",
     "Usage:",
-    `- Alias: /${command.alias}`,
-    `- Syntax: /${command.alias} ${command.argumentHint}`.trimEnd(),
+    `- Host: Codex`,
+    `- Alias: ${formatCommandForHost("codex", command)}`,
+    `- Syntax: ${formatCommandForHost("codex", command, command.argumentHint)}`.trimEnd(),
     "",
     "Example:",
     `- ${exampleInvocation}`,
@@ -222,7 +224,7 @@ export function renderCodexWorkflowCommand(input: {
     renderExpectedOutput(command),
     "",
     "Suggested next step:",
-    renderSuggestedNextStep(command)
+    renderSuggestedNextStep(command, "codex")
   );
 
   if (command.arguments.length === 0) {
@@ -339,11 +341,11 @@ export function renderCodexSkillDocument(input: {
     "",
     "Usage:",
     `- Explicit mention: \`$${skill.name}\``,
-    `- Workflow alias to honor: \`/${skill.alias}\``,
-    `- Syntax: \`/${skill.alias} ${skill.argumentHint}\``,
+    `- Workflow alias to honor: \`${formatCommandForHost("claude", commandForExample)}\` and \`${formatCommandForHost("codex", commandForExample)}\` depending on host`,
+    `- Syntax in Codex: \`${formatCommandForHost("codex", commandForExample, skill.argumentHint)}\``,
     "",
     "Example:",
-    `- ${renderExampleInvocation(commandForExample)}`,
+    `- ${renderExampleInvocation(commandForExample, "codex")}`,
     "",
     "Execution rules:",
     "1. Start by reading the workflow playbook and the feature state file if it already exists.",
@@ -433,17 +435,17 @@ export function renderCodexLauncherSkillDocument(input: {
     if (command.canonicalName === "help") {
       continue;
     }
-    lines.push(`- \`/${command.alias}\` ${command.argumentHint}`.trimEnd());
+    lines.push(`- \`${formatCommandForHost("codex", command, command.argumentHint)}\``.trimEnd());
     lines.push(`  ${command.description}`);
   }
 
   lines.push(
     "",
     "Recommended sequence:",
-    "1. `/looply:idea-to-prd <feature-name> [problem-statement] [constraints...]`",
-    "2. `/looply:prd-to-stories <feature-name> [prd-reference] [notes...]`",
-    "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`",
-    "4. `/looply:workflow-status <feature-name> [notes...]`",
+    "1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`",
+    "2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`",
+    "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
+    "4. `$looply-workflow-status <feature-name> [notes...]`",
     "",
     "Presentation rules:",
     "- Use clear Markdown section titles.",
@@ -486,7 +488,10 @@ export function renderHelpCommandDocument(input: {
 
   for (const [index, command] of input.commands.entries()) {
     const reference = input.commandReferences[index];
-    lines.push(`- \`/${command.alias}\` ${command.argumentHint}`.trimEnd());
+    lines.push(
+      `- \`${input.host === "claude" ? formatCommandForHost("claude", command, command.argumentHint) : formatCommandForHost("codex", command, command.argumentHint)}\``
+        .trimEnd()
+    );
     lines.push(`  ${command.description}`);
     lines.push(`  Reference: ${input.host === "claude" ? `@${reference.reference}` : reference.reference}`);
   }
@@ -494,10 +499,18 @@ export function renderHelpCommandDocument(input: {
   lines.push(
     "",
     "Recommended sequence:",
-    "1. `/looply:idea-to-prd <feature-name> [problem-statement] [constraints...]`",
-    "2. `/looply:prd-to-stories <feature-name> [prd-reference] [notes...]`",
-    "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`",
-    "4. `/looply:workflow-status <feature-name> [notes...]`",
+    input.host === "claude"
+      ? "1. `/looply:idea-to-prd <feature-name> [problem-statement] [constraints...]`"
+      : "1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`",
+    input.host === "claude"
+      ? "2. `/looply:prd-to-stories <feature-name> [prd-reference] [notes...]`"
+      : "2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`",
+    input.host === "claude"
+      ? "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`"
+      : "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
+    input.host === "claude"
+      ? "4. `/looply:workflow-status <feature-name> [notes...]`"
+      : "4. `$looply-workflow-status <feature-name> [notes...]`",
     "",
     "Help behavior:",
     "- If the user passes a command name like `idea-to-prd`, explain only that command.",
@@ -542,7 +555,7 @@ export function renderCodexCommandIndex(input: {
 
   for (const [index, command] of input.commands.entries()) {
     const reference = input.commandReferences[index];
-    lines.push(`- \`/${command.alias}\` ${command.argumentHint}`.trimEnd());
+    lines.push(`- \`${formatCommandForHost("codex", command, command.argumentHint)}\``.trimEnd());
     lines.push(`  ${command.description}`);
     lines.push(`  Reference: ${reference.reference}`);
   }
@@ -550,10 +563,10 @@ export function renderCodexCommandIndex(input: {
   lines.push(
     "",
     "Recommended sequence:",
-    "1. `/looply:idea-to-prd <feature-name> [problem-statement] [constraints...]`",
-    "2. `/looply:prd-to-stories <feature-name> [prd-reference] [notes...]`",
-    "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`",
-    "4. `/looply:workflow-status <feature-name> [notes...]`"
+    "1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`",
+    "2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`",
+    "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
+    "4. `$looply-workflow-status <feature-name> [notes...]`"
   );
 
   return lines.join("\n");
@@ -705,40 +718,63 @@ function renderExpectedOutput(command: WorkflowCommandDefinition): string {
   }
 }
 
-function renderSuggestedNextStep(command: WorkflowCommandDefinition): string {
+function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "claude" | "codex"): string {
   switch (command.name) {
     case "idea-to-prd":
-      return "- After approval, run `/looply:prd-to-stories`.";
+      return `- Host: ${renderHostLabel(host)}. After approval, run \`${formatNamedCommandForHost(host, "prd-to-stories")}\`.`;
     case "prd-to-stories":
-      return "- After story selection, run `/looply:story-to-production`.";
+      return `- Host: ${renderHostLabel(host)}. After story selection, run \`${formatNamedCommandForHost(host, "story-to-production")}\`.`;
     case "story-to-production":
-      return "- Use `/looply:workflow-status` whenever you need to resume or inspect delivery.";
+      return `- Host: ${renderHostLabel(host)}. Use \`${formatNamedCommandForHost(host, "workflow-status")}\` whenever you need to resume or inspect delivery.`;
     case "workflow-status":
-      return "- Continue with the workflow recommended in the state file.";
+      return `- Host: ${renderHostLabel(host)}. Continue with the workflow recommended in the state file using the host-specific alias.`;
     case "resume":
-      return "- Continue with the task and workflow returned by the resumed state.";
+      return `- Host: ${renderHostLabel(host)}. Continue with the task and workflow returned by the resumed state.`;
     case "next":
-      return "- Execute the recommended next task or switch to `/looply:resume` for a fuller recap.";
+      return `- Host: ${renderHostLabel(host)}. Execute the recommended next task or switch to \`${formatNamedCommandForHost(host, "resume")}\` for a fuller recap.`;
     default:
-      return "- Check the workflow state file for the next recommended command.";
+      return `- Host: ${renderHostLabel(host)}. Check the workflow state file for the next recommended command.`;
   }
 }
 
-function renderExampleInvocation(command: WorkflowCommandDefinition): string {
+function renderExampleInvocation(command: WorkflowCommandDefinition, host: "claude" | "codex"): string {
   switch (command.name) {
     case "idea-to-prd":
-      return "/looply:idea-to-prd pix-webhook-retry \"falhas transientes no webhook PIX geram reconciliacao manual\" \"manter compatibilidade com contrato atual\"";
+      return formatNamedCommandForHost(
+        host,
+        "idea-to-prd",
+        'pix-webhook-retry "falhas transientes no webhook PIX geram reconciliacao manual" "manter compatibilidade com contrato atual"'
+      );
     case "prd-to-stories":
-      return "/looply:prd-to-stories pix-webhook-retry prd-pix-webhook-retry";
+      return formatNamedCommandForHost(host, "prd-to-stories", "pix-webhook-retry prd-pix-webhook-retry");
     case "story-to-production":
-      return "/looply:story-to-production pix-webhook-retry story-01-retry-automatico";
+      return formatNamedCommandForHost(host, "story-to-production", "pix-webhook-retry story-01-retry-automatico");
     case "workflow-status":
-      return "/looply:workflow-status pix-webhook-retry";
+      return formatNamedCommandForHost(host, "workflow-status", "pix-webhook-retry");
     case "resume":
-      return "/looply:resume pix-webhook-retry backend-afternoon";
+      return formatNamedCommandForHost(host, "resume", "pix-webhook-retry backend-afternoon");
     case "next":
-      return "/looply:next pix-webhook-retry backend-afternoon";
+      return formatNamedCommandForHost(host, "next", "pix-webhook-retry backend-afternoon");
     default:
-      return `/${command.alias}`.trimEnd();
+      return formatCommandForHost(host, command).trimEnd();
   }
+}
+
+function formatCommandForHost(
+  host: "claude" | "codex",
+  command: WorkflowCommandDefinition,
+  args = ""
+): string {
+  const prefix = host === "claude" ? `/${command.alias}` : `$${command.alias.replaceAll(":", "-")}`;
+  return [prefix, args].filter((part) => part.trim() !== "").join(" ").trim();
+}
+
+function formatNamedCommandForHost(host: "claude" | "codex", commandName: string, args = ""): string {
+  const alias = `looply:${commandName}`;
+  const prefix = host === "claude" ? `/${alias}` : `$${alias.replaceAll(":", "-")}`;
+  return [prefix, args].filter((part) => part.trim() !== "").join(" ").trim();
+}
+
+function renderHostLabel(host: "claude" | "codex"): string {
+  return host === "claude" ? "Claude Code" : "Codex";
 }

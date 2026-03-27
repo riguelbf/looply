@@ -12,6 +12,7 @@ summary: Visual response template for workflow decisions in host conversations
 | --- | --- |
 | Feature |  |
 | Phase |  |
+| Host |  |
 | Workflow |  |
 | Current Stage |  |
 | Current Gate |  |
@@ -19,6 +20,7 @@ summary: Visual response template for workflow decisions in host conversations
 | Next Workflow |  |
 | Next Agent |  |
 | Next Task |  |
+| Next Command |  |
 | Ready For Next Gate |  |
 
 ## Workflow
@@ -34,6 +36,10 @@ summary: Visual response template for workflow decisions in host conversations
 ## Decision
 
 ## Next Step
+
+## Host
+
+## Next Command
 
 ## Missing Artifacts
 

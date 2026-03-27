@@ -52,7 +52,7 @@ Reservar budget maior de contexto para manter coesao de modulo, consistencia vis
 7. Validar impacto em UX, contrato, cache, loading states, error states, analytics e performance.
 8. Implementar a mudanca no menor recorte possivel, preservando componentes coesos, hooks claros e fronteiras bem definidas.
 9. Atualizar testes relevantes, schemas, docs e artefatos operacionais quando necessario.
-10. Registrar resumo de implementacao com entendimento arquitetural, riscos residuais, acessibilidade, performance e pontos pendentes.
+10. Registrar resumo de implementacao com entendimento arquitetural, riscos residuais, acessibilidade, performance, pontos pendentes e contrato explicito de handoff.
 
 ## Constraints
 
@@ -71,4 +71,5 @@ Reservar budget maior de contexto para manter coesao de modulo, consistencia vis
 - acessibilidade, feedback visual e responsividade cobertos no recorte
 - testes relevantes cobrindo caminho feliz e cenarios criticos
 - risco operacional, performance e follow-ups registrados quando aplicavel
+- handoff contract preenchido com receiver, readiness, blockers, next command e artefatos exigidos
 - fechamento da etapa com tabela de concluidos e pendentes

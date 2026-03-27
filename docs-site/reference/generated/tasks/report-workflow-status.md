@@ -73,14 +73,18 @@ Responder na conversa usando estes titulos em Markdown, nesta ordem:
 7. `## Active Artifact`
 8. `## Decision`
 9. `## Next Step`
-10. `## Missing Artifacts`
-11. `## Blockers`
-12. `## Completion Table`
+10. `## Host`
+11. `## Next Command`
+12. `## Missing Artifacts`
+13. `## Blockers`
+14. `## Completion Table`
 
 Regras visuais:
 
 - abrir a resposta com uma tabela Markdown de duas colunas `Field | Value`
-- na tabela, incluir no minimo `Feature`, `Phase`, `Workflow`, `Current Stage`, `Current Gate`, `Active Artifact`, `Next Workflow`, `Next Agent`, `Next Task` e `Ready For Next Gate`
+- na tabela, incluir no minimo `Feature`, `Host`, `Phase`, `Workflow`, `Current Stage`, `Current Gate`, `Active Artifact`, `Next Workflow`, `Next Agent`, `Next Task`, `Next Command` e `Ready For Next Gate`
+- identificar explicitamente o host atual antes de sugerir o proximo comando
+- usar comando host-aware: `/$alias` para Claude Code e `$looply-...` para Codex
 - encerrar a resposta com uma tabela Markdown contendo pelo menos `Item`, `Status` e `Notes`, usando `Done` e `Pending` como valores de status
 - destacar nome de workflow, stage e task em negrito dentro das secoes
 - manter uma linha em branco entre secoes

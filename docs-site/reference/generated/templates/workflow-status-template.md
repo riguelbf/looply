@@ -16,6 +16,7 @@ Template for persisted feature workflow state
 | --- | --- |
 | Feature |  |
 | Phase |  |
+| Host |  |
 | Workflow |  |
 | Current Stage |  |
 | Current Gate |  |
@@ -23,6 +24,7 @@ Template for persisted feature workflow state
 | Next Workflow |  |
 | Next Agent |  |
 | Next Task |  |
+| Next Command |  |
 | Ready For Next Gate |  |
 
 ## Feature
@@ -75,13 +77,25 @@ Template for persisted feature workflow state
 
 ## Missing Outputs
 
+## Completion Table
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Completed outputs reconciled | Done |  |
+| Missing outputs listed | Pending |  |
+| Next gate readiness confirmed | Pending |  |
+
 ## Recommended Next Workflow
 
 ## Ready For Next Gate
 
+## Host
+
 ## Next Agent
 
 ## Next Task
+
+## Next Command
 
 ## Next Handoff
 

@@ -16,10 +16,25 @@ summary: Template for review report
 
 ## Follow Up Recommendations
 
+## Handoff Contract
+
+### Handoff To
+
+### Handoff Decision
+
+### Ready For Receiver
+
+### Receiver Blockers
+
+### Next Command
+
+### Artifacts Required By Receiver
+
 ## Completion Table
 
 | Item | Status | Notes |
 | --- | --- | --- |
 | Review performed | Done |  |
 | Blocking issues addressed | Pending |  |
+| Handoff contract prepared | Pending |  |
 | Release approval | Pending |  |

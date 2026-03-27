@@ -14,6 +14,10 @@ Template for requirement brief
 
 ## Goal
 
+## Project Baseline
+
+## Delivery Mode
+
 ## Business Context
 
 ## Scope
@@ -22,7 +26,17 @@ Template for requirement brief
 
 ## Current State
 
+## Current Architecture Understanding
+
 ## Desired Outcome
+
+## Suggested Stack
+
+## Data And Storage Baseline
+
+## Authentication Baseline
+
+## Operational Baseline
 
 ## Constraints
 

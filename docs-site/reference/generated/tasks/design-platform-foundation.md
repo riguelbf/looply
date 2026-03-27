@@ -30,7 +30,7 @@ Define or evolve shared platform foundation, templates and engineering guardrail
 
 ## Dependencies
 
-- Nenhum item declarado.
+- `analyze-requirement`
 
 ## Conteudo do artefato
 

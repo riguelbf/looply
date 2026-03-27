@@ -70,6 +70,12 @@ Best practices for frontend implementation, UI architecture and client delivery
 
 ## [glossary](./knowledge/glossary)
 
+Shared vocabulary for engineering artifacts
+
+- arquivo: `packs/engineering-base/knowledge/glossary.md`
+
+## [glossary](./knowledge/glossary)
+
 Shared vocabulary for product and planning artifacts
 
 - arquivo: `packs/product-base/knowledge/glossary.md`
@@ -97,4 +103,3 @@ Best practices for review, quality gates and release readiness
 Best practices for operability, reliability and production readiness
 
 - arquivo: `packs/engineering-base/knowledge/specialists/sre-best-practices.md`
-
