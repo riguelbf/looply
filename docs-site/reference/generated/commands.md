@@ -56,6 +56,12 @@ List available packs and artifacts
 
 - options: 1
 
+## [reconcile](./commands/reconcile)
+
+Reconcile a feature workflow after manual interventions or replay
+
+- options: 1
+
 ## [refresh-context](./commands/refresh-context)
 
 Refresh project context and inventory from the current repository
@@ -67,6 +73,24 @@ Refresh project context and inventory from the current repository
 Reinstall looply for selected hosts using the current pack and locale
 
 - options: 6
+
+## [replay](./commands/replay)
+
+Replay a feature workflow from a stage, agent, task or artifact checkpoint
+
+- options: 3
+
+## [run-agent](./commands/run-agent)
+
+Register a manual agent intervention inside a feature workflow
+
+- options: 3
+
+## [run-task](./commands/run-task)
+
+Register a manual task execution inside a feature workflow
+
+- options: 3
 
 ## [sessions](./commands/sessions)
 

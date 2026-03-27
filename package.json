@@ -15,6 +15,7 @@
     "docs:dev": "npm --prefix ./docs-site run dev",
     "docs:build": "npm --prefix ./docs-site run build",
     "docs:preview": "npm --prefix ./docs-site run preview",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

@@ -17,7 +17,7 @@ import { readSessionLinks } from "./session-links.js";
 import { readUpgradeHistoryFromTarget } from "./upgrade-history.js";
 
 export interface ProjectSnapshotDocument {
-  version: 1;
+  version: 2;
   generatedAt: string;
   targetRoot: string;
   summary: {
@@ -25,6 +25,8 @@ export interface ProjectSnapshotDocument {
     featureCount: number;
     blockedFeatureCount: number;
     readyFeatureCount: number;
+    interventionCount: number;
+    replayedFeatureCount: number;
     sessionCount: number;
     historyCount: number;
   };
@@ -107,7 +109,7 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
     : [];
 
   return {
-    version: 1,
+    version: 2,
     generatedAt: new Date().toISOString(),
     targetRoot,
     summary: {
@@ -115,6 +117,8 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
       featureCount: features.length,
       blockedFeatureCount: features.filter((feature) => feature.blockedBy.length > 0).length,
       readyFeatureCount: features.filter((feature) => feature.readyForNextGate.toLowerCase() === "yes").length,
+      interventionCount: features.reduce((count, feature) => count + feature.interventionCount, 0),
+      replayedFeatureCount: features.filter((feature) => feature.replayedFrom !== "").length,
       sessionCount: sessions.sessions.length,
       historyCount: history.entries.length
     },

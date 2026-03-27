@@ -70,6 +70,7 @@ Se a sessao foi interrompida:
 ## 6. Onde olhar no projeto
 
 - `.looply/custom/features/<feature-name>/workflow-status.md`
+- `.looply/custom/features/<feature-name>/workflow-control.json`
 - `.looply/custom/project-context.md`
 - `.looply/custom/session-context.md`
 - `.looply/custom/session-links.json`
@@ -89,6 +90,8 @@ Se a sessao foi interrompida:
 
 - em `existing-project`, o host deve usar o codebase real como base principal
 - use `workflow-status` sempre que houver duvida sobre onde o trabalho parou
+- se precisar refinar um ponto anterior, use `looply replay` em vez de perder o historico
+- se quiser chamar um agente ou task fora da ordem sugerida, use `looply run-agent` ou `looply run-task`
 - instale para `codex,claude` se o time alterna entre hosts
 
 ## Referencia complementar

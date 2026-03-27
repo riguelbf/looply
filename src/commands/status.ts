@@ -31,6 +31,7 @@ export function registerStatusCommand(program: Command): void {
       console.log(`installed: ${snapshot.project.installed ? chalk.green("yes") : chalk.red("no")}`);
       console.log(`installs: ${chalk.cyan(String(snapshot.summary.installCount))}`);
       console.log(`features: ${chalk.cyan(String(snapshot.summary.featureCount))}`);
+      console.log(`interventions: ${chalk.cyan(String(snapshot.summary.interventionCount))}`);
       console.log(`sessions: ${chalk.cyan(String(snapshot.summary.sessionCount))}`);
       console.log("");
 
@@ -126,6 +127,9 @@ export function registerStatusCommand(program: Command): void {
           console.log(`next-task: ${feature.nextTask || "unknown"}`);
           console.log(`next-command: ${feature.nextCommand || "unknown"}`);
           console.log(`next-handoff: ${feature.nextHandoff || "unknown"}`);
+          console.log(`execution-mode: ${feature.executionMode || "workflow"}`);
+          console.log(`replayed-from: ${feature.replayedFrom || "n/a"}`);
+          console.log(`recommended-recovery-command: ${feature.recommendedRecoveryCommand || "n/a"}`);
           console.log(`ready-for-next-gate: ${feature.readyForNextGate || "unknown"}`);
           console.log(`context: ${feature.contextStatus || "unknown"} / ${feature.contextCoverage || "unknown"}`);
           console.log(`sessions: ${linkedSessions.length > 0 ? linkedSessions.map((session) => session.label).join(", ") : "none"}`);
@@ -141,6 +145,20 @@ export function registerStatusCommand(program: Command): void {
             console.log(chalk.bold("Missing Outputs"));
             for (const output of feature.missingOutputs.slice(0, 6)) {
               console.log(`- ${output}`);
+            }
+          }
+
+          if (feature.supersededOutputs.length > 0) {
+            console.log(chalk.bold("Superseded Outputs"));
+            for (const output of feature.supersededOutputs.slice(0, 6)) {
+              console.log(`- ${output}`);
+            }
+          }
+
+          if (feature.interventions.length > 0) {
+            console.log(chalk.bold("Interventions"));
+            for (const intervention of feature.interventions.slice(-3)) {
+              console.log(`- ${intervention.createdAt}  ${intervention.type}  ${intervention.summary}`);
             }
           }
 
@@ -215,6 +233,12 @@ function buildRecommendedActions(snapshot: Awaited<ReturnType<typeof buildProjec
     actions.push("If the main problem is shared platform baseline or guardrails, inspect `looply inspect workflow platform-foundation-evolution`.");
   } else {
     const nextFeature = snapshot.features.find((feature) => feature.nextCommand !== "") ?? snapshot.features[0];
+    const interventionFeature = snapshot.features.find((feature) => feature.executionMode !== "workflow");
+    if (interventionFeature) {
+      actions.push(
+        `Feature \`${interventionFeature.feature}\` is in \`${interventionFeature.executionMode}\` mode. Reconcile with \`looply reconcile ${interventionFeature.feature}\` or continue with \`${interventionFeature.recommendedRecoveryCommand || interventionFeature.nextCommand || "looply status"}\`.`
+      );
+    }
     if (nextFeature?.nextCommand) {
       actions.push(`Continue feature \`${nextFeature.feature}\` with \`${nextFeature.nextCommand}\`.`);
     } else {

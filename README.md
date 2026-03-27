@@ -119,6 +119,10 @@ looply doctor --host codex,claude --scope project
 looply refresh-context
 looply status
 looply status --json
+looply replay pix-webhook-retry --from tech-spec
+looply run-task pix-webhook-retry review-code
+looply run-agent pix-webhook-retry architect --task create-tech-spec
+looply reconcile pix-webhook-retry
 looply list workflow
 looply inspect workflow idea-to-prd
 looply docs open
@@ -168,6 +172,34 @@ O caminho recomendado no Codex agora e:
 2. `prd-to-stories`
 3. `story-to-production`
 4. `workflow-status`
+
+## Intervencoes controladas no workflow
+
+O `looply` agora suporta desvios controlados sem perder o estado principal da feature.
+
+Isso cobre tres casos comuns:
+
+- `replay`: voltar para um stage, agent, task ou artifact anterior
+- `run-task`: registrar execucao manual de uma task em qualquer ponto
+- `run-agent`: registrar uma intervencao manual de um agente em qualquer ponto
+
+Exemplos:
+
+```bash
+looply replay pix-webhook-retry --from tech-spec --reason "refinar spec para incluir fila"
+looply run-task pix-webhook-retry review-code --reason "pedir review antecipado"
+looply run-agent pix-webhook-retry architect --task create-tech-spec --reason "ajustar design"
+looply reconcile pix-webhook-retry
+```
+
+O estado da feature preserva:
+
+- ponto de replay
+- intervencoes manuais
+- outputs `superseded`
+- caminho de recuperacao recomendado
+
+Use `looply status` ou `looply status --json` para ver esse estado reconciliado.
 
 ## Fluxos avancados
 
@@ -240,6 +272,7 @@ Arquivos importantes:
 - `.looply/custom/architecture-context.md`
 - `.looply/custom/session-context.md`
 - `.looply/custom/features/<feature>/workflow-status.md`
+- `.looply/custom/features/<feature>/workflow-control.json`
 
 O comando `looply refresh-context` agora atualiza:
 
