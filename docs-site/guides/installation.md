@@ -11,7 +11,7 @@ A instalacao publica o pack no projeto ou no escopo global e prepara o host para
 
 - `--host codex,claude`
 - `--scope project|global`
-- `--pack engineering-base`
+- `--pack software-delivery-suite`
 - `--locale pt-BR|en`
 - `--project-mode existing-project|greenfield`
 - `--interaction-mode guided|balanced|autonomous`

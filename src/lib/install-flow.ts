@@ -29,12 +29,12 @@ export interface InstallFlowInput {
 export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> {
   const availablePacks = await listAvailablePacks(input.sourceRoot);
 
-  const hosts = await resolveHostOptions(input.hostOption);
-  const scope = await resolveScopeOption(input.scopeOption);
-  const pack = await resolvePackOption(input.packOption, availablePacks);
-  const locale = await resolveLocaleOption(input.localeOption);
-  const projectMode = await resolveProjectModeOption(input.projectModeOption, input.currentWorkingDirectory, scope);
-  const interactionMode = await resolveInteractionModeOption(input.interactionModeOption);
+  const hosts = await resolveHostOptions(input.hostOption, input.yes);
+  const scope = await resolveScopeOption(input.scopeOption, input.yes);
+  const pack = await resolvePackOption(input.packOption, availablePacks, input.yes);
+  const locale = await resolveLocaleOption(input.localeOption, input.yes);
+  const projectMode = await resolveProjectModeOption(input.projectModeOption, input.currentWorkingDirectory, scope, input.yes);
+  const interactionMode = await resolveInteractionModeOption(input.interactionModeOption, input.yes);
 
   if (!hosts || !scope || !pack || !locale || !projectMode || !interactionMode) {
     return false;
@@ -98,12 +98,16 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
   return true;
 }
 
-async function resolveHostOptions(currentHost?: string): Promise<SupportedHost[] | undefined> {
+async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<SupportedHost[] | undefined> {
   if (currentHost) {
     return currentHost
       .split(",")
       .map((item) => item.trim())
       .filter((item): item is SupportedHost => supportedHosts.includes(item as SupportedHost));
+  }
+
+  if (yes) {
+    return ["codex", "claude"];
   }
 
   const answer = await multiselect({
@@ -124,9 +128,13 @@ async function resolveHostOptions(currentHost?: string): Promise<SupportedHost[]
   return answer as SupportedHost[];
 }
 
-async function resolveScopeOption(currentScope?: string): Promise<InstallScope | undefined> {
+async function resolveScopeOption(currentScope?: string, yes?: boolean): Promise<InstallScope | undefined> {
   if (currentScope === "project" || currentScope === "global") {
     return currentScope;
+  }
+
+  if (yes) {
+    return "project";
   }
 
   const answer = await select({
@@ -145,9 +153,17 @@ async function resolveScopeOption(currentScope?: string): Promise<InstallScope |
   return answer as InstallScope;
 }
 
-async function resolvePackOption(currentPack: string | undefined, availablePacks: string[]): Promise<string | undefined> {
+async function resolvePackOption(currentPack: string | undefined, availablePacks: string[], yes?: boolean): Promise<string | undefined> {
   if (currentPack) {
     return currentPack;
+  }
+
+  if (yes) {
+    if (availablePacks.includes("software-delivery-suite")) {
+      return "software-delivery-suite";
+    }
+
+    return availablePacks[0] ?? "software-delivery-suite";
   }
 
   const options =
@@ -155,9 +171,9 @@ async function resolvePackOption(currentPack: string | undefined, availablePacks
       ? availablePacks.map((pack) => ({
           value: pack,
           label: pack,
-          hint: pack === "engineering-base" ? "Recommended starting pack" : undefined
+          hint: pack === "software-delivery-suite" ? "Recommended starting pack" : pack === "engineering-base" ? "Engineering-only baseline" : undefined
         }))
-      : [{ value: "engineering-base", label: "engineering-base", hint: "Fallback pack" }];
+      : [{ value: "software-delivery-suite", label: "software-delivery-suite", hint: "Fallback pack" }];
 
   const answer = await select({
     message: "Which pack should be installed?",
@@ -172,9 +188,13 @@ async function resolvePackOption(currentPack: string | undefined, availablePacks
   return answer;
 }
 
-async function resolveLocaleOption(currentLocale?: string): Promise<OutputLocale | undefined> {
+async function resolveLocaleOption(currentLocale?: string, yes?: boolean): Promise<OutputLocale | undefined> {
   if (currentLocale === "en" || currentLocale === "pt-BR") {
     return currentLocale;
+  }
+
+  if (yes) {
+    return resolveDefaultLocale();
   }
 
   const answer = await select({
@@ -196,13 +216,18 @@ async function resolveLocaleOption(currentLocale?: string): Promise<OutputLocale
 async function resolveProjectModeOption(
   currentProjectMode: string | undefined,
   currentWorkingDirectory: string,
-  scope: InstallScope | undefined
+  scope: InstallScope | undefined,
+  yes?: boolean
 ): Promise<ProjectMode | undefined> {
   if (currentProjectMode === "existing-project" || currentProjectMode === "greenfield") {
     return currentProjectMode;
   }
 
   const detectedMode = scope === "project" ? detectProjectMode(currentWorkingDirectory) : "existing-project";
+  if (yes) {
+    return detectedMode;
+  }
+
   const answer = await select({
     message: "How should looply treat this installation context?",
     initialValue: detectedMode,
@@ -220,9 +245,13 @@ async function resolveProjectModeOption(
   return answer as ProjectMode;
 }
 
-async function resolveInteractionModeOption(currentInteractionMode?: string): Promise<InteractionMode | undefined> {
+async function resolveInteractionModeOption(currentInteractionMode?: string, yes?: boolean): Promise<InteractionMode | undefined> {
   if (currentInteractionMode === "guided" || currentInteractionMode === "balanced" || currentInteractionMode === "autonomous") {
     return currentInteractionMode;
+  }
+
+  if (yes) {
+    return "balanced";
   }
 
   const answer = await select({
@@ -263,6 +292,11 @@ async function resolveConfirmation(
   }
 
   return answer;
+}
+
+function resolveDefaultLocale(): OutputLocale {
+  const language = process.env.LANG?.toLowerCase() ?? "";
+  return language.includes("pt") ? "pt-BR" : "en";
 }
 
 async function runPreflightChecks(input: {

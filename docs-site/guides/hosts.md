@@ -7,7 +7,7 @@ looply hoje publica artefatos para dois hosts:
 
 ## O que e igual nos dois
 
-- ambos consomem os artefatos do pack `engineering-base`
+- ambos consomem os artefatos do pack `software-delivery-suite` ou de um pack base incluido por ele
 - ambos recebem instrucoes de contexto, workflow, agentes, tasks e politica operacional
 - ambos podem seguir os aliases operacionais `looply:*`
 - ambos devem respeitar `project-mode`, `interaction-mode` e `locale`

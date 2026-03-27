@@ -57,6 +57,17 @@ export function registerStatusCommand(program: Command): void {
       console.log(chalk.dim(`inference-policy: ${snapshot.project.inferencePolicy}`));
       console.log("");
 
+      console.log(chalk.bold("Published Hosts"));
+      if (snapshot.hosts.length === 0) {
+        console.log(chalk.dim("No published host surfaces found."));
+      } else {
+        for (const host of snapshot.hosts) {
+          console.log(`- host: ${chalk.cyan(host.host)}  scope: ${chalk.cyan(host.scope)}  pack: ${chalk.cyan(host.pack)}`);
+          console.log(chalk.dim(`  workflows: ${host.workflowCount}  aliases: ${host.aliases.slice(0, 4).join(", ") || "none"}`));
+        }
+      }
+      console.log("");
+
       console.log(chalk.bold("Context"));
       if (snapshot.context.snapshot) {
         console.log(`status: ${chalk.cyan(snapshot.context.snapshot.contextStatus)}`);
@@ -189,6 +200,10 @@ function buildRecommendedActions(snapshot: Awaited<ReturnType<typeof buildProjec
     actions.push("Initialize project-scoped looply state with `looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project`.");
   }
 
+  if (snapshot.project.installed && snapshot.hosts.length === 0) {
+    actions.push("Regenerate host surfaces with `looply sync --host codex,claude --scope project` so command aliases, skills and execution hints stay current.");
+  }
+
   if (!snapshot.context.snapshot) {
     actions.push("Generate project context with `looply refresh-context`.");
   }
@@ -196,6 +211,8 @@ function buildRecommendedActions(snapshot: Awaited<ReturnType<typeof buildProjec
   if (snapshot.features.length === 0) {
     actions.push("Inspect the available workflows with `looply list workflow`.");
     actions.push("Inspect a workflow before starting delivery with `looply inspect workflow story-to-production`.");
+    actions.push("If the main problem is cloud topology or async-first design, inspect `looply inspect workflow cloud-workload-design`.");
+    actions.push("If the main problem is shared platform baseline or guardrails, inspect `looply inspect workflow platform-foundation-evolution`.");
   } else {
     const nextFeature = snapshot.features.find((feature) => feature.nextCommand !== "") ?? snapshot.features[0];
     if (nextFeature?.nextCommand) {

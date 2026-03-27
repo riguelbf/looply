@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Esta pagina cobre os problemas mais comuns no uso do looply com `Codex`, `Claude Code` e os workflows do `engineering-base`.
+Esta pagina cobre os problemas mais comuns no uso do looply com `Codex`, `Claude Code` e os workflows publicados pelo `software-delivery-suite`.
 
 ## O comando aparece no Claude, mas nao no Codex
 

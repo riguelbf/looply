@@ -91,7 +91,7 @@ Dentro do projeto alvo, rode:
 looply install \
   --host codex,claude \
   --scope project \
-  --pack engineering-base \
+  --pack software-delivery-suite \
   --locale pt-BR \
   --project-mode existing-project \
   --interaction-mode balanced
@@ -99,7 +99,7 @@ looply install \
 
 O comando acima:
 
-- instala o pack `engineering-base`
+- instala o pack `software-delivery-suite`
 - publica para `Codex` e `Claude Code`
 - grava estado em `.looply/`
 - preserva espaco de customizacao em `.looply/custom/`
@@ -160,6 +160,7 @@ O caminho recomendado no Codex agora e:
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 - abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
 - começar por `$looply` como skill de descoberta e roteamento
+- usar `$looply-cloud-workload-design` e `$looply-platform-foundation-evolution` quando o problema principal for cloud ou plataforma
 
 ## Fluxo recomendado da v1
 
@@ -167,6 +168,22 @@ O caminho recomendado no Codex agora e:
 2. `prd-to-stories`
 3. `story-to-production`
 4. `workflow-status`
+
+## Fluxos avancados
+
+Quando o problema principal nao e discovery ou delivery de uma story, o `looply` tambem suporta:
+
+- `cloud-workload-design`
+  use quando a decisao principal envolve topologia cloud, async-first, filas, governanca ou custo de workload
+- `platform-foundation-evolution`
+  use quando a decisao principal envolve foundation compartilhada, guardrails, pipelines, identidade ou observabilidade padrao
+
+Exemplos:
+
+```text
+/looply:cloud-workload-design pix-webhook-retry payments-api "introduzir fila para retries e revisar postura cloud"
+/looply:platform-foundation-evolution platform-observability-baseline "padronizar tracing, logging e guardrails de deploy"
+```
 
 Exemplo de sequencia:
 

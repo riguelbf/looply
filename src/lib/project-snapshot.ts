@@ -7,6 +7,7 @@ import {
   resolveProjectContextMarkdownFile
 } from "./context-documents.js";
 import { readContextSnapshot, resolveContextSnapshotFile, type ContextSnapshotDocument } from "./context-snapshot.js";
+import { readExecutionHintsDocument } from "./execution-hints.js";
 import { readFeatureWorkflowStates, type FeatureWorkflowState } from "./feature-workflow-state.js";
 import { readInteractionPolicyFile } from "./interaction-policy.js";
 import { readLocaleFile } from "./locale.js";
@@ -45,6 +46,13 @@ export interface ProjectSnapshotDocument {
       customFiles: number;
     }>;
   };
+  hosts: Array<{
+    host: string;
+    scope: string;
+    pack: string;
+    workflowCount: number;
+    aliases: string[];
+  }>;
   context: {
     snapshotFile: string;
     indexFile: string;
@@ -87,6 +95,16 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
     readFeatureWorkflowStates(targetRoot),
     readContextSnapshot(targetRoot)
   ]);
+  const executionHintsByHost = manifest
+    ? await Promise.all(
+        manifest.installs.map(async (entry) => ({
+          host: entry.host,
+          scope: entry.scope,
+          pack: entry.pack,
+          hints: await readExecutionHintsDocument(targetRoot, entry.host)
+        }))
+      )
+    : [];
 
   return {
     version: 1,
@@ -118,6 +136,16 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
         customFiles: entry.customFiles.length
       }))
     },
+    hosts: executionHintsByHost.map((entry) => ({
+      host: entry.host,
+      scope: entry.scope,
+      pack: entry.pack,
+      workflowCount: entry.hints?.artifacts.filter((artifact) => artifact.type === "workflow").length ?? 0,
+      aliases: (entry.hints?.artifacts ?? [])
+        .filter((artifact) => artifact.type === "workflow" && artifact.command?.alias)
+        .map((artifact) => String(artifact.command?.alias ?? ""))
+        .filter((alias) => alias !== "")
+    })),
     context: {
       snapshotFile: resolveContextSnapshotFile(targetRoot),
       indexFile: resolveContextIndexFile(targetRoot),

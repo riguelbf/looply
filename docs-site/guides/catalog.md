@@ -1,6 +1,6 @@
 # Catalogo do Engineering Base
 
-O pack `engineering-base` e a base operacional do looply para discovery, planning e delivery.
+O pack `software-delivery-suite` e o ponto de entrada recomendado do looply, agregando `product-base` e `engineering-base`.
 
 ## Agentes
 

@@ -7,7 +7,7 @@ Este guia mostra o caminho minimo para testar uma feature ponta a ponta no loopl
 No repositorio alvo:
 
 ```bash
-looply install --host codex,claude --scope project --pack engineering-base --project-mode existing-project --interaction-mode autonomous --locale pt-BR --yes
+looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project --interaction-mode autonomous --locale pt-BR --yes
 looply validate
 looply doctor --host codex,claude --scope project
 ```

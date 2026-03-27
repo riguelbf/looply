@@ -421,12 +421,14 @@ export function renderCodexLauncherSkillDocument(input: {
     "2. If the user describes a raw idea, recommend `idea-to-prd`.",
     "3. If the user already has a PRD, recommend `prd-to-stories`.",
     "4. If the user already has a story and wants to implement, recommend `story-to-production`.",
-    "5. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
-    "6. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
-    "7. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
-    "8. Prefer explicit next-step guidance over generic explanations.",
-    `9. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
-    `10. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
+    "5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.",
+    "6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.",
+    "7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
+    "8. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
+    "9. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
+    "10. Prefer explicit next-step guidance over generic explanations.",
+    `11. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
+    `12. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
     "",
     "Available workflows:"
   ];
@@ -445,7 +447,9 @@ export function renderCodexLauncherSkillDocument(input: {
     "1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`",
     "2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`",
     "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
-    "4. `$looply-workflow-status <feature-name> [notes...]`",
+    "4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` when cloud topology, async-first or governance is the main problem",
+    "5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` when shared platform baseline or guardrails are the main problem",
+    "6. `$looply-workflow-status <feature-name> [notes...]`",
     "",
     "Presentation rules:",
     "- Use clear Markdown section titles.",
@@ -509,8 +513,14 @@ export function renderHelpCommandDocument(input: {
       ? "3. `/looply:story-to-production <feature-name> <story-reference> [constraints...]`"
       : "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
     input.host === "claude"
-      ? "4. `/looply:workflow-status <feature-name> [notes...]`"
-      : "4. `$looply-workflow-status <feature-name> [notes...]`",
+      ? "4. `/looply:cloud-workload-design <feature-name> <scope-reference> [constraints...]` for workload cloud topology or async-first design"
+      : "4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` for workload cloud topology or async-first design",
+    input.host === "claude"
+      ? "5. `/looply:platform-foundation-evolution <initiative-name> [constraints...]` for shared platform baselines and guardrails"
+      : "5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` for shared platform baselines and guardrails",
+    input.host === "claude"
+      ? "6. `/looply:workflow-status <feature-name> [notes...]`"
+      : "6. `$looply-workflow-status <feature-name> [notes...]`",
     "",
     "Help behavior:",
     "- If the user passes a command name like `idea-to-prd`, explain only that command.",
@@ -566,7 +576,9 @@ export function renderCodexCommandIndex(input: {
     "1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`",
     "2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`",
     "3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`",
-    "4. `$looply-workflow-status <feature-name> [notes...]`"
+    "4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` for workload cloud topology or async-first design",
+    "5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` for shared platform baselines and guardrails",
+    "6. `$looply-workflow-status <feature-name> [notes...]`"
   );
 
   return lines.join("\n");
@@ -647,6 +659,10 @@ function renderCodexSkillDescription(command: WorkflowCommandDefinition): string
       return "Use when a PRD already exists and needs to be broken into delivery stories. Do not use for raw idea discovery or implementation.";
     case "story-to-production":
       return "Use when a delivery story already exists and needs technical design, implementation, review and release preparation. Do not use before discovery and planning are complete.";
+    case "cloud-workload-design":
+      return "Use when the main problem is cloud topology, async-first communication, governance posture or workload cost direction before delivery.";
+    case "platform-foundation-evolution":
+      return "Use when the main problem is shared platform baseline, guardrails, pipelines, identity or observability foundation rather than a single workload feature.";
     case "workflow-status":
       return "Use to inspect the persisted state of a feature workflow and decide the next recommended step.";
     case "resume":
@@ -688,6 +704,10 @@ function renderWhenToUse(command: WorkflowCommandDefinition): string {
       return "- Use when the PRD is approved and you need a delivery-ready story backlog.";
     case "story-to-production":
       return "- Use when a story was selected and delivery should advance through design, implementation and release planning.";
+    case "cloud-workload-design":
+      return "- Use when the main open question is cloud topology, async-first communication, governance controls or cost posture for a workload.";
+    case "platform-foundation-evolution":
+      return "- Use when the main open question is how to evolve shared platform foundation, guardrails or templates used by multiple teams.";
     case "workflow-status":
       return "- Use when you need to resume work or inspect the current state of a feature.";
     case "resume":
@@ -707,6 +727,10 @@ function renderExpectedOutput(command: WorkflowCommandDefinition): string {
       return "- A story backlog and updated workflow state.";
     case "story-to-production":
       return "- A release plan plus intermediate delivery artifacts.";
+    case "cloud-workload-design":
+      return "- A cloud tech spec, a cloud ADR and governance or cost review artifacts.";
+    case "platform-foundation-evolution":
+      return "- A platform foundation tech spec plus governance and cost review artifacts.";
     case "workflow-status":
       return "- A short decision summary and refreshed workflow state.";
     case "resume":
@@ -726,6 +750,10 @@ function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "clau
       return `- Host: ${renderHostLabel(host)}. After story selection, run \`${formatNamedCommandForHost(host, "story-to-production")}\`.`;
     case "story-to-production":
       return `- Host: ${renderHostLabel(host)}. Use \`${formatNamedCommandForHost(host, "workflow-status")}\` whenever you need to resume or inspect delivery.`;
+    case "cloud-workload-design":
+      return `- Host: ${renderHostLabel(host)}. After cloud planning, continue with \`${formatNamedCommandForHost(host, "story-to-production")}\` or revisit \`${formatNamedCommandForHost(host, "workflow-status")}\` for the persisted next step.`;
+    case "platform-foundation-evolution":
+      return `- Host: ${renderHostLabel(host)}. After platform alignment, persist the follow-up in \`${formatNamedCommandForHost(host, "workflow-status")}\` or hand off the resulting baseline to the delivery workflow that will consume it.`;
     case "workflow-status":
       return `- Host: ${renderHostLabel(host)}. Continue with the workflow recommended in the state file using the host-specific alias.`;
     case "resume":
@@ -749,6 +777,10 @@ function renderExampleInvocation(command: WorkflowCommandDefinition, host: "clau
       return formatNamedCommandForHost(host, "prd-to-stories", "pix-webhook-retry prd-pix-webhook-retry");
     case "story-to-production":
       return formatNamedCommandForHost(host, "story-to-production", "pix-webhook-retry story-01-retry-automatico");
+    case "cloud-workload-design":
+      return formatNamedCommandForHost(host, "cloud-workload-design", 'pix-webhook-retry payments-api "introduzir fila para retries de webhook e revisar controles cloud"');
+    case "platform-foundation-evolution":
+      return formatNamedCommandForHost(host, "platform-foundation-evolution", '"platform-observability-baseline" "padronizar tracing, logging e guardrails de deploy"');
     case "workflow-status":
       return formatNamedCommandForHost(host, "workflow-status", "pix-webhook-retry");
     case "resume":

@@ -60,7 +60,7 @@ export function registerInitCommand(program: Command): void {
         currentWorkingDirectory: targetDirectory,
         hostOption: options.host,
         scopeOption: options.scope ?? "project",
-        packOption: options.pack ?? "engineering-base",
+        packOption: options.pack ?? "software-delivery-suite",
         localeOption: options.locale,
         projectModeOption: options.projectMode,
         interactionModeOption: options.interactionMode,

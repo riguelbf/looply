@@ -15,7 +15,7 @@ npm run build
 ## 3. Instale o pack base
 
 ```bash
-node ./bin/run.js install --host codex,claude --scope project --pack engineering-base --locale pt-BR --project-mode existing-project --interaction-mode autonomous --yes
+node ./bin/run.js install --host codex,claude --scope project --pack software-delivery-suite --locale pt-BR --project-mode existing-project --interaction-mode autonomous --yes
 ```
 
 ## 4. Valide a instalacao
@@ -32,4 +32,3 @@ No host:
 ```text
 /looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram reconciliacao manual"
 ```
-

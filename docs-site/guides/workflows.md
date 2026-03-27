@@ -1,6 +1,6 @@
 # Fluxo de Workflows
 
-Os workflows do `engineering-base` separam discovery, planning e delivery para manter handoffs claros e gates explicitos.
+Os workflows publicados pelo `software-delivery-suite` combinam discovery, planning e delivery com handoffs claros e gates explicitos.
 
 ## Sequencia recomendada
 
