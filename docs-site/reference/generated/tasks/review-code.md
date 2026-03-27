@@ -49,10 +49,12 @@ Prioriza equilibrio entre custo e profundidade de revisao.
 2. Validar testes e tratamento de erro.
 3. Revisar aderencia arquitetural.
 4. Emitir parecer com bloqueios ou aprovacao.
+5. Registrar contrato explicito de handoff para o proximo agente.
 
 ## Deliverables
 
 - review report com findings e decisao
+- handoff contract com receiver, readiness, blockers, next command e artefatos exigidos
 - tabela final da etapa com itens concluidos e pendentes
 
 ## Arquivo

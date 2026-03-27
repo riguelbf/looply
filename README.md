@@ -26,17 +26,28 @@ O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md).
 - CLI `looply`
 - portal de documentacao com `VitePress`
 - pack base `engineering-base`
+- pack agregador `software-delivery-suite`
 - suporte a `Claude Code` e `Codex`
 - workflows principais:
   - `idea-to-prd`
   - `prd-to-stories`
   - `story-to-production`
   - `workflow-status`
-- agentes principais:
+  - `cloud-workload-design`
+  - `platform-foundation-evolution`
+- agentes disponiveis:
+  - `delivery-orchestrator`
   - `pm-analyst`
   - `architect`
+  - `cloud-architect`
+  - `platform-engineer`
+  - `cloud-governance`
+  - `finops`
   - `backend`
+  - `frontend`
   - `reviewer`
+  - `devops`
+  - `sre`
   - `delivery-orchestrator`
 
 ## O que nao existe na v1
@@ -107,6 +118,7 @@ looply validate
 looply doctor --host codex,claude --scope project
 looply refresh-context
 looply status
+looply status --json
 looply list workflow
 looply inspect workflow idea-to-prd
 looply docs open
@@ -204,6 +216,8 @@ Arquivos importantes:
 - `.looply/state/project-context.json`
 - `.looply/state/interaction-policy.json`
 - `.looply/state/context-index.md`
+- `.looply/state/context-snapshot.json`
+- `.looply/state/project-snapshot.json`
 - `.looply/state/project-inventory.md`
 - `.looply/custom/project-context.md`
 - `.looply/custom/architecture-context.md`
@@ -215,8 +229,27 @@ O comando `looply refresh-context` agora atualiza:
 - `project-context.md`
 - `architecture-context.md`
 - `project-inventory.md`
+- `context-snapshot.json`
+
+O comando `looply status` agora tambem pode materializar e imprimir:
+
+- `project-snapshot.json`
+- um resumo operacional legivel no terminal
+- um snapshot normalizado em JSON com `looply status --json`
 
 Para projetos existentes, esses arquivos funcionam como aceleradores de contexto. O codebase real continua sendo a fonte principal de verdade.
+
+## O que o `refresh-context` tenta inferir melhor agora
+
+- linguagens e frameworks
+- modulos e diretorios principais
+- API surface e contratos
+- banco, persistencia e migracoes
+- autenticacao e controle de acesso
+- mensageria, filas e workers
+- observabilidade, automacao e sinais de infra
+
+Esses sinais continuam heuristicas. Para projeto existente, o repositorio real continua sendo a fonte principal de verdade.
 
 ## Comandos principais da CLI
 

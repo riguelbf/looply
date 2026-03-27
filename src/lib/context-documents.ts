@@ -28,6 +28,11 @@ export interface ProjectContextRefreshData {
   keyDirectories: string[];
   moduleHints: string[];
   integrationHints: string[];
+  apiSignals: string[];
+  dataSignals: string[];
+  authSignals: string[];
+  messagingSignals: string[];
+  observabilitySignals: string[];
   workspaceHints: string[];
   testingSignals: string[];
   infrastructureSignals: string[];
@@ -213,6 +218,16 @@ function renderRefreshedProjectContextMarkdown(input: ProjectContextMarkdownInpu
     "",
     "## Delivery Signals",
     "",
+    "- API and communication signals:",
+    ...toIndentedBulletLines(input.data.apiSignals),
+    "- Data and persistence signals:",
+    ...toIndentedBulletLines(input.data.dataSignals),
+    "- Authentication and access signals:",
+    ...toIndentedBulletLines(input.data.authSignals),
+    "- Messaging signals:",
+    ...toIndentedBulletLines(input.data.messagingSignals),
+    "- Observability signals:",
+    ...toIndentedBulletLines(input.data.observabilitySignals),
     "- Workspace and repo shape:",
     ...toIndentedBulletLines(input.data.workspaceHints),
     "- Testing signals:",
@@ -263,6 +278,26 @@ function renderProjectInventoryMarkdown(input: ProjectContextMarkdownInput & {
     "## Workspace Hints",
     "",
     ...toBulletLines(input.data.workspaceHints),
+    "",
+    "## API Signals",
+    "",
+    ...toBulletLines(input.data.apiSignals),
+    "",
+    "## Data Signals",
+    "",
+    ...toBulletLines(input.data.dataSignals),
+    "",
+    "## Authentication Signals",
+    "",
+    ...toBulletLines(input.data.authSignals),
+    "",
+    "## Messaging Signals",
+    "",
+    ...toBulletLines(input.data.messagingSignals),
+    "",
+    "## Observability Signals",
+    "",
+    ...toBulletLines(input.data.observabilitySignals),
     "",
     "## Testing Signals",
     "",
@@ -410,6 +445,16 @@ function renderArchitectureContextMarkdown(input: ProjectContextMarkdownInput & 
     "",
     "## Delivery And Operability Signals",
     "",
+    "- API and communication signals:",
+    ...toIndentedBulletLines(input.data.apiSignals),
+    "- Data and persistence signals:",
+    ...toIndentedBulletLines(input.data.dataSignals),
+    "- Authentication and access signals:",
+    ...toIndentedBulletLines(input.data.authSignals),
+    "- Messaging signals:",
+    ...toIndentedBulletLines(input.data.messagingSignals),
+    "- Observability signals:",
+    ...toIndentedBulletLines(input.data.observabilitySignals),
     "- Workspace and repo shape:",
     ...toIndentedBulletLines(input.data.workspaceHints),
     "- Testing signals:",

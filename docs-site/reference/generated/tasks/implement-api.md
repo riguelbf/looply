@@ -57,7 +57,7 @@ Reservar budget maior de contexto para evitar perda de requisitos.
 8. Validar impacto em contrato, persistencia, integracoes, jobs e observabilidade.
 9. Implementar a mudanca no menor recorte possivel, preservando handlers finos, dominio rico e comportamento testavel.
 10. Atualizar testes relevantes, fixtures, migracoes, docs e artefatos operacionais quando necessario.
-11. Registrar resumo de implementacao com entendimento arquitetural, riscos residuais, compatibilidade e pontos de rollout.
+11. Registrar resumo de implementacao com entendimento arquitetural, riscos residuais, compatibilidade, pontos de rollout e contrato explicito de handoff.
 
 ## Constraints
 
@@ -74,6 +74,7 @@ Reservar budget maior de contexto para evitar perda de requisitos.
 - validacao, erros e contratos atualizados de forma explicita
 - testes relevantes cobrindo caminho feliz e cenarios criticos
 - risco operacional, rollout e follow-ups registrados quando aplicavel
+- handoff contract preenchido com receiver, readiness, blockers, next command e artefatos exigidos
 - fechamento da etapa com tabela de concluidos e pendentes
 
 ## Arquivo

@@ -78,7 +78,7 @@ Inspect and manage looply session links for multi-session workflows
 
 Show a consolidated operational status for the current project
 
-- options: 3
+- options: 4
 
 ## [sync](./commands/sync)
 

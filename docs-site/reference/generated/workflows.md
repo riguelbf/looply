@@ -2,12 +2,26 @@
 
 Referencia gerada a partir do pack `engineering-base`.
 
+## [cloud-workload-design](./workflows/cloud-workload-design)
+
+Define cloud topology, governance posture and cost direction for a workload or distributed service change
+
+- phase: `planning`
+- alias principal: `/looply:cloud-workload-design`
+
 ## [idea-to-prd](./workflows/idea-to-prd)
 
 Discovery workflow from raw idea to approved PRD
 
 - phase: `discovery`
 - alias principal: `/looply:idea-to-prd`
+
+## [platform-foundation-evolution](./workflows/platform-foundation-evolution)
+
+Evolve shared platform foundations, guardrails and enablement assets with governance and cost validation
+
+- phase: `planning`
+- alias principal: `/looply:platform-foundation-evolution`
 
 ## [prd-to-stories](./workflows/prd-to-stories)
 

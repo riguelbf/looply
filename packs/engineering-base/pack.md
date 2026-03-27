@@ -35,6 +35,8 @@ includes:
     - prepare-service-release
     - assess-service-operability
   workflows:
+    - cloud-workload-design
+    - platform-foundation-evolution
     - story-to-production
     - workflow-status
 ---

@@ -1,0 +1,149 @@
+import path from "node:path";
+import fs from "fs-extra";
+import {
+  resolveArchitectureContextMarkdownFile,
+  resolveContextIndexFile,
+  resolveProjectInventoryMarkdownFile,
+  resolveProjectContextMarkdownFile
+} from "./context-documents.js";
+import { readContextSnapshot, resolveContextSnapshotFile, type ContextSnapshotDocument } from "./context-snapshot.js";
+import { readFeatureWorkflowStates, type FeatureWorkflowState } from "./feature-workflow-state.js";
+import { readInteractionPolicyFile } from "./interaction-policy.js";
+import { readLocaleFile } from "./locale.js";
+import { readInstallManifestFromTarget } from "./manifest.js";
+import { readProjectContextFile } from "./project-context.js";
+import { readSessionLinks } from "./session-links.js";
+import { readUpgradeHistoryFromTarget } from "./upgrade-history.js";
+
+export interface ProjectSnapshotDocument {
+  version: 1;
+  generatedAt: string;
+  targetRoot: string;
+  summary: {
+    installCount: number;
+    featureCount: number;
+    blockedFeatureCount: number;
+    readyFeatureCount: number;
+    sessionCount: number;
+    historyCount: number;
+  };
+  project: {
+    installed: boolean;
+    locale: string;
+    projectMode: string;
+    interactionMode: string;
+    primaryContextRoot: string;
+    inferencePolicy: string;
+  };
+  installation: {
+    installs: Array<{
+      host: string;
+      scope: string;
+      pack: string;
+      managedFiles: number;
+      mergeableFiles: number;
+      customFiles: number;
+    }>;
+  };
+  context: {
+    snapshotFile: string;
+    indexFile: string;
+    projectContextFile: string;
+    architectureContextFile: string;
+    projectInventoryFile: string;
+    snapshot: ContextSnapshotDocument | null;
+  };
+  sessions: Array<{
+    label: string;
+    feature: string;
+    workflow?: string;
+    lastCommand?: string;
+    lastUpdatedAt?: string;
+  }>;
+  features: FeatureWorkflowState[];
+  history: Array<{
+    timestamp: string;
+    action: string;
+    host: string;
+    scope: string;
+    pack: string;
+    impacts: string[];
+    artifactChanges: string[];
+  }>;
+}
+
+export function resolveProjectSnapshotFile(targetRoot: string): string {
+  return path.join(targetRoot, ".looply", "state", "project-snapshot.json");
+}
+
+export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectSnapshotDocument> {
+  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot] = await Promise.all([
+    readInstallManifestFromTarget(targetRoot),
+    readLocaleFile(targetRoot),
+    readProjectContextFile(targetRoot),
+    readInteractionPolicyFile(targetRoot),
+    readSessionLinks(targetRoot),
+    readUpgradeHistoryFromTarget(targetRoot),
+    readFeatureWorkflowStates(targetRoot),
+    readContextSnapshot(targetRoot)
+  ]);
+
+  return {
+    version: 1,
+    generatedAt: new Date().toISOString(),
+    targetRoot,
+    summary: {
+      installCount: manifest?.installs.length ?? 0,
+      featureCount: features.length,
+      blockedFeatureCount: features.filter((feature) => feature.blockedBy.length > 0).length,
+      readyFeatureCount: features.filter((feature) => feature.readyForNextGate.toLowerCase() === "yes").length,
+      sessionCount: sessions.sessions.length,
+      historyCount: history.entries.length
+    },
+    project: {
+      installed: Boolean(manifest),
+      locale: locale?.outputLocale ?? contextSnapshot?.outputLocale ?? "unknown",
+      projectMode: projectContext?.mode ?? contextSnapshot?.projectMode ?? "unknown",
+      interactionMode: interactionPolicy?.mode ?? contextSnapshot?.interactionMode ?? "unknown",
+      primaryContextRoot: projectContext?.primaryContextRoot ?? contextSnapshot?.primaryContextRoot ?? targetRoot,
+      inferencePolicy: projectContext?.inferencePolicy ?? contextSnapshot?.inferencePolicy ?? "unknown"
+    },
+    installation: {
+      installs: (manifest?.installs ?? []).map((entry) => ({
+        host: entry.host,
+        scope: entry.scope,
+        pack: entry.pack,
+        managedFiles: entry.managedFiles.length,
+        mergeableFiles: entry.mergeableFiles.length,
+        customFiles: entry.customFiles.length
+      }))
+    },
+    context: {
+      snapshotFile: resolveContextSnapshotFile(targetRoot),
+      indexFile: resolveContextIndexFile(targetRoot),
+      projectContextFile: resolveProjectContextMarkdownFile(targetRoot),
+      architectureContextFile: resolveArchitectureContextMarkdownFile(targetRoot),
+      projectInventoryFile: resolveProjectInventoryMarkdownFile(targetRoot),
+      snapshot: contextSnapshot
+    },
+    sessions: sessions.sessions,
+    features,
+    history: history.entries.map((entry) => ({
+      timestamp: entry.timestamp,
+      action: entry.action,
+      host: entry.host,
+      scope: entry.scope,
+      pack: entry.pack,
+      impacts: entry.summary.impacts,
+      artifactChanges: entry.summary.artifactChanges
+    }))
+  };
+}
+
+export async function writeProjectSnapshot(targetRoot: string): Promise<string> {
+  const file = resolveProjectSnapshotFile(targetRoot);
+  const snapshot = await buildProjectSnapshot(targetRoot);
+  await fs.ensureDir(path.dirname(file));
+  await fs.writeJson(file, snapshot, { spaces: 2 });
+  return file;
+}

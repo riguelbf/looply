@@ -6,6 +6,7 @@ import {
   writeContextIndexMarkdown,
   writeProjectInventoryMarkdown
 } from "./context-documents.js";
+import { writeContextSnapshot } from "./context-snapshot.js";
 import { inferInferencePolicy, readProjectContextFile } from "./project-context.js";
 import { readInteractionPolicyFile } from "./interaction-policy.js";
 import { readLocaleFile } from "./locale.js";
@@ -52,6 +53,7 @@ export interface RefreshContextResult {
   projectContextFile: string;
   architectureContextFile: string;
   projectInventoryFile: string;
+  contextSnapshotFile: string;
   detectedLanguages: string[];
   detectedFrameworks: string[];
   keyDirectories: string[];
@@ -111,6 +113,16 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     data: analysis
   });
 
+  const contextSnapshotFile = await writeContextSnapshot({
+    targetRoot,
+    primaryContextRoot,
+    projectMode,
+    outputLocale,
+    interactionMode,
+    inferencePolicy,
+    data: analysis
+  });
+
   return {
     targetRoot,
     projectMode,
@@ -120,6 +132,7 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     projectContextFile,
     architectureContextFile,
     projectInventoryFile,
+    contextSnapshotFile,
     detectedLanguages: analysis.languages,
     detectedFrameworks: analysis.frameworks,
     keyDirectories: analysis.keyDirectories,
@@ -138,6 +151,11 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
   const languages = detectLanguages(topLevelFiles, packageJson, discoveredFiles);
   const frameworks = detectFrameworks(topLevelFiles, packageJson, discoveredFiles);
   const keyDirectories = detectKeyDirectories(topLevelEntries, discoveredFiles);
+  const apiSignals = detectApiSignals(topLevelFiles, packageJson, discoveredFiles);
+  const dataSignals = detectDataSignals(topLevelFiles, packageJson, topLevelEntries, discoveredFiles);
+  const authSignals = detectAuthSignals(topLevelFiles, packageJson, discoveredFiles);
+  const messagingSignals = detectMessagingSignals(topLevelFiles, packageJson, discoveredFiles);
+  const observabilitySignals = detectObservabilitySignals(topLevelFiles, packageJson, discoveredFiles);
   const workspaceHints = detectWorkspaceHints(topLevelFiles, packageJson, discoveredFiles);
   const testingSignals = detectTestingSignals(topLevelFiles, packageJson, discoveredFiles);
   const infrastructureSignals = detectInfrastructureSignals(topLevelFiles, packageJson, discoveredFiles);
@@ -150,6 +168,11 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     frameworks,
     keyDirectories,
     integrationHints,
+    apiSignals,
+    dataSignals,
+    authSignals,
+    messagingSignals,
+    observabilitySignals,
     workspaceHints,
     infrastructureSignals
   });
@@ -161,6 +184,21 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     frameworks.length > 0
       ? `Application and tooling stack signals: ${frameworks.join(", ")}.`
       : "Application framework signals are still weak; inspect the codebase directly.",
+    apiSignals.length > 0
+      ? `API and communication surface: ${apiSignals.join(", ")}.`
+      : "API surface is still weakly mapped.",
+    dataSignals.length > 0
+      ? `Data and persistence signals: ${dataSignals.join(", ")}.`
+      : "Data and persistence footprint is still weakly mapped.",
+    authSignals.length > 0
+      ? `Authentication and access signals: ${authSignals.join(", ")}.`
+      : "Authentication surface is still unclear from repository signals.",
+    messagingSignals.length > 0
+      ? `Messaging and asynchronous signals: ${messagingSignals.join(", ")}.`
+      : "Messaging or event-driven signals were not inferred strongly yet.",
+    observabilitySignals.length > 0
+      ? `Observability signals: ${observabilitySignals.join(", ")}.`
+      : "Observability signals are still weakly mapped.",
     workspaceHints.length > 0
       ? `Workspace shape: ${workspaceHints.join(", ")}.`
       : "Workspace shape is still unclear from repository signals.",
@@ -183,6 +221,12 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     automationSignals.length > 0
       ? `Automation surface detected: ${automationSignals.join(", ")}. Check current CI and release expectations before shipping.`
       : "Automation and release surface still need validation.",
+    authSignals.length > 0
+      ? `Authentication or access-control paths exist: ${authSignals.join(", ")}. Validate client/server boundaries and secret handling before changing access flows.`
+      : "Authentication surface is still weakly mapped; verify whether access-control logic exists outside the inferred stack.",
+    messagingSignals.length > 0
+      ? `Asynchronous behavior appears present: ${messagingSignals.join(", ")}. Validate idempotency, retries and delivery guarantees before changing async paths.`
+      : "Async communication patterns were not strongly inferred; confirm whether queues, events or background jobs exist.",
     integrationHints.length > 0
       ? "Integration surface is non-trivial. Validate contracts, credentials and rollout risk before delivery."
       : "Integration footprint appears limited or not yet mapped."
@@ -194,6 +238,11 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     keyDirectories.length,
     moduleHints.length,
     integrationHints.length,
+    apiSignals.length,
+    dataSignals.length,
+    authSignals.length,
+    messagingSignals.length,
+    observabilitySignals.length,
     testingSignals.length,
     infrastructureSignals.length,
     automationSignals.length
@@ -209,6 +258,11 @@ async function analyzeProject(root: string, projectMode: ProjectMode) {
     keyDirectories,
     moduleHints,
     integrationHints,
+    apiSignals,
+    dataSignals,
+    authSignals,
+    messagingSignals,
+    observabilitySignals,
     workspaceHints,
     testingSignals,
     infrastructureSignals,
@@ -310,9 +364,20 @@ function detectFrameworks(
   if ("vue" in deps) frameworks.add("Vue");
   if ("svelte" in deps) frameworks.add("Svelte");
   if ("express" in deps) frameworks.add("Express");
+  if ("hono" in deps) frameworks.add("Hono");
+  if ("koa" in deps) frameworks.add("Koa");
   if ("fastify" in deps) frameworks.add("Fastify");
   if ("nestjs" in deps || "@nestjs/core" in deps) frameworks.add("NestJS");
+  if ("trpc" in deps || "@trpc/server" in deps) frameworks.add("tRPC");
+  if ("graphql" in deps || "@apollo/server" in deps || "apollo-server" in deps) frameworks.add("GraphQL");
   if ("@tanstack/react-query" in deps) frameworks.add("TanStack Query");
+  if ("react-hook-form" in deps) frameworks.add("React Hook Form");
+  if ("zod" in deps) frameworks.add("Zod");
+  if ("tailwindcss" in deps) frameworks.add("Tailwind CSS");
+  if ("@radix-ui/react-slot" in deps || "@radix-ui/react-dialog" in deps) frameworks.add("Radix UI");
+  if ("zustand" in deps) frameworks.add("Zustand");
+  if ("jotai" in deps) frameworks.add("Jotai");
+  if ("@reduxjs/toolkit" in deps) frameworks.add("Redux Toolkit");
   if ("prisma" in deps || files.has("prisma")) frameworks.add("Prisma");
   if ("typeorm" in deps) frameworks.add("TypeORM");
   if ("drizzle-orm" in deps) frameworks.add("Drizzle");
@@ -390,8 +455,132 @@ function detectTestingSignals(
   if ("jest" in deps) hints.add("unit or integration tests via Jest");
   if ("playwright" in deps || "@playwright/test" in deps) hints.add("browser or end-to-end tests via Playwright");
   if ("cypress" in deps) hints.add("browser tests via Cypress");
+  if ("supertest" in deps) hints.add("HTTP contract or integration tests via Supertest");
+  if ("msw" in deps) hints.add("API mocking via MSW");
   if (files.has("tests") || hasMatchingPath(filePaths, /^tests\//) || hasMatchingPath(filePaths, /__tests__\//)) hints.add("repository-level test directories");
+  if (hasMatchingPath(filePaths, /\.(spec|test)\.(ts|tsx|js|jsx|py|go|java|cs)$/)) hints.add("test files co-located with source");
   if (files.has("coverage")) hints.add("coverage artifacts or directory");
+
+  return [...hints];
+}
+
+function detectApiSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("express" in deps || "fastify" in deps || "@nestjs/core" in deps || "hono" in deps || "koa" in deps) {
+    hints.add("server-side HTTP framework");
+  }
+  if ("next" in deps && hasMatchingPath(filePaths, /^src\/app\/api\//)) hints.add("Next.js route handlers");
+  if ("trpc" in deps || "@trpc/server" in deps) hints.add("tRPC endpoints");
+  if ("graphql" in deps || "@apollo/server" in deps || "apollo-server" in deps) hints.add("GraphQL API surface");
+  if (hasMatchingPath(filePaths, /(^|\/)(routes|controllers|handlers|endpoints)\//)) hints.add("route or controller folders");
+  if (hasMatchingPath(filePaths, /openapi|swagger/i)) hints.add("OpenAPI or Swagger contract assets");
+
+  return [...hints];
+}
+
+function detectDataSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  entries: string[],
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("@prisma/client" in deps || "prisma" in deps) hints.add("Prisma schema or client");
+  if ("pg" in deps) hints.add("PostgreSQL client");
+  if ("mysql2" in deps) hints.add("MySQL client");
+  if ("mongodb" in deps || "mongoose" in deps) hints.add("MongoDB client");
+  if ("redis" in deps || "ioredis" in deps) hints.add("Redis client");
+  if ("typeorm" in deps) hints.add("TypeORM");
+  if ("drizzle-orm" in deps) hints.add("Drizzle ORM");
+  if (entries.includes("prisma") || hasMatchingPath(filePaths, /^prisma\//)) hints.add("prisma schema directory");
+  if (entries.includes("migrations") || hasMatchingPath(filePaths, /migrations?\//i)) hints.add("database migrations");
+  if (hasMatchingPath(filePaths, /schema\.sql$|seed\.(ts|js|sql)$/i)) hints.add("database bootstrap or seed assets");
+
+  return [...hints];
+}
+
+function detectAuthSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("next-auth" in deps || "@auth/core" in deps) hints.add("NextAuth or Auth.js");
+  if ("passport" in deps || "passport-jwt" in deps) hints.add("Passport-based authentication");
+  if ("jsonwebtoken" in deps || "jose" in deps) hints.add("JWT handling");
+  if ("bcrypt" in deps || "bcryptjs" in deps || "argon2" in deps) hints.add("password hashing");
+  if ("keycloak-js" in deps || "oidc-client-ts" in deps) hints.add("OIDC or identity-provider integration");
+  if (hasMatchingPath(filePaths, /(^|\/)(auth|authentication|authorization|iam)\//i)) hints.add("auth-specific modules");
+  if (hasMatchingPath(filePaths, /middleware/i) && ("next" in deps || "express" in deps || "fastify" in deps)) hints.add("request middleware that may enforce access control");
+
+  return [...hints];
+}
+
+function detectMessagingSignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("bullmq" in deps || "bull" in deps) hints.add("job queue via Bull or BullMQ");
+  if ("amqplib" in deps) hints.add("RabbitMQ client");
+  if ("kafkajs" in deps) hints.add("Kafka client");
+  if ("@aws-sdk/client-sqs" in deps) hints.add("Amazon SQS");
+  if ("agenda" in deps) hints.add("scheduled jobs via Agenda");
+  if (hasMatchingPath(filePaths, /(^|\/)(queues|queue|workers|worker|jobs|consumers|producers|events)\//i)) {
+    hints.add("worker, queue or event-oriented folders");
+  }
+
+  return [...hints];
+}
+
+function detectObservabilitySignals(
+  files: Set<string>,
+  packageJson: Record<string, unknown> | null,
+  discoveredFiles: DiscoveredFile[]
+): string[] {
+  const hints = new Set<string>();
+  const deps = {
+    ...toRecord(packageJson?.dependencies),
+    ...toRecord(packageJson?.devDependencies)
+  };
+  const filePaths = new Set(discoveredFiles.map((file) => file.relativePath));
+
+  if ("pino" in deps || "winston" in deps) hints.add("application logging library");
+  if ("@opentelemetry/api" in deps || "@opentelemetry/sdk-node" in deps) hints.add("OpenTelemetry instrumentation");
+  if ("@sentry/node" in deps || "@sentry/nextjs" in deps) hints.add("Sentry error reporting");
+  if ("prom-client" in deps) hints.add("Prometheus metrics");
+  if (hasMatchingPath(filePaths, /(^|\/)(observability|instrumentation|tracing|logging|monitoring)\//i)) {
+    hints.add("observability or instrumentation modules");
+  }
 
   return [...hints];
 }
@@ -411,6 +600,7 @@ function detectInfrastructureSignals(
   if (files.has("Dockerfile") || hasMatchingPath(filePaths, /^Dockerfile(\..+)?$/i)) hints.add("docker image build");
   if (files.has("docker-compose.yml") || files.has("docker-compose.yaml")) hints.add("docker compose setup");
   if (hasMatchingPath(filePaths, /\.tf$/)) hints.add("terraform infrastructure");
+  if (hasMatchingPath(filePaths, /Pulumi\.(ya?ml|json)$/i) || "pulumi" in deps) hints.add("pulumi infrastructure");
   if (hasMatchingPath(filePaths, /^charts\//)) hints.add("helm charts");
   if (hasMatchingPath(filePaths, /(^|\/)(k8s|kubernetes)\//i)) hints.add("kubernetes manifests");
   if ("@aws-sdk/client-sqs" in deps || "@aws-sdk/client-s3" in deps || "@aws-sdk/client-secrets-manager" in deps) hints.add("aws service clients");
@@ -434,8 +624,11 @@ function detectAutomationSignals(
   if ("test" in scripts) hints.add("test script in package.json");
   if ("lint" in scripts) hints.add("lint script in package.json");
   if ("deploy" in scripts) hints.add("deploy script in package.json");
+  if ("release" in scripts) hints.add("release script in package.json");
   if (files.has("Makefile")) hints.add("makefile automation");
   if (hasMatchingPath(filePaths, /^scripts\//)) hints.add("repository automation scripts");
+  if (hasMatchingPath(filePaths, /^\.husky\//)) hints.add("git hooks via Husky");
+  if (files.has(".changeset") || hasMatchingPath(filePaths, /^\.changeset\//)) hints.add("release orchestration via Changesets");
 
   return [...hints];
 }
@@ -451,7 +644,7 @@ function detectModuleHints(keyDirectories: string[], discoveredFiles: Discovered
       continue;
     }
 
-    if (parts.length >= 2) {
+    if (parts.length >= 2 && !parts[1].includes(".")) {
       hints.add(`${root}/${parts[1]}`);
     }
   }
@@ -486,6 +679,12 @@ function detectIntegrationHints(
   if ("stripe" in deps) hints.add("Stripe");
   if ("axios" in deps || "node-fetch" in deps || "undici" in deps) hints.add("HTTP API integrations");
   if ("amqplib" in deps || "kafkajs" in deps || "bullmq" in deps) hints.add("queue or event integration");
+  if ("next-auth" in deps || "@auth/core" in deps || "passport" in deps || "jsonwebtoken" in deps || "jose" in deps) {
+    hints.add("authentication or identity integration");
+  }
+  if ("pino" in deps || "@opentelemetry/api" in deps || "@sentry/node" in deps || "prom-client" in deps) {
+    hints.add("observability or monitoring integration");
+  }
   if (entries.includes("openapi") || entries.includes("swagger") || hasMatchingPath(filePaths, /openapi|swagger/i)) hints.add("OpenAPI or Swagger assets");
   if (entries.includes("prisma")) hints.add("database schema directory");
   if (entries.includes("migrations")) hints.add("migrations directory");
@@ -500,6 +699,11 @@ function buildRepositorySummary(input: {
   frameworks: string[];
   keyDirectories: string[];
   integrationHints: string[];
+  apiSignals: string[];
+  dataSignals: string[];
+  authSignals: string[];
+  messagingSignals: string[];
+  observabilitySignals: string[];
   workspaceHints: string[];
   infrastructureSignals: string[];
 }): string[] {
@@ -513,6 +717,21 @@ function buildRepositorySummary(input: {
     input.frameworks.length > 0
       ? `Framework and tooling signals: ${input.frameworks.join(", ")}.`
       : "Framework signals are still weak.",
+    input.apiSignals.length > 0
+      ? `API signals: ${input.apiSignals.join(", ")}.`
+      : "API surface is still weakly mapped.",
+    input.dataSignals.length > 0
+      ? `Data signals: ${input.dataSignals.join(", ")}.`
+      : "Data and persistence surface is still weakly mapped.",
+    input.authSignals.length > 0
+      ? `Authentication signals: ${input.authSignals.join(", ")}.`
+      : "Authentication surface is still unclear.",
+    input.messagingSignals.length > 0
+      ? `Messaging signals: ${input.messagingSignals.join(", ")}.`
+      : "Messaging or event-driven surface was not strongly inferred yet.",
+    input.observabilitySignals.length > 0
+      ? `Observability signals: ${input.observabilitySignals.join(", ")}.`
+      : "Observability surface is still weakly mapped.",
     input.workspaceHints.length > 0
       ? `Workspace shape: ${input.workspaceHints.join(", ")}.`
       : "Workspace shape was not inferred strongly yet.",

@@ -14,12 +14,6 @@ Assess cloud posture, policy alignment and governance controls for a workload or
 
 - arquivo: `packs/engineering-base/tasks/assess-cloud-governance.md`
 
-## [assess-cloud-governance](./tasks/assess-cloud-governance)
-
-Assess cloud posture, policy alignment and governance controls for a workload or platform change
-
-- arquivo: `packs/engineering-base/tasks/assess-cloud-governance.md`
-
 ## [assess-service-operability](./tasks/assess-service-operability)
 
 Assess service operability and production readiness before release

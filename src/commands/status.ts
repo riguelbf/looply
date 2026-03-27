@@ -1,35 +1,8 @@
 import type { Command } from "commander";
 import chalk from "chalk";
 import path from "node:path";
-import fs from "fs-extra";
-import matter from "gray-matter";
-import { globby } from "globby";
-import { readInteractionPolicyFile } from "../lib/interaction-policy.js";
-import { readLocaleFile } from "../lib/locale.js";
-import { readInstallManifestFromTarget } from "../lib/manifest.js";
-import { readProjectContextFile } from "../lib/project-context.js";
-import { readSessionLinks } from "../lib/session-links.js";
-import { readUpgradeHistoryFromTarget } from "../lib/upgrade-history.js";
+import { buildProjectSnapshot, writeProjectSnapshot } from "../lib/project-snapshot.js";
 import { showIntro, showOutro } from "../ui/feedback.js";
-
-interface FeatureStatusEntry {
-  feature: string;
-  workflow: string;
-  phase: string;
-  currentStage: string;
-  currentGate: string;
-  activeArtifact: string;
-  selectedStory: string;
-  readyForNextGate: string;
-  nextAgent: string;
-  nextTask: string;
-  blockedBy: string[];
-  missingOutputs: string[];
-  decisionRationale: string;
-  recommendedNextWorkflow: string;
-  lastUpdated: string;
-  file: string;
-}
 
 export function registerStatusCommand(program: Command): void {
   program
@@ -38,37 +11,38 @@ export function registerStatusCommand(program: Command): void {
     .option("--dir <dir>", "Target directory for project status (defaults to current directory)")
     .option("--limit <count>", "Maximum number of recent history entries to show", "3")
     .option("--features <count>", "Maximum number of feature states to show", "5")
+    .option("--json", "Print the normalized project snapshot as JSON")
     .action(async (options) => {
-      showIntro("looply status");
-
       const targetRoot = path.resolve(options.dir ?? process.cwd());
       const historyLimit = toPositiveNumber(options.limit, 3);
       const featureLimit = toPositiveNumber(options.features, 5);
+      const snapshot = await buildProjectSnapshot(targetRoot);
+      const snapshotFile = await writeProjectSnapshot(targetRoot);
 
-      const [manifest, locale, projectContext, interactionPolicy, sessions, history, featureStates] = await Promise.all([
-        readInstallManifestFromTarget(targetRoot),
-        readLocaleFile(targetRoot),
-        readProjectContextFile(targetRoot),
-        readInteractionPolicyFile(targetRoot),
-        readSessionLinks(targetRoot),
-        readUpgradeHistoryFromTarget(targetRoot),
-        readFeatureStates(targetRoot)
-      ]);
+      if (options.json) {
+        console.log(JSON.stringify(snapshot, null, 2));
+        return;
+      }
+
+      showIntro("looply status");
 
       console.log(chalk.bold("Project"));
-      console.log(`root: ${chalk.cyan(targetRoot)}`);
-      console.log(`installed: ${manifest ? chalk.green("yes") : chalk.red("no")}`);
+      console.log(`root: ${chalk.cyan(snapshot.targetRoot)}`);
+      console.log(`installed: ${snapshot.project.installed ? chalk.green("yes") : chalk.red("no")}`);
+      console.log(`installs: ${chalk.cyan(String(snapshot.summary.installCount))}`);
+      console.log(`features: ${chalk.cyan(String(snapshot.summary.featureCount))}`);
+      console.log(`sessions: ${chalk.cyan(String(snapshot.summary.sessionCount))}`);
       console.log("");
 
       console.log(chalk.bold("Installation"));
-      if (!manifest || manifest.installs.length === 0) {
+      if (snapshot.installation.installs.length === 0) {
         console.log(chalk.dim("No install manifest found."));
       } else {
-        for (const entry of manifest.installs) {
+        for (const entry of snapshot.installation.installs) {
           console.log(`- host: ${chalk.cyan(entry.host)}  scope: ${chalk.cyan(entry.scope)}  pack: ${chalk.cyan(entry.pack)}`);
           console.log(
             chalk.dim(
-              `  files: managed ${entry.managedFiles.length}  mergeable ${entry.mergeableFiles.length}  custom ${entry.customFiles.length}`
+              `  files: managed ${entry.managedFiles}  mergeable ${entry.mergeableFiles}  custom ${entry.customFiles}`
             )
           );
         }
@@ -76,23 +50,37 @@ export function registerStatusCommand(program: Command): void {
       console.log("");
 
       console.log(chalk.bold("Operational Mode"));
-      console.log(`locale: ${chalk.cyan(locale?.outputLocale ?? "unknown")}`);
-      console.log(`project-mode: ${chalk.cyan(projectContext?.mode ?? "unknown")}`);
-      console.log(`interaction-mode: ${chalk.cyan(interactionPolicy?.mode ?? "unknown")}`);
-      if (projectContext) {
-        console.log(chalk.dim(`context-root: ${projectContext.primaryContextRoot}`));
-        console.log(chalk.dim(`inference-policy: ${projectContext.inferencePolicy}`));
-      }
-      if (interactionPolicy) {
-        console.log(chalk.dim(`ask-when: ${interactionPolicy.askWhen.join(", ")}`));
+      console.log(`locale: ${chalk.cyan(snapshot.project.locale)}`);
+      console.log(`project-mode: ${chalk.cyan(snapshot.project.projectMode)}`);
+      console.log(`interaction-mode: ${chalk.cyan(snapshot.project.interactionMode)}`);
+      console.log(chalk.dim(`context-root: ${snapshot.project.primaryContextRoot}`));
+      console.log(chalk.dim(`inference-policy: ${snapshot.project.inferencePolicy}`));
+      console.log("");
+
+      console.log(chalk.bold("Context"));
+      if (snapshot.context.snapshot) {
+        console.log(`status: ${chalk.cyan(snapshot.context.snapshot.contextStatus)}`);
+        console.log(`coverage: ${chalk.cyan(snapshot.context.snapshot.contextCoverage)}`);
+        console.log(`last-validated: ${chalk.cyan(snapshot.context.snapshot.lastValidatedAt || "unknown")}`);
+        console.log(`languages: ${chalk.cyan(snapshot.context.snapshot.languages.join(", ") || "none")}`);
+        console.log(`frameworks: ${chalk.cyan(snapshot.context.snapshot.frameworks.join(", ") || "none")}`);
+        console.log(`api: ${chalk.cyan(snapshot.context.snapshot.apiSignals.join(", ") || "none")}`);
+        console.log(`data: ${chalk.cyan(snapshot.context.snapshot.dataSignals.join(", ") || "none")}`);
+        console.log(`auth: ${chalk.cyan(snapshot.context.snapshot.authSignals.join(", ") || "none")}`);
+        console.log(`messaging: ${chalk.cyan(snapshot.context.snapshot.messagingSignals.join(", ") || "none")}`);
+        console.log(`observability: ${chalk.cyan(snapshot.context.snapshot.observabilitySignals.join(", ") || "none")}`);
+        console.log(`modules: ${chalk.cyan(snapshot.context.snapshot.moduleHints.join(", ") || "none")}`);
+        console.log(`integrations: ${chalk.cyan(snapshot.context.snapshot.integrationHints.join(", ") || "none")}`);
+      } else {
+        console.log(chalk.dim("No context snapshot found. Run `looply refresh-context` to generate one."));
       }
       console.log("");
 
       console.log(chalk.bold("Sessions"));
-      if (sessions.sessions.length === 0) {
+      if (snapshot.sessions.length === 0) {
         console.log(chalk.dim("No session links recorded."));
       } else {
-        for (const session of sessions.sessions.slice(0, 5)) {
+        for (const session of snapshot.sessions.slice(0, 5)) {
           console.log(
             `- ${chalk.cyan(session.label)} -> ${chalk.cyan(session.feature)}${session.workflow ? ` ${chalk.dim(`(${session.workflow})`)}` : ""}`
           );
@@ -108,28 +96,28 @@ export function registerStatusCommand(program: Command): void {
       console.log("");
 
       console.log(chalk.bold("Features"));
-      if (featureStates.length === 0) {
+      if (snapshot.features.length === 0) {
         console.log(chalk.dim("No feature workflow states found."));
       } else {
-        for (const feature of featureStates.slice(0, featureLimit)) {
-          const linkedSessions = sessions.sessions.filter((session) => session.feature === feature.feature);
-          const rows: Array<[string, string]> = [
-            ["Feature", feature.feature || "unknown"],
-            ["Workflow", feature.workflow || "unknown"],
-            ["Phase", feature.phase || "unknown"],
-            ["Current Stage", feature.currentStage || "unknown"],
-            ["Current Gate", feature.currentGate || "unknown"],
-            ["Active Artifact", feature.activeArtifact || "unknown"],
-            ["Selected Story", feature.selectedStory || "n/a"],
-            ["Next Workflow", feature.recommendedNextWorkflow || "unknown"],
-            ["Next Agent", feature.nextAgent || "unknown"],
-            ["Next Task", feature.nextTask || "unknown"],
-            ["Ready For Next Gate", feature.readyForNextGate || "unknown"],
-            ["Sessions", linkedSessions.length > 0 ? linkedSessions.map((session) => session.label).join(", ") : "none"]
-          ];
-
+        for (const feature of snapshot.features.slice(0, featureLimit)) {
+          const linkedSessions = snapshot.sessions.filter((session) => session.feature === feature.feature);
           console.log(chalk.cyan(feature.feature));
-          console.log(renderKeyValueTable(rows));
+          console.log(`workflow: ${feature.workflow || "unknown"}`);
+          console.log(`phase: ${feature.phase || "unknown"}`);
+          console.log(`stage: ${feature.currentStage || "unknown"}`);
+          console.log(`gate: ${feature.currentGate || "unknown"}`);
+          console.log(`gate-status: ${feature.gateStatus || "unknown"}`);
+          console.log(`artifact: ${feature.activeArtifact || "unknown"}`);
+          console.log(`selected-story: ${feature.selectedStory || "n/a"}`);
+          console.log(`host: ${feature.host || "unknown"}`);
+          console.log(`next-workflow: ${feature.recommendedNextWorkflow || "unknown"}`);
+          console.log(`next-agent: ${feature.nextAgent || "unknown"}`);
+          console.log(`next-task: ${feature.nextTask || "unknown"}`);
+          console.log(`next-command: ${feature.nextCommand || "unknown"}`);
+          console.log(`next-handoff: ${feature.nextHandoff || "unknown"}`);
+          console.log(`ready-for-next-gate: ${feature.readyForNextGate || "unknown"}`);
+          console.log(`context: ${feature.contextStatus || "unknown"} / ${feature.contextCoverage || "unknown"}`);
+          console.log(`sessions: ${linkedSessions.length > 0 ? linkedSessions.map((session) => session.label).join(", ") : "none"}`);
 
           if (feature.blockedBy.length > 0) {
             console.log(chalk.bold("Blocked By"));
@@ -150,13 +138,9 @@ export function registerStatusCommand(program: Command): void {
             console.log(chalk.dim(feature.decisionRationale));
           }
 
-          if (feature.recommendedNextWorkflow) {
+          if (feature.nextCommand || feature.recommendedNextWorkflow) {
             console.log(chalk.bold("Next Step"));
-            console.log(
-              chalk.dim(
-                `${feature.recommendedNextWorkflow} -> ${feature.nextAgent || "unknown"} -> ${feature.nextTask || "unknown"}`
-              )
-            );
+            console.log(chalk.dim(feature.nextCommand || `${feature.recommendedNextWorkflow} -> ${feature.nextAgent || "unknown"} -> ${feature.nextTask || "unknown"}`));
           }
           if (feature.lastUpdated) {
             console.log(chalk.dim(`updated ${feature.lastUpdated}`));
@@ -167,77 +151,30 @@ export function registerStatusCommand(program: Command): void {
       }
 
       console.log(chalk.bold("Recent History"));
-      if (history.entries.length === 0) {
+      if (snapshot.history.length === 0) {
         console.log(chalk.dim("No upgrade or sync history recorded."));
       } else {
-        for (const entry of history.entries.slice(0, historyLimit)) {
+        for (const entry of snapshot.history.slice(0, historyLimit)) {
           console.log(`- ${entry.timestamp}  ${chalk.cyan(entry.action)}  ${chalk.cyan(entry.host)}  ${chalk.dim(`(${entry.pack})`)}`);
-          if (entry.summary.impacts.length > 0) {
-            console.log(chalk.dim(`  impacts: ${entry.summary.impacts.slice(0, 3).join(" | ")}`));
+          if (entry.impacts.length > 0) {
+            console.log(chalk.dim(`  impacts: ${entry.impacts.slice(0, 3).join(" | ")}`));
           }
         }
       }
 
+      console.log("");
+      console.log(chalk.bold("Recommended Actions"));
+      const recommendations = buildRecommendedActions(snapshot);
+      for (const recommendation of recommendations) {
+        console.log(`- ${recommendation}`);
+      }
+
+      console.log("");
+      console.log(chalk.bold("Snapshot"));
+      console.log(chalk.dim(snapshotFile));
+
       showOutro("Status snapshot completed");
     });
-}
-
-async function readFeatureStates(targetRoot: string): Promise<FeatureStatusEntry[]> {
-  const files = await globby(".looply/custom/features/*/workflow-status.md", {
-    cwd: targetRoot,
-    absolute: true
-  });
-
-  const entries: FeatureStatusEntry[] = [];
-  for (const file of files) {
-    const source = await fs.readFile(file, "utf8");
-    const parsed = matter(source);
-    const body = parsed.content;
-    entries.push({
-      feature: extractSection(body, "Feature") || path.basename(path.dirname(file)),
-      workflow: extractSection(body, "Workflow"),
-      phase: extractSection(body, "Phase"),
-      currentStage: extractSection(body, "Current Stage"),
-      currentGate: extractSection(body, "Current Gate"),
-      activeArtifact: extractSection(body, "Active Artifact"),
-      selectedStory: extractSection(body, "Selected Story"),
-      readyForNextGate: extractSection(body, "Ready For Next Gate"),
-      nextAgent: extractSection(body, "Next Agent"),
-      nextTask: extractSection(body, "Next Task"),
-      blockedBy: extractListSection(body, "Blocked By"),
-      missingOutputs: extractListSection(body, "Missing Outputs"),
-      decisionRationale: extractSection(body, "Decision Rationale"),
-      recommendedNextWorkflow: extractSection(body, "Recommended Next Workflow"),
-      lastUpdated: extractSection(body, "Last Updated"),
-      file
-    });
-  }
-
-  return entries.sort((left, right) => right.lastUpdated.localeCompare(left.lastUpdated));
-}
-
-function extractSection(body: string, title: string): string {
-  const section = extractSectionRaw(body, title);
-  if (!section) {
-    return "";
-  }
-
-  return section
-    .trim()
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line !== "")
-    .join(" ");
-}
-
-function extractSectionRaw(body: string, title: string): string {
-  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = body.match(new RegExp(`(?:^|\\n)## ${escaped}\\n\\n([\\s\\S]*?)(?=\\n## |$)`));
-  if (!match) {
-    return "";
-  }
-
-  return match[1];
 }
 
 function toPositiveNumber(value: unknown, fallback: number): number {
@@ -245,34 +182,32 @@ function toPositiveNumber(value: unknown, fallback: number): number {
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : fallback;
 }
 
-function extractListSection(body: string, title: string): string[] {
-  const section = extractSectionRaw(body, title);
-  if (!section) {
-    return [];
+function buildRecommendedActions(snapshot: Awaited<ReturnType<typeof buildProjectSnapshot>>): string[] {
+  const actions: string[] = [];
+
+  if (!snapshot.project.installed) {
+    actions.push("Initialize project-scoped looply state with `looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project`.");
   }
 
-  return section
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("- "))
-    .map((line) => line.slice(2).trim())
-    .map((item) => item.trim())
-    .filter((item) => item !== "");
-}
+  if (!snapshot.context.snapshot) {
+    actions.push("Generate project context with `looply refresh-context`.");
+  }
 
-function renderKeyValueTable(rows: Array<[string, string]>): string {
-  const labelWidth = Math.max(...rows.map(([label]) => label.length), "Field".length);
-  const valueWidth = Math.max(...rows.map(([, value]) => value.length), "Value".length);
-  const divider = `+${"-".repeat(labelWidth + 2)}+${"-".repeat(valueWidth + 2)}+`;
+  if (snapshot.features.length === 0) {
+    actions.push("Inspect the available workflows with `looply list workflow`.");
+    actions.push("Inspect a workflow before starting delivery with `looply inspect workflow story-to-production`.");
+  } else {
+    const nextFeature = snapshot.features.find((feature) => feature.nextCommand !== "") ?? snapshot.features[0];
+    if (nextFeature?.nextCommand) {
+      actions.push(`Continue feature \`${nextFeature.feature}\` with \`${nextFeature.nextCommand}\`.`);
+    } else {
+      actions.push(`Resume feature \`${nextFeature?.feature ?? "current-feature"}\` with \`looply status\` and inspect the persisted workflow state.`);
+    }
+  }
 
-  const renderRow = (label: string, value: string) =>
-    `| ${label.padEnd(labelWidth)} | ${value.padEnd(valueWidth)} |`;
+  if (snapshot.context.snapshot && snapshot.context.snapshot.contextCoverage !== "high") {
+    actions.push("Refresh and validate context again after inspecting the real codebase to increase confidence before design or implementation.");
+  }
 
-  return [
-    divider,
-    renderRow("Field", "Value"),
-    divider,
-    ...rows.map(([label, value]) => renderRow(label, value)),
-    divider
-  ].join("\n");
+  return actions.length > 0 ? actions : ["No immediate action required. Use `looply status --json` for full operational state."];
 }

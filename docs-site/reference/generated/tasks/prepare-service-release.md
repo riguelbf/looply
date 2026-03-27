@@ -48,7 +48,7 @@ Prioriza clareza operacional e sequencia segura de release.
 1. Revisar review report e resumo de implementacao.
 2. Consolidar pre-condicoes de release.
 3. Definir rollout, verificacao e rollback.
-4. Preparar handoff para avaliacao de operabilidade.
+4. Preparar handoff explicito para avaliacao de operabilidade.
 
 ## Deliverables
 
@@ -56,6 +56,7 @@ Prioriza clareza operacional e sequencia segura de release.
 - sequencia de publicacao
 - verificacoes pos-release
 - rollback explicito
+- handoff contract com receiver, readiness, blockers, next command e artefatos exigidos
 - tabela final da etapa com itens concluidos e pendentes
 
 ## Arquivo

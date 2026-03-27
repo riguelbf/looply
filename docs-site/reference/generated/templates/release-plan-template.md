@@ -22,12 +22,27 @@ Template for release planning
 
 ## Communication
 
+## Handoff Contract
+
+### Handoff To
+
+### Handoff Decision
+
+### Ready For Receiver
+
+### Receiver Blockers
+
+### Next Command
+
+### Artifacts Required By Receiver
+
 ## Completion Table
 
 | Item | Status | Notes |
 | --- | --- | --- |
 | Preconditions mapped | Done |  |
 | Verification defined | Pending |  |
+| Handoff contract prepared | Pending |  |
 | Rollback ready | Pending |  |
 
 ## Arquivo

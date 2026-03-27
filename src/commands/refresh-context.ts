@@ -23,12 +23,14 @@ export function registerRefreshContextCommand(program: Command): void {
       console.log(`directories: ${chalk.cyan(result.keyDirectories.join(", ") || "none")}`);
       console.log(`modules: ${chalk.cyan(result.moduleHints.join(", ") || "none")}`);
       console.log(`integrations: ${chalk.cyan(result.integrationHints.join(", ") || "none")}`);
+      console.log(`snapshot: ${chalk.cyan(result.contextSnapshotFile)}`);
       console.log("");
       console.log(chalk.bold("Updated Files"));
       console.log(`- ${result.contextIndexFile}`);
       console.log(`- ${result.projectContextFile}`);
       console.log(`- ${result.architectureContextFile}`);
       console.log(`- ${result.projectInventoryFile}`);
+      console.log(`- ${result.contextSnapshotFile}`);
 
       showOutro("Project context refreshed");
     });

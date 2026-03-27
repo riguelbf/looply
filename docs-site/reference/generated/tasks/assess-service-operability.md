@@ -49,12 +49,14 @@ Prioriza risco operacional, observabilidade, verificacao e rollback.
 2. Validar sinais minimos de monitoracao e verificacao.
 3. Avaliar risco operacional residual.
 4. Emitir parecer de readiness ou bloqueio.
+5. Registrar contrato explicito de handoff final ou de retorno.
 
 ## Deliverables
 
 - operability report
 - riscos operacionais
 - status de release readiness
+- handoff contract com receiver, readiness, blockers, next command e artefatos exigidos
 - tabela final da etapa com itens concluidos e pendentes
 
 ## Arquivo

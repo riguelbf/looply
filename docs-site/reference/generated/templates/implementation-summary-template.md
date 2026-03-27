@@ -30,12 +30,27 @@ Template for implementation summary
 
 ## Release Notes Input
 
+## Handoff Contract
+
+### Handoff To
+
+### Handoff Decision
+
+### Ready For Receiver
+
+### Receiver Blockers
+
+### Next Command
+
+### Artifacts Required By Receiver
+
 ## Completion Table
 
 | Item | Status | Notes |
 | --- | --- | --- |
 | Implemented scope | Done |  |
 | Tests updated | Pending |  |
+| Handoff contract prepared | Pending |  |
 | Follow ups | Pending |  |
 
 ## Arquivo
