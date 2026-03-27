@@ -13,7 +13,7 @@ execution:
 inputs:
   - idea
 phase: discovery
-orchestrator: delivery-orchestrator
+orchestrator: pm-analyst
 stages:
   - name: requirement-analysis
     task: analyze-requirement
@@ -74,7 +74,7 @@ Separar a fase de discovery e consolidar um PRD claro antes de iniciar delivery.
 
 ## Orchestrator
 
-`delivery-orchestrator` cria ou atualiza o estado da feature, acompanha discovery e bloqueia a transicao sem PRD aprovado.
+`pm-analyst` conduz discovery e fecha o gate de discovery-ready.
 
 ## Execution
 

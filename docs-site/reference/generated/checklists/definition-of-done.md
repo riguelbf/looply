@@ -18,6 +18,6 @@ Shared completion checklist for artifacts
 
 ## Arquivo
 
-- `packs/engineering-base/checklists/definition-of-done.md`
+- `packs/product-base/checklists/definition-of-done.md`
 
 [Voltar para checklists](../checklists)

@@ -42,9 +42,11 @@ export interface CodexSkillDefinition {
 export function listWorkflowCommands(input: {
   pack: string;
   artifacts: CatalogArtifact[];
+  packClosure?: string[];
 }): WorkflowCommandDefinition[] {
+  const allowedPacks = new Set(input.packClosure ?? [input.pack]);
   return input.artifacts
-    .filter((artifact) => artifact.pack === input.pack && artifact.type === "workflow")
+    .filter((artifact) => allowedPacks.has(artifact.pack) && artifact.type === "workflow")
     .flatMap((artifact) => {
       return toCommandDefinitions(artifact);
     })

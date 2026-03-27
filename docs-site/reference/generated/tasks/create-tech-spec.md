@@ -29,7 +29,7 @@ Produce a technical specification from an approved story and PRD context
 
 ## Dependencies
 
-- `break-prd-into-stories`
+- Nenhum item declarado.
 
 ## Conteudo do artefato
 

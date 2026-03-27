@@ -10,7 +10,7 @@ Break an approved PRD into delivery-ready stories
 
 - workflow: [prd-to-stories](../workflows/prd-to-stories)
 - fase: `planning`
-- orchestrator: `delivery-orchestrator`
+- orchestrator: `pm-analyst`
 
 ## Hosts suportados
 

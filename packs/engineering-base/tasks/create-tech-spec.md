@@ -25,8 +25,7 @@ templates:
   - tech-spec-template
 checklists:
   - definition-of-done
-dependencies:
-  - break-prd-into-stories
+dependencies: []
 ---
 
 # Task: create-tech-spec

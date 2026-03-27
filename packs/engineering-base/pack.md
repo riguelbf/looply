@@ -1,14 +1,14 @@
 ---
 schema: looply/pack@v1
 name: engineering-base
-summary: Base operational pack for end-to-end software delivery
+summary: Base operational pack for engineering delivery and release
 pack_version: 0.1.0
 domains:
   - engineering
 includes:
+  packs: []
   agents:
     - delivery-orchestrator
-    - pm-analyst
     - architect
     - cloud-architect
     - platform-engineer
@@ -22,9 +22,6 @@ includes:
   tasks:
     - orchestrate-delivery
     - report-workflow-status
-    - analyze-requirement
-    - create-prd
-    - break-prd-into-stories
     - create-tech-spec
     - create-adr
     - create-cloud-architecture
@@ -38,12 +35,10 @@ includes:
     - prepare-service-release
     - assess-service-operability
   workflows:
-    - idea-to-prd
-    - prd-to-stories
     - story-to-production
     - workflow-status
 ---
 
 # Engineering Base Pack
 
-Pack inicial do LOOPLY para provar a jornada de software da ideia ate a publicacao.
+Pack inicial do LOOPLY para delivery tecnico, release e operabilidade.

@@ -30,7 +30,7 @@ Sem summary declarada.
 
 Sem summary declarada.
 
-- arquivo: `packs/engineering-base/agents/pm-analyst.md`
+- arquivo: `packs/product-base/agents/pm-analyst.md`
 
 ## [reviewer](./agents/reviewer)
 

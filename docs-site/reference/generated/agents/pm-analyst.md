@@ -26,7 +26,7 @@ Sem summary declarada.
 ## Escalation rules
 
 - `Escalate technical tradeoffs to architect`
-- `Escalate delivery sequencing to delivery-orchestrator`
+- `Escalate delivery sequencing to engineering-base`
 
 ## Conteudo do artefato
 
@@ -48,10 +48,10 @@ Prioriza descoberta orientada a valor de negocio antes do desenho tecnico.
 - consolidar PRD de discovery aprovado
 - decompor PRD em stories prontas para delivery
 - registrar riscos, dependencias e duvidas abertas
-- entregar requirement brief utilizavel por arquitetura
+- entregar requirement brief utilizavel por engenharia
 
 ## Arquivo
 
-- `packs/engineering-base/agents/pm-analyst.md`
+- `packs/product-base/agents/pm-analyst.md`
 
 [Voltar para agents](../agents)

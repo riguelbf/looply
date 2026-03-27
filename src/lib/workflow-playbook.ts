@@ -50,9 +50,11 @@ export function buildWorkflowPlaybookDocument(input: {
   host: string;
   pack: string;
   artifacts: CatalogArtifact[];
+  packClosure?: string[];
 }): string {
+  const allowedPacks = new Set(input.packClosure ?? [input.pack]);
   const workflows = input.artifacts
-    .filter((artifact) => artifact.pack === input.pack && artifact.type === "workflow")
+    .filter((artifact) => allowedPacks.has(artifact.pack) && artifact.type === "workflow")
     .map((artifact) => toWorkflowEntry(artifact))
     .sort((left, right) => left.name.localeCompare(right.name));
 
@@ -60,6 +62,7 @@ export function buildWorkflowPlaybookDocument(input: {
     `# looply Workflow Playbook for ${input.host}`,
     "",
     `Pack: \`${input.pack}\``,
+    input.packClosure && input.packClosure.length > 1 ? `Includes packs: ${input.packClosure.map((pack) => `\`${pack}\``).join(", ")}` : "",
     "",
     "Use this playbook as the shortest path to execute a feature workflow with explicit ownership, handoffs and quality gates.",
     ""

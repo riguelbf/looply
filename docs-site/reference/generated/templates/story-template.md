@@ -38,6 +38,6 @@ Template for a single delivery story
 
 ## Arquivo
 
-- `packs/engineering-base/templates/story-template.md`
+- `packs/product-base/templates/story-template.md`
 
 [Voltar para templates](../templates)

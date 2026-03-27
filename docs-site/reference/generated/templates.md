@@ -24,7 +24,7 @@ Template for operational readiness and reliability assessment
 
 Template for product requirement document
 
-- arquivo: `packs/engineering-base/templates/prd-template.md`
+- arquivo: `packs/product-base/templates/prd-template.md`
 
 ## [release-plan-template](./templates/release-plan-template)
 
@@ -36,7 +36,7 @@ Template for release planning
 
 Template for requirement brief
 
-- arquivo: `packs/engineering-base/templates/requirement-brief-template.md`
+- arquivo: `packs/product-base/templates/requirement-brief-template.md`
 
 ## [review-report-template](./templates/review-report-template)
 
@@ -48,13 +48,13 @@ Template for review report
 
 Template for a PRD story backlog
 
-- arquivo: `packs/engineering-base/templates/story-backlog-template.md`
+- arquivo: `packs/product-base/templates/story-backlog-template.md`
 
 ## [story-template](./templates/story-template)
 
 Template for a single delivery story
 
-- arquivo: `packs/engineering-base/templates/story-template.md`
+- arquivo: `packs/product-base/templates/story-template.md`
 
 ## [tech-spec-template](./templates/tech-spec-template)
 
@@ -66,11 +66,11 @@ Template for technical specification
 
 Visual response template for workflow decisions in host conversations
 
-- arquivo: `packs/engineering-base/templates/workflow-decision-template.md`
+- arquivo: `packs/product-base/templates/workflow-decision-template.md`
 
 ## [workflow-status-template](./templates/workflow-status-template)
 
 Template for persisted feature workflow state
 
-- arquivo: `packs/engineering-base/templates/workflow-status-template.md`
+- arquivo: `packs/product-base/templates/workflow-status-template.md`
 

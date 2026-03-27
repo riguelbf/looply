@@ -5,7 +5,7 @@ Discovery workflow from raw idea to approved PRD
 ## Metadados
 
 - phase: `discovery`
-- orchestrator: `delivery-orchestrator`
+- orchestrator: `pm-analyst`
 - alias principal: `/looply:idea-to-prd`
 
 ## Slash Command
@@ -63,7 +63,7 @@ Separar a fase de discovery e consolidar um PRD claro antes de iniciar delivery.
 
 ## Orchestrator
 
-`delivery-orchestrator` cria ou atualiza o estado da feature, acompanha discovery e bloqueia a transicao sem PRD aprovado.
+`pm-analyst` conduz discovery e fecha o gate de discovery-ready.
 
 ## Execution
 
@@ -80,6 +80,6 @@ Usar o minimo de contexto necessario para sair de ideia bruta para um PRD aciona
 
 ## Arquivo
 
-- `packs/engineering-base/workflows/idea-to-prd.md`
+- `packs/product-base/workflows/idea-to-prd.md`
 
 [Voltar para workflows](../workflows)

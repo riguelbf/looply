@@ -111,7 +111,7 @@ export async function validateWorkspace(sourceRoot: string): Promise<ValidationR
   }
 
   for (const [packName, registry] of registries) {
-    validateRegistry(packName, registry, errors);
+    validateRegistry(packName, registry, registries, errors);
   }
 
   return {
@@ -421,7 +421,12 @@ function getRegistryMap(registry: PackRegistry, type: Exclude<ArtifactType, "pac
   }
 }
 
-function validateRegistry(packName: string, registry: PackRegistry, errors: ValidationMessage[]): void {
+function validateRegistry(
+  packName: string,
+  registry: PackRegistry,
+  registries: Map<string, PackRegistry>,
+  errors: ValidationMessage[]
+): void {
   if (!registry.pack) {
     errors.push({
       severity: "error",
@@ -431,16 +436,30 @@ function validateRegistry(packName: string, registry: PackRegistry, errors: Vali
     return;
   }
 
-  validatePackIncludes(registry, errors);
+  validatePackIncludes(registry, registries, errors);
   validateAgents(registry, errors);
   validateTasks(registry, errors);
   validateWorkflows(registry, errors);
 }
 
-function validatePackIncludes(registry: PackRegistry, errors: ValidationMessage[]): void {
+function validatePackIncludes(
+  registry: PackRegistry,
+  registries: Map<string, PackRegistry>,
+  errors: ValidationMessage[]
+): void {
   const includes = registry.pack?.frontmatter.includes;
   if (!includes) {
     return;
+  }
+
+  for (const pack of includes.packs) {
+    if (!registries.has(pack)) {
+      errors.push({
+        severity: "error",
+        file: registry.pack!.file,
+        message: `Pack includes missing nested pack: ${pack}`
+      });
+    }
   }
 
   for (const agent of includes.agents) {

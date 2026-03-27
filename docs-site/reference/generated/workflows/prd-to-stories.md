@@ -5,7 +5,7 @@ Delivery planning workflow from approved PRD to story backlog
 ## Metadados
 
 - phase: `planning`
-- orchestrator: `delivery-orchestrator`
+- orchestrator: `pm-analyst`
 - alias principal: `/looply:prd-to-stories`
 
 ## Slash Command
@@ -39,7 +39,7 @@ Delivery planning workflow from approved PRD to story backlog
 
 ## Handoffs
 
-- `pm-analyst` -> `architect` via `story-backlog`
+- `pm-analyst` -> `pm-analyst` via `story-backlog`
 
 ## Gates
 
@@ -55,7 +55,7 @@ Transformar um PRD aprovado em backlog de stories pequenas e prontas para delive
 
 ## Orchestrator
 
-`delivery-orchestrator` acompanha o planejamento e garante que o backlog esteja pronto antes do delivery.
+`pm-analyst` conduz o planejamento e fecha o gate de planning-ready.
 
 ## Execution
 
@@ -71,6 +71,6 @@ Usar recortes incrementais para evitar stories grandes demais e sem criterio de 
 
 ## Arquivo
 
-- `packs/engineering-base/workflows/prd-to-stories.md`
+- `packs/product-base/workflows/prd-to-stories.md`
 
 [Voltar para workflows](../workflows)

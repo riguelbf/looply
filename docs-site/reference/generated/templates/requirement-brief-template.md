@@ -36,6 +36,6 @@ Template for requirement brief
 
 ## Arquivo
 
-- `packs/engineering-base/templates/requirement-brief-template.md`
+- `packs/product-base/templates/requirement-brief-template.md`
 
 [Voltar para templates](../templates)

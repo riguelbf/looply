@@ -1,11 +1,11 @@
 # glossary
 
-Shared vocabulary for engineering artifacts
+Shared vocabulary for product and planning artifacts
 
 ## Metadados
 
-- summary: `Shared vocabulary for engineering artifacts`
-- audience: `pm-analyst`, `delivery-orchestrator`, `architect`, `backend`, `reviewer`
+- summary: `Shared vocabulary for product and planning artifacts`
+- audience: `pm-analyst`
 - tags: `glossary`
 
 ## Conteudo do artefato
@@ -24,16 +24,8 @@ Documento de produto que fecha discovery e habilita planejamento de delivery.
 
 Conjunto ordenado de stories pequenas derivadas do PRD.
 
-## Tech Spec
-
-Especificacao tecnica implementavel com contexto, desenho e riscos.
-
-## ADR
-
-Registro de decisao arquitetural.
-
 ## Arquivo
 
-- `packs/engineering-base/knowledge/glossary.md`
+- `packs/product-base/knowledge/glossary.md`
 
 [Voltar para knowledge](../knowledge)

@@ -10,7 +10,8 @@ const docsRootPath = fileURLToPath(docsRoot);
 const repoRootPath = fileURLToPath(repoRoot);
 const generatedRoot = path.join(docsRootPath, "reference", "generated");
 const commandsRoot = path.join(repoRootPath, "src", "commands");
-const packRoot = path.join(repoRootPath, "packs", "engineering-base");
+const rootPackName = "software-delivery-suite";
+const packRoots = await resolvePackRoots(rootPackName);
 
 await resetGeneratedRoot();
 
@@ -18,12 +19,12 @@ const commandFiles = await globby("*.ts", { cwd: commandsRoot, absolute: true })
 const commandSources = new Map(
   await Promise.all(commandFiles.map(async (file) => [file, await fs.readFile(file, "utf8")]))
 );
-const agents = await loadArtifacts(path.join(packRoot, "agents", "*.md"));
-const tasks = await loadArtifacts(path.join(packRoot, "tasks", "*.md"));
-const workflows = await loadArtifacts(path.join(packRoot, "workflows", "*.md"));
-const knowledge = await loadArtifacts(path.join(packRoot, "knowledge", "**", "*.md"));
-const templates = await loadArtifacts(path.join(packRoot, "templates", "*.md"));
-const checklists = await loadArtifacts(path.join(packRoot, "checklists", "*.md"));
+const agents = await loadArtifactsFromPackRoots(packRoots, "agents/*.md");
+const tasks = await loadArtifactsFromPackRoots(packRoots, "tasks/*.md");
+const workflows = await loadArtifactsFromPackRoots(packRoots, "workflows/*.md");
+const knowledge = await loadArtifactsFromPackRoots(packRoots, "knowledge/**/*.md");
+const templates = await loadArtifactsFromPackRoots(packRoots, "templates/*.md");
+const checklists = await loadArtifactsFromPackRoots(packRoots, "checklists/*.md");
 const slashCommands = workflows
   .filter((artifact) => typeof artifact.frontmatter.command?.name === "string")
   .map((artifact) => buildSlashCommandEntry(artifact));
@@ -93,6 +94,65 @@ async function loadArtifacts(pattern) {
   }
 
   return entries;
+}
+
+async function loadArtifactsFromPackRoots(packRoots, relativePattern) {
+  const entries = [];
+  const seen = new Set();
+
+  for (const packRoot of packRoots) {
+    const packEntries = await loadArtifacts(path.join(packRoot, relativePattern));
+    for (const entry of packEntries) {
+      const key = `${entry.frontmatter.schema ?? "unknown"}:${entry.name}`;
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      entries.push(entry);
+    }
+  }
+
+  return entries.sort((left, right) => left.name.localeCompare(right.name));
+}
+
+async function resolvePackRoots(rootPackName) {
+  const definitions = await globby("packs/*/pack.md", { cwd: repoRootPath, absolute: true });
+  const definitionMap = new Map();
+
+  for (const definitionFile of definitions) {
+    const source = await fs.readFile(definitionFile, "utf8");
+    const parsed = matter(source);
+    const packName = String(parsed.data.name ?? path.basename(path.dirname(definitionFile)));
+    definitionMap.set(packName, {
+      name: packName,
+      root: path.dirname(definitionFile),
+      includes: Array.isArray(parsed.data.includes?.packs) ? parsed.data.includes.packs : []
+    });
+  }
+
+  const resolved = [];
+  const visited = new Set();
+
+  const visit = (packName) => {
+    if (visited.has(packName)) {
+      return;
+    }
+
+    const definition = definitionMap.get(packName);
+    if (!definition) {
+      throw new Error(`Unknown pack in docs reference generation: ${packName}`);
+    }
+
+    visited.add(packName);
+    resolved.push(definition.root);
+
+    for (const includedPack of definition.includes) {
+      visit(String(includedPack));
+    }
+  };
+
+  visit(rootPackName);
+  return resolved;
 }
 
 function renderCommandsIndex(files, commandSources) {

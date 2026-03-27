@@ -10,7 +10,7 @@ Start discovery and consolidate an idea into an approved PRD
 
 - workflow: [idea-to-prd](../workflows/idea-to-prd)
 - fase: `discovery`
-- orchestrator: `delivery-orchestrator`
+- orchestrator: `pm-analyst`
 
 ## Hosts suportados
 

@@ -6,7 +6,7 @@ Referencia gerada a partir do pack `engineering-base`.
 
 Transform an idea into a clear requirement brief
 
-- arquivo: `packs/engineering-base/tasks/analyze-requirement.md`
+- arquivo: `packs/product-base/tasks/analyze-requirement.md`
 
 ## [assess-service-operability](./tasks/assess-service-operability)
 
@@ -18,7 +18,7 @@ Assess service operability and production readiness before release
 
 Decompose an approved PRD into delivery-ready stories
 
-- arquivo: `packs/engineering-base/tasks/break-prd-into-stories.md`
+- arquivo: `packs/product-base/tasks/break-prd-into-stories.md`
 
 ## [create-adr](./tasks/create-adr)
 
@@ -30,7 +30,7 @@ Register a technical decision in ADR format
 
 Consolidate discovery into a PRD ready for delivery planning
 
-- arquivo: `packs/engineering-base/tasks/create-prd.md`
+- arquivo: `packs/product-base/tasks/create-prd.md`
 
 ## [create-tech-spec](./tasks/create-tech-spec)
 

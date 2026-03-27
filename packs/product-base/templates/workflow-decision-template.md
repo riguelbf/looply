@@ -1,12 +1,8 @@
-# workflow-decision-template
-
-Visual response template for workflow decisions in host conversations
-
-## Metadados
-
-- summary: `Visual response template for workflow decisions in host conversations`
-
-## Conteudo do artefato
+---
+schema: looply/template@v1
+name: workflow-decision-template
+summary: Visual response template for workflow decisions in host conversations
+---
 
 # Workflow Update
 
@@ -44,9 +40,3 @@ Visual response template for workflow decisions in host conversations
 ## Blockers
 
 ## Session Guidance
-
-## Arquivo
-
-- `packs/product-base/templates/workflow-decision-template.md`
-
-[Voltar para templates](../templates)

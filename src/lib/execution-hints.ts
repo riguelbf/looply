@@ -31,9 +31,11 @@ export function buildExecutionHintsDocument(input: {
   host: string;
   pack: string;
   artifacts: CatalogArtifact[];
+  packClosure?: string[];
 }): ExecutionHintsDocument {
+  const allowedPacks = new Set(input.packClosure ?? [input.pack]);
   const artifacts = input.artifacts
-    .filter((artifact) => artifact.pack === input.pack)
+    .filter((artifact) => allowedPacks.has(artifact.pack))
     .filter((artifact) => artifact.type === "agent" || artifact.type === "task" || artifact.type === "workflow")
     .map((artifact) => ({
       type: artifact.type,

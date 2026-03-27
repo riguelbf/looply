@@ -58,6 +58,6 @@ Usar recortes incrementais e orientados a valor, evitando stories grandes demais
 
 ## Arquivo
 
-- `packs/engineering-base/tasks/break-prd-into-stories.md`
+- `packs/product-base/tasks/break-prd-into-stories.md`
 
 [Voltar para tasks](../tasks)

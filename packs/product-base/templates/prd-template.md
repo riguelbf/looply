@@ -1,12 +1,8 @@
-# prd-template
-
-Template for product requirement document
-
-## Metadados
-
-- summary: `Template for product requirement document`
-
-## Conteudo do artefato
+---
+schema: looply/template@v1
+name: prd-template
+summary: Template for product requirement document
+---
 
 # PRD
 
@@ -45,9 +41,3 @@ Template for product requirement document
 ## Observability Notes
 
 ## Delivery Entry Criteria
-
-## Arquivo
-
-- `packs/product-base/templates/prd-template.md`
-
-[Voltar para templates](../templates)

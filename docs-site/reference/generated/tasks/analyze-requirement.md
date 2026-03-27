@@ -57,6 +57,6 @@ Usar analise estruturada sem desperdiçar contexto.
 
 ## Arquivo
 
-- `packs/engineering-base/tasks/analyze-requirement.md`
+- `packs/product-base/tasks/analyze-requirement.md`
 
 [Voltar para tasks](../tasks)

@@ -1,12 +1,8 @@
-# workflow-status-template
-
-Template for persisted feature workflow state
-
-## Metadados
-
-- summary: `Template for persisted feature workflow state`
-
-## Conteudo do artefato
+---
+schema: looply/template@v1
+name: workflow-status-template
+summary: Template for persisted feature workflow state
+---
 
 # Workflow Status
 
@@ -124,9 +120,3 @@ Template for persisted feature workflow state
 ### Delivery Risks
 
 ### Release Readiness Notes
-
-## Arquivo
-
-- `packs/product-base/templates/workflow-status-template.md`
-
-[Voltar para templates](../templates)

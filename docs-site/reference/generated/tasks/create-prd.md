@@ -57,6 +57,6 @@ Priorizar clareza de negocio, escopo e criterios de sucesso sem antecipar desenh
 
 ## Arquivo
 
-- `packs/engineering-base/tasks/create-prd.md`
+- `packs/product-base/tasks/create-prd.md`
 
 [Voltar para tasks](../tasks)

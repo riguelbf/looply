@@ -12,5 +12,5 @@ Review checklist for implementation tasks
 
 Shared completion checklist for artifacts
 
-- arquivo: `packs/engineering-base/checklists/definition-of-done.md`
+- arquivo: `packs/product-base/checklists/definition-of-done.md`
 

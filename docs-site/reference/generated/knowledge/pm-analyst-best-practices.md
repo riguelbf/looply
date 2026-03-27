@@ -40,26 +40,8 @@ Best practices for discovery and product scoping
 - dependencias e riscos estao explicitos
 - o backlog sugere uma primeira slice pequena
 
-## Escalate When
-
-- houver trade-off tecnico relevante
-- existir ambiguidade estrutural no sistema
-- a sequencia de delivery depender de validacao arquitetural
-
-## Good Output Signals
-
-- objetivo de negocio verificavel
-- backlog incremental e priorizado
-- linguagem simples e acionavel
-
-## Bad Output Signals
-
-- PRD com solucao tecnica embutida sem justificativa
-- historias misturando varios objetivos
-- ausencia de metrica de sucesso
-
 ## Arquivo
 
-- `packs/engineering-base/knowledge/specialists/pm-analyst-best-practices.md`
+- `packs/product-base/knowledge/specialists/pm-analyst-best-practices.md`
 
 [Voltar para knowledge](../knowledge)

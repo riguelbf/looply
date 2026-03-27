@@ -30,6 +30,6 @@ Template for a PRD story backlog
 
 ## Arquivo
 
-- `packs/engineering-base/templates/story-backlog-template.md`
+- `packs/product-base/templates/story-backlog-template.md`
 
 [Voltar para templates](../templates)

@@ -26,7 +26,7 @@ constraints:
   - Do not approve implementation tradeoffs
 escalation_rules:
   - Escalate technical tradeoffs to architect
-  - Escalate delivery sequencing to delivery-orchestrator
+  - Escalate delivery sequencing to engineering-base
 ---
 
 # Agent: pm-analyst
@@ -47,4 +47,4 @@ Prioriza descoberta orientada a valor de negocio antes do desenho tecnico.
 - consolidar PRD de discovery aprovado
 - decompor PRD em stories prontas para delivery
 - registrar riscos, dependencias e duvidas abertas
-- entregar requirement brief utilizavel por arquitetura
+- entregar requirement brief utilizavel por engenharia

@@ -13,7 +13,7 @@ execution:
 inputs:
   - prd
 phase: planning
-orchestrator: delivery-orchestrator
+orchestrator: pm-analyst
 stages:
   - name: story-planning
     task: break-prd-into-stories
@@ -24,7 +24,7 @@ stages:
       - story-backlog
 handoffs:
   - from: pm-analyst
-    to: architect
+    to: pm-analyst
     artifact: story-backlog
 gates:
   - name: planning-ready
@@ -63,7 +63,7 @@ Transformar um PRD aprovado em backlog de stories pequenas e prontas para delive
 
 ## Orchestrator
 
-`delivery-orchestrator` acompanha o planejamento e garante que o backlog esteja pronto antes do delivery.
+`pm-analyst` conduz o planejamento e fecha o gate de planning-ready.
 
 ## Execution
 

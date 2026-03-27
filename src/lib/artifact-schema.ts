@@ -108,6 +108,7 @@ export const packSchema = artifactSchema.extend({
   pack_version: z.string().min(1),
   domains: z.array(z.string()).default([]),
   includes: z.object({
+    packs: z.array(z.string()).default([]),
     agents: z.array(z.string()).default([]),
     tasks: z.array(z.string()).default([]),
     workflows: z.array(z.string()).default([])

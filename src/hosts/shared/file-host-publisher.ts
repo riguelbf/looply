@@ -41,6 +41,7 @@ import type { InstallManifest, UninstallResult } from "../../lib/publishing-mode
 import { readInteractionPolicyFile, resolveInteractionPolicyFile, writeInteractionPolicyFile } from "../../lib/interaction-policy.js";
 import { readLocaleFile, resolveLocaleFile, writeLocaleFile } from "../../lib/locale.js";
 import { readProjectContextFile, resolveProjectContextFile, writeProjectContextFile } from "../../lib/project-context.js";
+import { resolvePackClosure } from "../../lib/packs.js";
 import { resolveGlobalCodexSkillsRoot, resolveTargetRoot } from "../../lib/runtime-paths.js";
 import { ensureSessionLinksFile, resolveSessionLinksFile } from "../../lib/session-links.js";
 import {
@@ -117,25 +118,36 @@ export class FileHostPublisher implements HostPublisher {
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
-    const sourcePackRoot = path.join(input.sourceRoot, "packs", input.pack);
-
     await fs.ensureDir(targetRoot);
     await fs.ensureDir(customBase);
     await fs.ensureDir(stateBase);
+    const packClosure = await resolvePackClosure(input.sourceRoot, input.pack);
     await fs.remove(managedBase);
-    await fs.copy(sourcePackRoot, managedBase, { overwrite: true, errorOnExist: false });
+    for (const packName of packClosure) {
+      await fs.copy(path.join(input.sourceRoot, "packs", packName), path.join(targetRoot, ".looply", "managed", "packs", packName), {
+        overwrite: true,
+        errorOnExist: false
+      });
+    }
     const workflowCommands = await this.writeWorkflowCommands({
       sourceRoot: input.sourceRoot,
       targetRoot,
       host: input.host,
       pack: input.pack,
+      packClosure,
       workflowPlaybookFile,
       executionHintsFile,
       outputLocale: input.locale,
       projectMode: input.projectMode,
       interactionMode: input.interactionMode
     });
-    const managedFiles = await this.collectManagedFiles(managedBase, targetRoot);
+    const managedFiles = (
+      await Promise.all(
+        packClosure.map((packName) =>
+          this.collectManagedFiles(path.join(targetRoot, ".looply", "managed", "packs", packName), targetRoot)
+        )
+      )
+    ).flat();
     const mergeableFiles = [
       this.toRelativeTargetPath(targetRoot, entrypointFile),
       this.toRelativeTargetPath(targetRoot, executionHintsFile),
@@ -161,8 +173,8 @@ export class FileHostPublisher implements HostPublisher {
       mergeableFiles
     });
 
-    await this.writeExecutionHints(input.sourceRoot, executionHintsFile, input.host, input.pack);
-    await this.writeWorkflowPlaybook(input.sourceRoot, workflowPlaybookFile, input.host, input.pack);
+    await this.writeExecutionHints(input.sourceRoot, executionHintsFile, input.host, input.pack, packClosure);
+    await this.writeWorkflowPlaybook(input.sourceRoot, workflowPlaybookFile, input.host, input.pack, packClosure);
     await writeLocaleFile(targetRoot, input.locale);
     await writeProjectContextFile(targetRoot, {
       mode: input.projectMode,
@@ -265,26 +277,36 @@ export class FileHostPublisher implements HostPublisher {
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
-    const sourcePackRoot = path.join(input.sourceRoot, "packs", installEntry.pack);
-
     const locale = (await readLocaleFile(targetRoot))?.outputLocale ?? "en";
     const projectMode = (await readProjectContextFile(targetRoot))?.mode ?? "existing-project";
     const interactionMode = (await readInteractionPolicyFile(targetRoot))?.mode ?? "balanced";
+    const packClosure = await resolvePackClosure(input.sourceRoot, installEntry.pack);
     await fs.remove(managedBase);
-    await fs.ensureDir(managedBase);
-    await fs.copy(sourcePackRoot, managedBase, { overwrite: true, errorOnExist: false });
+    for (const packName of packClosure) {
+      const targetPackRoot = path.join(targetRoot, ".looply", "managed", "packs", packName);
+      await fs.remove(targetPackRoot);
+      await fs.ensureDir(targetPackRoot);
+      await fs.copy(path.join(input.sourceRoot, "packs", packName), targetPackRoot, { overwrite: true, errorOnExist: false });
+    }
     const workflowCommands = await this.writeWorkflowCommands({
       sourceRoot: input.sourceRoot,
       targetRoot,
       host: input.host,
       pack: installEntry.pack,
+      packClosure,
       workflowPlaybookFile,
       executionHintsFile,
       outputLocale: locale,
       projectMode,
       interactionMode
     });
-    const managedFiles = await this.collectManagedFiles(managedBase, targetRoot);
+    const managedFiles = (
+      await Promise.all(
+        packClosure.map((packName) =>
+          this.collectManagedFiles(path.join(targetRoot, ".looply", "managed", "packs", packName), targetRoot)
+        )
+      )
+    ).flat();
     const mergeableFiles = [
       this.toRelativeTargetPath(targetRoot, entrypointFile),
       this.toRelativeTargetPath(targetRoot, executionHintsFile),
@@ -307,8 +329,8 @@ export class FileHostPublisher implements HostPublisher {
       managedFiles,
       mergeableFiles
     });
-    await this.writeExecutionHints(input.sourceRoot, executionHintsFile, input.host, installEntry.pack);
-    await this.writeWorkflowPlaybook(input.sourceRoot, workflowPlaybookFile, input.host, installEntry.pack);
+    await this.writeExecutionHints(input.sourceRoot, executionHintsFile, input.host, installEntry.pack, packClosure);
+    await this.writeWorkflowPlaybook(input.sourceRoot, workflowPlaybookFile, input.host, installEntry.pack, packClosure);
     await writeLocaleFile(targetRoot, locale);
     await writeProjectContextFile(targetRoot, {
       mode: projectMode,
@@ -449,9 +471,19 @@ export class FileHostPublisher implements HostPublisher {
       throw new Error(`No install entry found for ${input.host} in ${input.scope} scope`);
     }
 
-    const managedBase = path.join(targetRoot, ".looply", "managed", "packs", installEntry.pack);
-    const sourcePackRoot = path.join(input.sourceRoot, "packs", installEntry.pack);
-    const diff = await this.diffDirectories(sourcePackRoot, managedBase);
+    const packClosure = await resolvePackClosure(input.sourceRoot, installEntry.pack);
+    const diffs = await Promise.all(
+      packClosure.map(async (packName) => {
+        const managedBase = path.join(targetRoot, ".looply", "managed", "packs", packName);
+        const sourcePackRoot = path.join(input.sourceRoot, "packs", packName);
+        return this.diffDirectories(sourcePackRoot, managedBase);
+      })
+    );
+    const diff = {
+      addedFiles: diffs.flatMap((entry) => entry.addedFiles),
+      changedFiles: diffs.flatMap((entry) => entry.changedFiles),
+      removedFiles: diffs.flatMap((entry) => entry.removedFiles)
+    };
 
     return {
       host: input.host,
@@ -630,13 +662,15 @@ export class FileHostPublisher implements HostPublisher {
     sourceRoot: string,
     executionHintsFile: string,
     host: string,
-    pack: string
+    pack: string,
+    packClosure: string[]
   ): Promise<void> {
     const catalog = await loadArtifactCatalog(sourceRoot);
     const executionHints = buildExecutionHintsDocument({
       host,
       pack,
-      artifacts: catalog
+      artifacts: catalog,
+      packClosure
     });
 
     await fs.writeJson(executionHintsFile, executionHints, { spaces: 2 });
@@ -646,13 +680,15 @@ export class FileHostPublisher implements HostPublisher {
     sourceRoot: string,
     workflowPlaybookFile: string,
     host: string,
-    pack: string
+    pack: string,
+    packClosure: string[]
   ): Promise<void> {
     const catalog = await loadArtifactCatalog(sourceRoot);
     const workflowPlaybook = buildWorkflowPlaybookDocument({
       host,
       pack,
-      artifacts: catalog
+      artifacts: catalog,
+      packClosure
     });
 
     await fs.writeFile(workflowPlaybookFile, workflowPlaybook, "utf8");
@@ -816,6 +852,7 @@ export class FileHostPublisher implements HostPublisher {
     targetRoot: string;
     host: SupportedHost;
     pack: string;
+    packClosure: string[];
     workflowPlaybookFile: string;
     executionHintsFile: string;
     outputLocale: "en" | "pt-BR";
@@ -825,7 +862,8 @@ export class FileHostPublisher implements HostPublisher {
     const catalog = await loadArtifactCatalog(input.sourceRoot);
     const commands = listWorkflowCommands({
       pack: input.pack,
-      artifacts: catalog
+      artifacts: catalog,
+      packClosure: input.packClosure
     });
 
     if (commands.length === 0) {
@@ -837,6 +875,11 @@ export class FileHostPublisher implements HostPublisher {
     }
 
     const commandsRoot = this.resolveWorkflowCommandsRoot(input.targetRoot, input.host);
+    const stateTemplateFile = this.resolveManagedFileFromPackClosure(
+      input.targetRoot,
+      input.packClosure,
+      path.join("templates", "workflow-status-template.md")
+    );
     await fs.ensureDir(commandsRoot);
     const existingCommandEntries = await fs.readdir(commandsRoot, { withFileTypes: true });
     const staleCommandFiles = existingCommandEntries
@@ -862,7 +905,7 @@ export class FileHostPublisher implements HostPublisher {
       const hintsReference = relativePathForDisplay(path.dirname(commandFile), input.executionHintsFile);
       const stateTemplateReference = relativePathForDisplay(
         path.dirname(commandFile),
-        path.join(input.targetRoot, ".looply", "managed", "packs", input.pack, "templates", "workflow-status-template.md")
+        stateTemplateFile
       );
       const content = input.host === "claude"
         ? renderClaudeWorkflowCommand({
@@ -934,6 +977,7 @@ export class FileHostPublisher implements HostPublisher {
         projectMode: input.projectMode,
         interactionMode: input.interactionMode,
         pack: input.pack,
+        packClosure: input.packClosure,
         commands,
         workflowPlaybookFile: input.workflowPlaybookFile,
         executionHintsFile: input.executionHintsFile
@@ -982,6 +1026,17 @@ export class FileHostPublisher implements HostPublisher {
     return path.join(targetRoot, ".agents", "skills");
   }
 
+  private resolveManagedFileFromPackClosure(targetRoot: string, packClosure: string[], relativeFile: string): string {
+    for (const packName of packClosure) {
+      const candidate = path.join(targetRoot, ".looply", "managed", "packs", packName, relativeFile);
+      if (fs.existsSync(candidate)) {
+        return candidate;
+      }
+    }
+
+    return path.join(targetRoot, ".looply", "managed", "packs", packClosure[0] ?? "", relativeFile);
+  }
+
   private async writeCodexSkills(input: {
     targetRoot: string;
     scope: "project" | "global";
@@ -989,6 +1044,7 @@ export class FileHostPublisher implements HostPublisher {
     projectMode: "existing-project" | "greenfield";
     interactionMode: "guided" | "balanced" | "autonomous";
     pack: string;
+    packClosure: string[];
     commands: WorkflowCommandDefinition[];
     workflowPlaybookFile: string;
     executionHintsFile: string;
@@ -996,7 +1052,11 @@ export class FileHostPublisher implements HostPublisher {
     const skillsRoot = this.resolveCodexSkillsRoot(input.targetRoot, input.scope);
     const packRoot = path.join(input.targetRoot, ".looply", "managed", "packs", input.pack);
     const customRoot = path.join(input.targetRoot, ".looply", "custom");
-    const stateTemplateFile = path.join(packRoot, "templates", "workflow-status-template.md");
+    const stateTemplateFile = this.resolveManagedFileFromPackClosure(
+      input.targetRoot,
+      input.packClosure,
+      path.join("templates", "workflow-status-template.md")
+    );
     const skills = listCodexSkills({ commands: input.commands });
     const writtenFiles: string[] = [];
 

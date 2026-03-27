@@ -29,6 +29,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Recently Completed
 
+- separacao de packs concluida em `product-base`, `engineering-base` e `software-delivery-suite`
 - `devops` e `sre` adicionados ao `engineering-base`, com tasks e operabilidade entrando no `story-to-production`
 - hosts reforcados para consumir `knowledge_sources`, `best-practices`, templates e checklists como contrato de execucao
 - camada de `best-practices` por especialista adicionada e ligada aos agentes do `engineering-base`
