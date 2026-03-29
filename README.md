@@ -164,7 +164,8 @@ O caminho recomendado no Codex agora e:
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 - abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
 - começar por `$looply` como skill de descoberta e roteamento
-- usar `$looply-cloud-workload-design` e `$looply-platform-foundation-evolution` quando o problema principal for cloud ou plataforma
+- usar `\$looply:<workflow>` para chamar workflows diretamente no Codex
+- usar `\$looply:cloud-workload-design` e `\$looply:platform-foundation-evolution` quando o problema principal for cloud ou plataforma
 
 ## Fluxo recomendado da v1
 
