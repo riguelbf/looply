@@ -157,33 +157,14 @@ No Codex, o `looply` publica convencoes operacionais, playbooks, entrypoints e s
 - `.agents/skills/*`
 - `.looply/state/commands/codex/`
 
-No uso diario, a sintaxe principal no Codex agora e `\$looply:<workflow-ou-atalho>`.
-
-Exemplos:
-
-```text
-$looply:help
-$looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram conciliacao manual" "manter compatibilidade com contrato atual"
-$looply:prd-to-stories pix-webhook-retry prd-pix-webhook-retry
-$looply:story-to-production pix-webhook-retry story-01-retry-automatico
-$looply:workflow-status pix-webhook-retry
-$looply:resume pix-webhook-retry backend-afternoon
-$looply:next pix-webhook-retry backend-afternoon
-```
-
-O caminho recomendado no Codex e:
+O caminho recomendado no Codex agora e:
 
 - usar `AGENTS.md` como contrato raiz
 - usar `LOOPLY_COMMANDS.md` como indice operacional
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 - abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
 - começar por `$looply` como skill de descoberta e roteamento
-- usar `$looply:cloud-workload-design` e `$looply:platform-foundation-evolution` quando o problema principal for cloud ou plataforma
-
-Resumo rapido por host:
-
-- `Claude Code`: `/looply:idea-to-prd ...`
-- `Codex`: `$looply:idea-to-prd ...`
+- usar `$looply-cloud-workload-design` e `$looply-platform-foundation-evolution` quando o problema principal for cloud ou plataforma
 
 ## Fluxo recomendado da v1
 
@@ -236,13 +217,6 @@ Exemplos:
 /looply:platform-foundation-evolution platform-observability-baseline "padronizar tracing, logging e guardrails de deploy"
 ```
 
-No Codex, os mesmos exemplos ficam:
-
-```text
-$looply:cloud-workload-design pix-webhook-retry payments-api "introduzir fila para retries e revisar postura cloud"
-$looply:platform-foundation-evolution platform-observability-baseline "padronizar tracing, logging e guardrails de deploy"
-```
-
 Exemplo de sequencia:
 
 ```text
@@ -250,15 +224,6 @@ Exemplo de sequencia:
 /looply:prd-to-stories pix-webhook-retry prd-pix-webhook-retry
 /looply:story-to-production pix-webhook-retry story-01-retry-automatico
 /looply:workflow-status pix-webhook-retry
-```
-
-No Codex:
-
-```text
-$looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram conciliacao manual"
-$looply:prd-to-stories pix-webhook-retry prd-pix-webhook-retry
-$looply:story-to-production pix-webhook-retry story-01-retry-automatico
-$looply:workflow-status pix-webhook-retry
 ```
 
 ## Modos operacionais
@@ -280,8 +245,6 @@ $looply:workflow-status pix-webhook-retry
 - `en`
 
 O idioma e persistido na instalacao e influencia o output esperado do host.
-
-Isso inclui tambem a saida humana da CLI, como `looply status`.
 
 ## Estado e arquivos gerados
 
