@@ -164,7 +164,18 @@ O caminho recomendado no Codex agora e:
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 - abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
 - começar por `$looply` como skill de descoberta e roteamento
-- usar `$looply-cloud-workload-design` e `$looply-platform-foundation-evolution` quando o problema principal for cloud ou plataforma
+- usar `$looply:cloud-workload-design` e `$looply:platform-foundation-evolution` quando o problema principal for cloud ou plataforma
+
+Exemplo direto no Codex:
+
+```text
+$looply:idea-to-prd pix-webhook-retry "falhas transientes no webhook PIX geram conciliacao manual" "manter compatibilidade com contrato atual"
+```
+
+Regra pratica:
+
+- `Claude Code`: use `/looply:...`
+- `Codex`: use `$looply:...`
 
 ## Fluxo recomendado da v1
 
@@ -217,6 +228,11 @@ Exemplos:
 /looply:platform-foundation-evolution platform-observability-baseline "padronizar tracing, logging e guardrails de deploy"
 ```
 
+No Codex, leia os mesmos exemplos acima como:
+
+- `$looply:cloud-workload-design ...`
+- `$looply:platform-foundation-evolution ...`
+
 Exemplo de sequencia:
 
 ```text
@@ -225,6 +241,13 @@ Exemplo de sequencia:
 /looply:story-to-production pix-webhook-retry story-01-retry-automatico
 /looply:workflow-status pix-webhook-retry
 ```
+
+No Codex, a mesma sequencia usa:
+
+- `$looply:idea-to-prd ...`
+- `$looply:prd-to-stories ...`
+- `$looply:story-to-production ...`
+- `$looply:workflow-status ...`
 
 ## Modos operacionais
 
