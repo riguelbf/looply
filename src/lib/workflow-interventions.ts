@@ -1,6 +1,8 @@
 import path from "node:path";
 import fs from "fs-extra";
 import { loadArtifactCatalog } from "./artifact-catalog.js";
+import { recordWorkflowContextMetrics } from "./perf/workflow.js";
+import { setPerfMetadata, withPerfSpan } from "./perf/session.js";
 import {
   readFeatureWorkflowMarkdownState,
   type FeatureWorkflowMarkdownState
@@ -118,10 +120,12 @@ export async function readFeatureWorkflowControlDocument(
 export async function registerReplayIntervention(
   input: RegisterReplayInput
 ): Promise<{ file: string; document: FeatureWorkflowControlDocument }> {
-  const featureState = await requireFeatureState(input.targetRoot, input.feature);
-  const workflowMetadata = await resolveWorkflowMetadata(featureState, input.sourceRoot);
+  const featureState = await withPerfSpan("workflow-interventions.load-feature-state", async () => requireFeatureState(input.targetRoot, input.feature));
+  recordWorkflowContextMetrics("workflow", featureState);
+  const workflowMetadata = await withPerfSpan("workflow-interventions.resolve-workflow-metadata", async () => resolveWorkflowMetadata(featureState, input.sourceRoot));
   const supersededOutputs = computeSupersededOutputs(workflowMetadata, input.from);
-  const control = await ensureFeatureWorkflowControlDocument(input.targetRoot, featureState);
+  setPerfMetadata("workflow.supersededOutputCount", supersededOutputs.length);
+  const control = await withPerfSpan("workflow-interventions.ensure-control-document", async () => ensureFeatureWorkflowControlDocument(input.targetRoot, featureState));
   const updated = withIntervention(control, {
     type: "replay",
     summary: `Replay from ${input.from}`,
@@ -140,22 +144,24 @@ export async function registerReplayIntervention(
   updated.recommendedRecoveryWorkflow = featureState.workflow || featureState.recommendedNextWorkflow;
   updated.recommendedRecoveryCommand = buildResumeCommand(featureState);
 
-  return writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated);
+  return withPerfSpan("workflow-interventions.write-control-document", async () => writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated));
 }
 
 export async function registerTaskIntervention(
   input: RegisterTaskInterventionInput
 ): Promise<{ file: string; document: FeatureWorkflowControlDocument }> {
-  const featureState = await requireFeatureState(input.targetRoot, input.feature);
+  const featureState = await withPerfSpan("workflow-interventions.load-feature-state", async () => requireFeatureState(input.targetRoot, input.feature));
+  recordWorkflowContextMetrics("workflow", featureState);
   const sourceRoot = resolveLooplySourceRoot(input.sourceRoot);
-  const catalog = await loadArtifactCatalog(sourceRoot);
+  const catalog = await withPerfSpan("workflow-interventions.load-artifact-catalog", async () => loadArtifactCatalog(sourceRoot));
   const taskArtifact = catalog.find((artifact) => artifact.type === "task" && artifact.name === input.task);
 
   if (!taskArtifact) {
     throw new Error(`Task not found: ${input.task}`);
   }
 
-  const control = await ensureFeatureWorkflowControlDocument(input.targetRoot, featureState);
+  setPerfMetadata("workflow.catalogArtifactCount", catalog.length);
+  const control = await withPerfSpan("workflow-interventions.ensure-control-document", async () => ensureFeatureWorkflowControlDocument(input.targetRoot, featureState));
   const updated = withIntervention(control, {
     type: "task",
     summary: `Manual task ${input.task}`,
@@ -172,15 +178,16 @@ export async function registerTaskIntervention(
   updated.recommendedRecoveryWorkflow = featureState.workflow || featureState.recommendedNextWorkflow;
   updated.recommendedRecoveryCommand = featureState.nextCommand || buildStatusCommand(featureState);
 
-  return writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated);
+  return withPerfSpan("workflow-interventions.write-control-document", async () => writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated));
 }
 
 export async function registerAgentIntervention(
   input: RegisterAgentInterventionInput
 ): Promise<{ file: string; document: FeatureWorkflowControlDocument }> {
-  const featureState = await requireFeatureState(input.targetRoot, input.feature);
+  const featureState = await withPerfSpan("workflow-interventions.load-feature-state", async () => requireFeatureState(input.targetRoot, input.feature));
+  recordWorkflowContextMetrics("workflow", featureState);
   const sourceRoot = resolveLooplySourceRoot(input.sourceRoot);
-  const catalog = await loadArtifactCatalog(sourceRoot);
+  const catalog = await withPerfSpan("workflow-interventions.load-artifact-catalog", async () => loadArtifactCatalog(sourceRoot));
   const agentArtifact = catalog.find((artifact) => artifact.type === "agent" && artifact.name === input.agent);
   const taskArtifact = catalog.find((artifact) => artifact.type === "task" && artifact.name === input.task);
 
@@ -199,7 +206,8 @@ export async function registerAgentIntervention(
     throw new Error(`Agent ${input.agent} does not support task ${input.task}`);
   }
 
-  const control = await ensureFeatureWorkflowControlDocument(input.targetRoot, featureState);
+  setPerfMetadata("workflow.catalogArtifactCount", catalog.length);
+  const control = await withPerfSpan("workflow-interventions.ensure-control-document", async () => ensureFeatureWorkflowControlDocument(input.targetRoot, featureState));
   const updated = withIntervention(control, {
     type: "agent",
     summary: `Manual agent ${input.agent} -> ${input.task}`,
@@ -216,15 +224,16 @@ export async function registerAgentIntervention(
   updated.recommendedRecoveryWorkflow = featureState.workflow || featureState.recommendedNextWorkflow;
   updated.recommendedRecoveryCommand = featureState.nextCommand || buildStatusCommand(featureState);
 
-  return writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated);
+  return withPerfSpan("workflow-interventions.write-control-document", async () => writeFeatureWorkflowControlDocument(input.targetRoot, input.feature, updated));
 }
 
 export async function reconcileFeatureWorkflowControl(
   targetRoot: string,
   feature: string
 ): Promise<{ file: string; document: FeatureWorkflowControlDocument }> {
-  const featureState = await requireFeatureState(targetRoot, feature);
-  const control = await ensureFeatureWorkflowControlDocument(targetRoot, featureState);
+  const featureState = await withPerfSpan("workflow-interventions.load-feature-state", async () => requireFeatureState(targetRoot, feature));
+  recordWorkflowContextMetrics("workflow", featureState);
+  const control = await withPerfSpan("workflow-interventions.ensure-control-document", async () => ensureFeatureWorkflowControlDocument(targetRoot, featureState));
   const updated = withIntervention(control, {
     type: "reconcile",
     summary: "Reconcile workflow state",
@@ -242,7 +251,7 @@ export async function reconcileFeatureWorkflowControl(
   updated.recommendedRecoveryCommand = featureState.nextCommand || buildStatusCommand(featureState);
   updated.lastReconciledAt = new Date().toISOString();
 
-  return writeFeatureWorkflowControlDocument(targetRoot, feature, updated);
+  return withPerfSpan("workflow-interventions.write-control-document", async () => writeFeatureWorkflowControlDocument(targetRoot, feature, updated));
 }
 
 async function ensureFeatureWorkflowControlDocument(

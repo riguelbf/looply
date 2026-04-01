@@ -6,6 +6,7 @@ import {
   readFeatureWorkflowControlDocument,
   type FeatureWorkflowInterventionEntry
 } from "./workflow-interventions.js";
+import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 
 export interface FeatureWorkflowState {
   feature: string;
@@ -55,9 +56,11 @@ export interface FeatureWorkflowState {
 
 export async function readFeatureWorkflowStates(targetRoot: string): Promise<FeatureWorkflowState[]> {
   const entries: FeatureWorkflowState[] = [];
-  const workflowStates = await readFeatureWorkflowMarkdownStates(targetRoot);
+  const workflowStates = await withPerfSpan("feature-workflow-state.read-markdown-states", async () => readFeatureWorkflowMarkdownStates(targetRoot));
   for (const workflowState of workflowStates) {
-    const control = await readFeatureWorkflowControlDocument(targetRoot, workflowState.feature);
+    const control = await withPerfSpan("feature-workflow-state.read-control-document", async () => readFeatureWorkflowControlDocument(targetRoot, workflowState.feature), {
+      feature: workflowState.feature
+    });
     const lastIntervention = control?.interventions.at(-1);
     entries.push({
       ...workflowState,
@@ -78,5 +81,42 @@ export async function readFeatureWorkflowStates(targetRoot: string): Promise<Fea
     });
   }
 
-  return entries.sort((left, right) => right.lastUpdated.localeCompare(left.lastUpdated));
+  const sorted = entries.sort((left, right) => right.lastUpdated.localeCompare(left.lastUpdated));
+  setPerfMetadata("feature-workflow-state.featureCount", sorted.length);
+  setPerfMetadata(
+    "feature-workflow-state.interventionCount",
+    sorted.reduce((count, feature) => count + feature.interventionCount, 0)
+  );
+  if (isContextPerfMode()) {
+    setPerfMetadata(
+      "feature-workflow-state.blockedFeatureCount",
+      sorted.filter((feature) => feature.blockedBy.length > 0).length
+    );
+    setPerfMetadata(
+      "feature-workflow-state.estimatedContextChars",
+      sorted.reduce((total, feature) => {
+        return total + [
+          feature.feature,
+          feature.workflow,
+          feature.currentStage,
+          feature.currentGate,
+          feature.activeArtifact,
+          feature.nextAgent,
+          feature.nextTask,
+          feature.nextHandoff,
+          feature.nextCommand,
+          feature.decisionRationale,
+          ...feature.blockedBy,
+          ...feature.missingOutputs,
+          ...feature.completedOutputs,
+          ...feature.storyAcceptanceCriteria,
+          ...feature.relatedIntegrations,
+          ...feature.openQuestions,
+          ...feature.constraints
+        ].reduce((count, value) => count + value.length, 0);
+      }, 0)
+    );
+  }
+
+  return sorted;
 }

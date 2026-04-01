@@ -6,6 +6,7 @@ import fs from "fs-extra";
 import { buildProgram } from "../src/program.js";
 import { resolvePerfMode } from "../src/lib/perf/config.js";
 import { appendPerfEvent, resolvePerfEventsFile } from "../src/lib/perf/storage.js";
+import { readPerfWorkflowTraceEvents, resolvePerfWorkflowTraceFile } from "../src/lib/perf/trace.js";
 
 const temporaryRoots: string[] = [];
 const originalPerf = process.env.LOOPLY_PERF;
@@ -65,6 +66,52 @@ describe("perf profiling", () => {
     assert.equal(parsed.slowestSpans[0].name, "project-snapshot.read-state");
     assert.equal(resolvePerfEventsFile(targetRoot), path.join(targetRoot, ".looply", "state", "perf-events.jsonl"));
   });
+
+  it("records workflow trace events through the CLI", async () => {
+    const targetRoot = await fs.mkdtemp(path.join(os.tmpdir(), "looply-perf-trace-"));
+    temporaryRoots.push(targetRoot);
+
+    await buildProgram().parseAsync([
+      "node",
+      "looply",
+      "perf",
+      "trace",
+      "start",
+      "--dir",
+      targetRoot,
+      "--source",
+      "manual",
+      "--host",
+      "claude",
+      "--workflow",
+      "idea-to-prd",
+      "--alias",
+      "looply:idea-to-prd",
+      "--feature",
+      "pix-webhook-retry"
+    ]);
+
+    await buildProgram().parseAsync([
+      "node",
+      "looply",
+      "perf",
+      "trace",
+      "finish",
+      "--dir",
+      targetRoot,
+      "--source",
+      "manual",
+      "--status",
+      "completed"
+    ]);
+
+    const events = await readPerfWorkflowTraceEvents(targetRoot);
+    assert.equal(events.length, 2);
+    assert.equal(events[0].event, "start");
+    assert.equal(events[0].feature, "pix-webhook-retry");
+    assert.equal(events[1].event, "finish");
+    assert.equal(resolvePerfWorkflowTraceFile(targetRoot), path.join(targetRoot, ".looply", "state", "perf-workflow-events.jsonl"));
+  });
 });
 
 async function captureConsole(callback: () => Promise<void>): Promise<string> {
@@ -83,4 +130,3 @@ async function captureConsole(callback: () => Promise<void>): Promise<string> {
 
   return lines.join("\n");
 }
-

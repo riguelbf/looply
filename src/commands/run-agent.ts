@@ -1,10 +1,12 @@
 import type { Command } from "commander";
 import path from "node:path";
+import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
+import { runWithPerfSession } from "../lib/perf/session.js";
 import { registerAgentIntervention } from "../lib/workflow-interventions.js";
 import { showIntro, showOutro } from "../ui/feedback.js";
 
 export function registerRunAgentCommand(program: Command): void {
-  program
+  addProfileOption(program
     .command("run-agent")
     .description("Register a manual agent intervention inside a feature workflow")
     .argument("<feature>", "Feature name")
@@ -13,11 +15,21 @@ export function registerRunAgentCommand(program: Command): void {
     .argument("[notes...]", "Optional notes for the intervention")
     .option("--dir <dir>", "Target directory for the feature state (defaults to current directory)")
     .option("--reason <reason>", "Reason for the manual intervention", "Manual agent intervention requested by the user")
-    .option("--source-root <dir>", "looply source directory that contains packs/")
+    .option("--source-root <dir>", "looply source directory that contains packs/"))
     .action(async (feature, agent, notes: string[], options) => {
       showIntro("looply run-agent");
       const targetRoot = path.resolve(options.dir ?? process.cwd());
-      const result = await registerAgentIntervention({
+      const result = await runWithPerfSession({
+        command: "run-agent",
+        mode: resolvePerfMode(options.profile),
+        targetRoot,
+        metadata: {
+          feature,
+          agent,
+          task: options.task,
+          noteCount: notes.length
+        }
+      }, async () => registerAgentIntervention({
         targetRoot,
         feature,
         agent,
@@ -25,7 +37,7 @@ export function registerRunAgentCommand(program: Command): void {
         reason: options.reason,
         notes,
         sourceRoot: options.sourceRoot
-      });
+      }));
 
       console.log(`feature: ${result.document.feature}`);
       console.log(`execution-mode: ${result.document.executionMode}`);

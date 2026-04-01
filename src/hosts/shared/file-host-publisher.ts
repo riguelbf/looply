@@ -118,6 +118,7 @@ export class FileHostPublisher implements HostPublisher {
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
+    const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
     await fs.ensureDir(targetRoot);
     await fs.ensureDir(customBase);
     await fs.ensureDir(stateBase);
@@ -161,7 +162,8 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
-      ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file))
+      ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
+      ...claudeHookFiles.map((file) => this.toRelativeTargetPath(targetRoot, file))
     ];
 
     const currentManifest = await this.readManifest(manifestFile);
@@ -277,6 +279,7 @@ export class FileHostPublisher implements HostPublisher {
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
+    const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
     const locale = (await readLocaleFile(targetRoot))?.outputLocale ?? "en";
     const projectMode = (await readProjectContextFile(targetRoot))?.mode ?? "existing-project";
     const interactionMode = (await readInteractionPolicyFile(targetRoot))?.mode ?? "balanced";
@@ -320,7 +323,8 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
-      ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file))
+      ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
+      ...claudeHookFiles.map((file) => this.toRelativeTargetPath(targetRoot, file))
     ];
     const updatedManifest = upsertInstallManifest(manifest, {
       pack: installEntry.pack,
@@ -800,6 +804,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/custom/integrations/integrations-index.md`,
       `- ./.looply/custom/session-context.md`,
       `- ./.looply/custom/session-links.json`,
+      ...(input.host === "claude" ? ["- ./.claude/LOOPLY_HOOKS.md"] : []),
       ...(input.host === "codex" ? ["- ./LOOPLY_COMMANDS.md"] : []),
       ...(input.host === "codex" ? ["- ./.agents/skills/"] : []),
       "",
@@ -839,7 +844,12 @@ export class FileHostPublisher implements HostPublisher {
       "3. Follow stages in order and respect blocking gates.",
       "4. Use the managed pack as the canonical process base.",
       "5. Preserve local customizations from `.looply/custom`.",
-      "6. Treat execution hints as advisory metadata for cost and context selection."
+      "6. Treat execution hints as advisory metadata for cost and context selection.",
+      ...(input.host === "claude"
+        ? [
+            "7. If the user enables Claude hooks for looply tracing, use the generated `.claude/LOOPLY_HOOKS.md` guidance and `.claude/hooks/looply-perf-hook.mjs` helper to record workflow checkpoints locally."
+          ]
+        : [])
     ].join("\n");
   }
 
@@ -1036,6 +1046,271 @@ export class FileHostPublisher implements HostPublisher {
     }
 
     return path.join(targetRoot, ".looply", "managed", "packs", packClosure[0] ?? "", relativeFile);
+  }
+
+  private async writeClaudePerfHookFiles(targetRoot: string, host: SupportedHost): Promise<string[]> {
+    if (host !== "claude") {
+      return [];
+    }
+
+    const hooksRoot = path.join(targetRoot, ".claude", "hooks");
+    const hookScriptFile = path.join(hooksRoot, "looply-perf-hook.mjs");
+    const hookGuideFile = path.join(targetRoot, ".claude", "LOOPLY_HOOKS.md");
+    const hookSettingsExampleFile = path.join(targetRoot, ".claude", "settings.looply-perf.example.json");
+
+    await fs.ensureDir(hooksRoot);
+    await fs.writeFile(hookScriptFile, this.renderClaudePerfHookScript(), "utf8");
+    await fs.writeFile(hookGuideFile, this.renderClaudePerfHookGuide(), "utf8");
+    await fs.writeFile(hookSettingsExampleFile, this.renderClaudePerfHookSettingsExample(), "utf8");
+
+    return [hookScriptFile, hookGuideFile, hookSettingsExampleFile];
+  }
+
+  private renderClaudePerfHookScript(): string {
+    return `#!/usr/bin/env node
+import process from "node:process";
+import { spawnSync } from "node:child_process";
+
+const eventName = process.argv[2] ?? "";
+const projectDir = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+
+let payload = {};
+try {
+  const chunks = [];
+  for await (const chunk of process.stdin) {
+    chunks.push(chunk);
+  }
+  const raw = Buffer.concat(chunks).toString("utf8").trim();
+  payload = raw ? JSON.parse(raw) : {};
+} catch {
+  payload = {};
+}
+
+if (!String(process.env.LOOPLY_PERF || "").trim()) {
+  process.exit(0);
+}
+
+const prompt = typeof payload.prompt === "string" ? payload.prompt.trim() : "";
+const toolName = typeof payload.tool_name === "string" ? payload.tool_name.trim() : "";
+const toolInput = payload.tool_input && typeof payload.tool_input === "object" ? payload.tool_input : {};
+
+function summarizeToolInput(input) {
+  if (!input || typeof input !== "object") {
+    return "";
+  }
+
+  if (typeof input.file_path === "string" && input.file_path !== "") {
+    return \`file:\${input.file_path}\`;
+  }
+  if (typeof input.command === "string" && input.command !== "") {
+    return \`command:\${String(input.command).slice(0, 120)}\`;
+  }
+  if (typeof input.pattern === "string" && input.pattern !== "") {
+    return \`pattern:\${String(input.pattern).slice(0, 120)}\`;
+  }
+  if (typeof input.path === "string" && input.path !== "") {
+    return \`path:\${input.path}\`;
+  }
+
+  return "";
+}
+
+if (eventName === "user-prompt-submit") {
+  const match = prompt.match(/^\\/looply:([^\\s]+)\\s+([^\\s]+)/);
+  if (!match) {
+    process.exit(0);
+  }
+
+  const [, aliasName, feature] = match;
+  const command = [
+    "looply",
+    "perf",
+    "trace",
+    "start",
+    "--dir",
+    projectDir,
+    "--source",
+    "claude-hook",
+    "--host",
+    "claude",
+    "--alias",
+    \`looply:\${aliasName}\`,
+    "--workflow",
+    aliasName,
+    "--feature",
+    feature,
+    "--notes",
+    "Started from Claude UserPromptSubmit hook"
+  ];
+  spawnSync(command[0], command.slice(1), { stdio: "ignore", cwd: projectDir });
+  process.exit(0);
+}
+
+if (eventName === "pre-tool" && toolName) {
+  const toolSummary = summarizeToolInput(toolInput);
+  const command = [
+    "looply",
+    "perf",
+    "trace",
+    "checkpoint",
+    "--dir",
+    projectDir,
+    "--source",
+    "claude-hook",
+    "--host",
+    "claude",
+    "--stage",
+    \`tool:\${toolName}\`,
+    "--task",
+    toolName,
+    "--status",
+    "starting",
+    "--notes",
+    toolSummary || \`Starting tool \${toolName}\`
+  ];
+  spawnSync(command[0], command.slice(1), { stdio: "ignore", cwd: projectDir });
+  process.exit(0);
+}
+
+if (eventName === "post-tool" && toolName) {
+  const toolSummary = summarizeToolInput(toolInput);
+  const command = [
+    "looply",
+    "perf",
+    "trace",
+    "checkpoint",
+    "--dir",
+    projectDir,
+    "--source",
+    "claude-hook",
+    "--host",
+    "claude",
+    "--stage",
+    \`tool:\${toolName}\`,
+    "--task",
+    toolName,
+    "--status",
+    "completed",
+    "--notes",
+    toolSummary || \`Completed tool \${toolName}\`
+  ];
+  spawnSync(command[0], command.slice(1), { stdio: "ignore", cwd: projectDir });
+  process.exit(0);
+}
+
+if (eventName === "stop") {
+  const command = [
+    "looply",
+    "perf",
+    "trace",
+    "finish",
+    "--dir",
+    projectDir,
+    "--source",
+    "claude-hook",
+    "--host",
+    "claude",
+    "--status",
+    "completed",
+    "--notes",
+    "Finished from Claude Stop hook"
+  ];
+  spawnSync(command[0], command.slice(1), { stdio: "ignore", cwd: projectDir });
+  process.exit(0);
+}
+
+process.exit(0);
+`;
+  }
+
+  private renderClaudePerfHookGuide(): string {
+    return `# Looply Claude Hooks
+
+Use these files only when you want local workflow tracing while running Claude Code commands such as \`/looply:story-to-production\`.
+
+## What this does
+
+- starts a local workflow trace when a prompt begins with \`/looply:\`
+- records intermediate checkpoints for Claude tool execution
+- finishes the active trace when Claude stops responding
+- writes events to \`.looply/state/perf-workflow-events.jsonl\`
+
+## Requirements
+
+- the \`looply\` CLI must be available in PATH
+- set \`LOOPLY_PERF=1\` or \`LOOPLY_PERF=context\` before starting Claude Code
+- merge the example config from \`.claude/settings.looply-perf.example.json\` into your active Claude settings file
+
+## Suggested events
+
+- \`UserPromptSubmit\`: starts trace for \`/looply:...\`
+- \`PreToolUse\`: records a checkpoint before a Claude tool runs
+- \`PostToolUse\`: records a checkpoint after a Claude tool runs
+- \`Stop\`: finishes the active trace
+
+## Inspecting the trace
+
+\`\`\`bash
+looply perf trace summary --dir .
+looply perf trace summary --dir . --json
+\`\`\`
+
+## Helper script
+
+- \`.claude/hooks/looply-perf-hook.mjs\`
+`;
+  }
+
+  private renderClaudePerfHookSettingsExample(): string {
+    return `{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \\"$CLAUDE_PROJECT_DIR/.claude/hooks/looply-perf-hook.mjs\\" user-prompt-submit"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \\"$CLAUDE_PROJECT_DIR/.claude/hooks/looply-perf-hook.mjs\\" pre-tool"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \\"$CLAUDE_PROJECT_DIR/.claude/hooks/looply-perf-hook.mjs\\" post-tool"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \\"$CLAUDE_PROJECT_DIR/.claude/hooks/looply-perf-hook.mjs\\" stop"
+          }
+        ]
+      }
+    ]
+  }
+}
+`;
   }
 
   private async writeCodexSkills(input: {

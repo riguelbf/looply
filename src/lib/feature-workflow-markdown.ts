@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "fs-extra";
 import matter from "gray-matter";
 import { globby } from "globby";
+import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 
 export interface FeatureWorkflowMarkdownState {
   feature: string;
@@ -41,13 +42,26 @@ export function resolveFeatureWorkflowStatusFile(targetRoot: string, feature: st
 }
 
 export async function readFeatureWorkflowMarkdownStates(targetRoot: string): Promise<FeatureWorkflowMarkdownState[]> {
-  const files = await globby(".looply/custom/features/*/workflow-status.md", {
+  const files = await withPerfSpan("workflow-markdown.discover-files", async () => globby(".looply/custom/features/*/workflow-status.md", {
     cwd: targetRoot,
     absolute: true
-  });
+  }));
 
-  const entries = await Promise.all(files.map((file) => readFeatureWorkflowMarkdownFile(file)));
-  return entries.sort((left, right) => right.lastUpdated.localeCompare(left.lastUpdated));
+  const entries = await withPerfSpan("workflow-markdown.read-files", async () => Promise.all(files.map((file) => readFeatureWorkflowMarkdownFile(file))), {
+    fileCount: files.length
+  });
+  const sorted = entries.sort((left, right) => right.lastUpdated.localeCompare(left.lastUpdated));
+
+  setPerfMetadata("workflow-markdown.fileCount", files.length);
+  setPerfMetadata("workflow-markdown.featureCount", sorted.length);
+  if (isContextPerfMode()) {
+    setPerfMetadata(
+      "workflow-markdown.estimatedChars",
+      sorted.reduce((total, entry) => total + estimateWorkflowStateChars(entry), 0)
+    );
+  }
+
+  return sorted;
 }
 
 export async function readFeatureWorkflowMarkdownState(
@@ -55,11 +69,16 @@ export async function readFeatureWorkflowMarkdownState(
   feature: string
 ): Promise<FeatureWorkflowMarkdownState | null> {
   const file = resolveFeatureWorkflowStatusFile(targetRoot, feature);
-  if (!(await fs.pathExists(file))) {
+  const exists = await withPerfSpan("workflow-markdown.check-file", async () => fs.pathExists(file), { feature });
+  if (!exists) {
     return null;
   }
 
-  return readFeatureWorkflowMarkdownFile(file);
+  const entry = await withPerfSpan("workflow-markdown.read-single-file", async () => readFeatureWorkflowMarkdownFile(file), { feature });
+  if (isContextPerfMode()) {
+    setPerfMetadata("workflow-markdown.singleFeatureChars", estimateWorkflowStateChars(entry));
+  }
+  return entry;
 }
 
 async function readFeatureWorkflowMarkdownFile(file: string): Promise<FeatureWorkflowMarkdownState> {
@@ -137,4 +156,40 @@ function extractListSection(body: string, title: string): string[] {
     .filter((line) => line.startsWith("- "))
     .map((line) => line.slice(2).trim())
     .filter((item) => item !== "");
+}
+
+function estimateWorkflowStateChars(state: FeatureWorkflowMarkdownState): number {
+  const parts = [
+    state.feature,
+    state.workflow,
+    state.phase,
+    state.currentStage,
+    state.currentGate,
+    state.gateStatus,
+    state.activeArtifact,
+    state.selectedStory,
+    state.readyForNextGate,
+    state.recommendedNextWorkflow,
+    state.host,
+    state.nextAgent,
+    state.nextTask,
+    state.nextCommand,
+    state.nextHandoff,
+    state.projectMode,
+    state.primaryContextRoot,
+    state.inferencePolicy,
+    state.contextStatus,
+    state.contextCoverage,
+    state.decisionRationale,
+    state.lastUpdated,
+    ...state.blockedBy,
+    ...state.missingOutputs,
+    ...state.completedOutputs,
+    ...state.storyAcceptanceCriteria,
+    ...state.relatedIntegrations,
+    ...state.openQuestions,
+    ...state.constraints
+  ];
+
+  return parts.reduce((total, part) => total + part.length, 0);
 }
