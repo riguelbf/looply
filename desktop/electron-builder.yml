@@ -1,0 +1,19 @@
+appId: com.looply.desktop
+productName: Looply Desktop
+directories:
+  buildResources: resources
+  output: release
+files:
+  - out/**/*
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+    - zip
+  icon: resources/icon.icns
+win:
+  target: nsis
+  icon: resources/icon.ico
+linux:
+  target: AppImage
+  icon: resources/icon.png

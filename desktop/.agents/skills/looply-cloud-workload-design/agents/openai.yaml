@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-cloud-workload-design"
+  short_description: "Use when the main problem is cloud topology, async-first communication, governance posture or workload cost direction before delivery."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-cloud-workload-design <feature-name> <scope-reference> \"[constraints...]\""
+
+policy:
+  allow_implicit_invocation: false

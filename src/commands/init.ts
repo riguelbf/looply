@@ -19,6 +19,7 @@ export function registerInitCommand(program: Command): void {
     .option("--locale <locale>", "Output locale such as pt-BR or en")
     .option("--project-mode <mode>", "Project mode such as existing-project or greenfield")
     .option("--interaction-mode <mode>", "Interaction mode such as guided, balanced or autonomous")
+    .option("--enable-shell-autocomplete", "Enable shell autocomplete after install")
     .action(async (options) => {
       showIntro("looply init");
 
@@ -64,6 +65,7 @@ export function registerInitCommand(program: Command): void {
         localeOption: options.locale,
         projectModeOption: options.projectMode,
         interactionModeOption: options.interactionMode,
+        enableShellAutocomplete: options.enableShellAutocomplete,
         yes: options.yes
       });
     });

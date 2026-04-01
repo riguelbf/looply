@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-prd-to-stories"
+  short_description: "Use when a PRD already exists and needs to be broken into delivery stories. Do not use for raw idea discovery or implementation."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-prd-to-stories <feature-name> [prd-reference] \"[notes...]\""
+
+policy:
+  allow_implicit_invocation: false

@@ -6,6 +6,9 @@ import {
   resolveProjectInventoryMarkdownFile,
   resolveProjectContextMarkdownFile
 } from "./context-documents.js";
+import { deriveFeatureCodeImpact } from "./code-context/feature-impact.js";
+import { type CodeContextDocument } from "./code-context/schema.js";
+import { readCodeContext, resolveCodeContextFile } from "./code-context/storage.js";
 import { readContextSnapshot, resolveContextSnapshotFile, type ContextSnapshotDocument } from "./context-snapshot.js";
 import { readExecutionHintsDocument } from "./execution-hints.js";
 import { readFeatureWorkflowStates, type FeatureWorkflowState } from "./feature-workflow-state.js";
@@ -17,7 +20,7 @@ import { readSessionLinks } from "./session-links.js";
 import { readUpgradeHistoryFromTarget } from "./upgrade-history.js";
 
 export interface ProjectSnapshotDocument {
-  version: 2;
+  version: 3;
   generatedAt: string;
   targetRoot: string;
   summary: {
@@ -63,6 +66,10 @@ export interface ProjectSnapshotDocument {
     projectInventoryFile: string;
     snapshot: ContextSnapshotDocument | null;
   };
+  codeContext: {
+    file: string;
+    snapshot: CodeContextDocument | null;
+  };
   sessions: Array<{
     label: string;
     feature: string;
@@ -87,7 +94,7 @@ export function resolveProjectSnapshotFile(targetRoot: string): string {
 }
 
 export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectSnapshotDocument> {
-  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot] = await Promise.all([
+  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot, codeContext] = await Promise.all([
     readInstallManifestFromTarget(targetRoot),
     readLocaleFile(targetRoot),
     readProjectContextFile(targetRoot),
@@ -95,7 +102,8 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
     readSessionLinks(targetRoot),
     readUpgradeHistoryFromTarget(targetRoot),
     readFeatureWorkflowStates(targetRoot),
-    readContextSnapshot(targetRoot)
+    readContextSnapshot(targetRoot),
+    readCodeContext(targetRoot)
   ]);
   const executionHintsByHost = manifest
     ? await Promise.all(
@@ -109,7 +117,7 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
     : [];
 
   return {
-    version: 2,
+    version: 3,
     generatedAt: new Date().toISOString(),
     targetRoot,
     summary: {
@@ -158,8 +166,15 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
       projectInventoryFile: resolveProjectInventoryMarkdownFile(targetRoot),
       snapshot: contextSnapshot
     },
+    codeContext: {
+      file: resolveCodeContextFile(targetRoot),
+      snapshot: codeContext
+    },
     sessions: sessions.sessions,
-    features,
+    features: features.map((feature) => ({
+      ...feature,
+      ...deriveFeatureCodeImpact(feature, codeContext)
+    })),
     history: history.entries.map((entry) => ({
       timestamp: entry.timestamp,
       action: entry.action,

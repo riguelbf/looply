@@ -8,6 +8,12 @@ Check whether installed hosts have updates available
 
 - options: 4
 
+## [completion](./commands/completion)
+
+Generate or inspect shell completion for the looply CLI
+
+- options: 4
+
 ## [docs](./commands/docs)
 
 Operate the looply documentation module
@@ -59,6 +65,12 @@ List available packs and artifacts
 ## [reconcile](./commands/reconcile)
 
 Reconcile a feature workflow after manual interventions or replay
+
+- options: 1
+
+## [refresh-code-context](./commands/refresh-code-context)
+
+Refresh multi-language code-context discovery for the current repository
 
 - options: 1
 

@@ -98,6 +98,19 @@ export function registerStatusCommand(program: Command): void {
       }
       console.log("");
 
+      console.log(chalk.bold(text.codeContext));
+      if (snapshot.codeContext.snapshot) {
+        console.log(`${text.coverage}: ${chalk.cyan(snapshot.codeContext.snapshot.coverage)}`);
+        console.log(`${text.providersLabel}: ${chalk.cyan(snapshot.codeContext.snapshot.providers.filter((provider: { detectedRootCount: number }) => provider.detectedRootCount > 0).map((provider: { id: string }) => provider.id).join(", ") || text.none)}`);
+        console.log(`${text.workspaceRootsLabel}: ${chalk.cyan(String(snapshot.codeContext.snapshot.workspaceRoots.length))}`);
+        console.log(`${text.codeModulesLabel}: ${chalk.cyan(String(snapshot.codeContext.snapshot.modules.length))}`);
+        console.log(`${text.semanticSymbolsLabel}: ${chalk.cyan(String(snapshot.codeContext.snapshot.symbols.length))}`);
+        console.log(`${text.entrypointsLabel}: ${chalk.cyan(String(snapshot.codeContext.snapshot.entrypoints.length))}`);
+      } else {
+        console.log(chalk.dim(text.noCodeContextSnapshot));
+      }
+      console.log("");
+
       console.log(chalk.bold(text.sessions));
       if (snapshot.sessions.length === 0) {
         console.log(chalk.dim(text.noSessionLinks));
@@ -243,6 +256,12 @@ export function registerStatusCommand(program: Command): void {
           console.log(`  ${text.task}: ${chalk.cyan(feature.nextTask || resolveCurrentTask(stageEntries, feature.currentStage) || text.unknown)}`);
           console.log(`  ${text.command}:`);
           console.log(`    ${chalk.cyan(feature.recommendedRecoveryCommand || feature.nextCommand || text.unknown)}`);
+          console.log("");
+          console.log(chalk.bold(text.handoffContext));
+          console.log(`  ${text.relevantModules}: ${chalk.cyan(feature.relevantModules.join(", ") || text.none)}`);
+          console.log(`  ${text.relevantFiles}: ${chalk.cyan(feature.relevantFiles.join(", ") || text.none)}`);
+          console.log(`  ${text.relevantSymbols}: ${chalk.cyan(feature.relevantSymbols.join(", ") || text.none)}`);
+          console.log(`  ${text.relatedTestsLabel}: ${chalk.cyan(feature.relatedTests.join(", ") || text.none)}`);
           console.log("");
           console.log(chalk.bold(text.afterApproval));
           if (feature.missingOutputs.length > 0) {
@@ -534,6 +553,13 @@ function getStatusText(locale: StatusLocale) {
       modules: "modules",
       integrations: "integrations",
       noContextSnapshot: "Nenhum context snapshot encontrado. Rode `looply refresh-context` para gerar um.",
+      codeContext: "Code Context",
+      providersLabel: "providers",
+      workspaceRootsLabel: "workspace roots",
+      codeModulesLabel: "code modules",
+      semanticSymbolsLabel: "semantic symbols",
+      entrypointsLabel: "entrypoints",
+      noCodeContextSnapshot: "Nenhum code-context snapshot encontrado. Rode `looply refresh-code-context` para gerar um.",
       noSessionLinks: "Nenhum vínculo de sessão registrado.",
       noLastCommand: "sem-último-comando",
       workflow: "Workflow",
@@ -555,6 +581,11 @@ function getStatusText(locale: StatusLocale) {
       blockers: "Bloqueios",
       noBlockers: "nenhum bloqueio registrado",
       nextStep: "Próximo passo",
+      handoffContext: "Handoff técnico",
+      relevantModules: "módulos relevantes",
+      relevantFiles: "arquivos relevantes",
+      relevantSymbols: "símbolos relevantes",
+      relatedTestsLabel: "testes relacionados",
       agent: "Agente",
       task: "Task",
       command: "Comando",
@@ -640,6 +671,13 @@ function getStatusText(locale: StatusLocale) {
     modules: "modules",
     integrations: "integrations",
     noContextSnapshot: "No context snapshot found. Run `looply refresh-context` to generate one.",
+    codeContext: "Code Context",
+    providersLabel: "providers",
+    workspaceRootsLabel: "workspace roots",
+    codeModulesLabel: "code modules",
+    semanticSymbolsLabel: "semantic symbols",
+    entrypointsLabel: "entrypoints",
+    noCodeContextSnapshot: "No code-context snapshot found. Run `looply refresh-code-context` to generate one.",
     noSessionLinks: "No session links recorded.",
     noLastCommand: "no-last-command",
     workflow: "Workflow",
@@ -661,6 +699,11 @@ function getStatusText(locale: StatusLocale) {
     blockers: "Blockers",
     noBlockers: "no blockers recorded",
     nextStep: "Next step",
+    handoffContext: "Technical handoff",
+    relevantModules: "relevant modules",
+    relevantFiles: "relevant files",
+    relevantSymbols: "relevant symbols",
+    relatedTestsLabel: "related tests",
     agent: "Agent",
     task: "Task",
     command: "Command",

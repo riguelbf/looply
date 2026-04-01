@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Looply.CodeContext.Dotnet</AssemblyName>
+    <RootNamespace>Looply.CodeContext.Dotnet</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.CodeAnalysis.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.CodeAnalysis.Workspaces.MSBuild.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Locator">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.Build.Locator.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build">
+      <HintPath>$(LOOPLY_DOTNET_SDK_DIR)/Microsoft.Build.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework">
+      <HintPath>$(LOOPLY_DOTNET_SDK_DIR)/Microsoft.Build.Framework.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.Build.Utilities.Core.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Tasks.Core">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/Microsoft.Build.Tasks.Core.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="System.Composition.AttributedModel">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/System.Composition.AttributedModel.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="System.Composition.Convention">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/System.Composition.Convention.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="System.Composition.Hosting">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/System.Composition.Hosting.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="System.Composition.Runtime">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/System.Composition.Runtime.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts">
+      <HintPath>$(LOOPLY_DOTNET_FORMAT_DIR)/System.Composition.TypedParts.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(LOOPLY_DOTNET_FORMAT_DIR)/BuildHost-netcore/**">
+      <Link>BuildHost-netcore/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(LOOPLY_DOTNET_FORMAT_DIR)/BuildHost-net472/**">
+      <Link>BuildHost-net472/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

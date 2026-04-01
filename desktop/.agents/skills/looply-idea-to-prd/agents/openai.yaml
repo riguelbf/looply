@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-idea-to-prd"
+  short_description: "Use for discovery work that turns a feature idea into a PRD. Do not use for story breakdown or implementation."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-idea-to-prd <feature-name> \"[problem-statement]\" \"[constraints...]\""
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-next"
+  short_description: "Use to show the next recommended step for a persisted feature workflow without restarting the whole flow."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-next <feature-name> [session-label] \"[notes...]\""
+
+policy:
+  allow_implicit_invocation: false

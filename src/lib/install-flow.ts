@@ -1,6 +1,7 @@
 import { cancel, confirm, isCancel, multiselect, select } from "@clack/prompts";
 import chalk from "chalk";
 import { resolveHostPublishers } from "../hosts/index.js";
+import { detectSupportedShell, installShellCompletion } from "./cli-completion/install.js";
 import { detectProjectMode } from "./project-context.js";
 import type {
   HostPublisher,
@@ -24,6 +25,7 @@ export interface InstallFlowInput {
   projectModeOption?: string;
   interactionModeOption?: string;
   yes?: boolean;
+  enableShellAutocomplete?: boolean;
 }
 
 export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> {
@@ -84,6 +86,11 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
     installResults.push(result);
   }
 
+  const shellCompletionResult = await maybeEnableShellCompletion({
+    enableShellAutocomplete: input.enableShellAutocomplete,
+    yes: input.yes
+  });
+
   showOutro(
     installResults
       .map((result) => `${result.host}: ${result.entrypointFile}`)
@@ -92,10 +99,44 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
       .concat(installResults.map((result) => `${result.host} locale: ${result.localeFile}`))
       .concat(installResults.map((result) => `${result.host} project context: ${result.projectContextFile}`))
       .concat(installResults.map((result) => `${result.host} interaction policy: ${result.interactionPolicyFile}`))
+      .concat(shellCompletionResult
+        ? [
+            `shell completion: ${shellCompletionResult.completionFile}`,
+            `shell rc file: ${shellCompletionResult.rcFile}${shellCompletionResult.changedRcFile ? " (updated)" : " (already configured)"}`
+          ]
+        : [])
       .join("\n")
   );
 
   return true;
+}
+
+async function maybeEnableShellCompletion(input: {
+  enableShellAutocomplete?: boolean;
+  yes?: boolean;
+}) {
+  const shell = detectSupportedShell();
+  if (!shell) {
+    return null;
+  }
+
+  const shouldEnable = typeof input.enableShellAutocomplete === "boolean"
+    ? input.enableShellAutocomplete
+    : input.yes
+      ? true
+      : await confirm({
+          message: `Enable shell autocomplete for ${chalk.cyan(shell)}?`,
+          initialValue: true
+        });
+
+  if (isCancel(shouldEnable) || !shouldEnable) {
+    return null;
+  }
+
+  const loading = createSpinner(`Enabling ${shell} shell autocomplete`);
+  const result = await installShellCompletion(shell);
+  loading.stop(`Enabled ${chalk.cyan(shell)} shell autocomplete`);
+  return result;
 }
 
 async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<SupportedHost[] | undefined> {

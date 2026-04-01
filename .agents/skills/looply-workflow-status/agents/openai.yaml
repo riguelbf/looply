@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-workflow-status"
+  short_description: "Use to inspect the persisted state of a feature workflow and decide the next recommended step."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-workflow-status <feature-name> [session-label] \"[notes...]\""
+
+policy:
+  allow_implicit_invocation: false

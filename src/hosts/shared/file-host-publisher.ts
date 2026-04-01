@@ -794,6 +794,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/state/locale.json`,
       `- ./.looply/state/project-context.json`,
       `- ./.looply/state/context-index.md`,
+      `- ./.looply/state/code-context.json`,
       `- ./.looply/state/interaction-policy.json`,
       `- ./.looply/custom/project-context.md`,
       `- ./.looply/custom/integrations/integrations-index.md`,

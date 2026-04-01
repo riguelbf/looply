@@ -15,7 +15,10 @@ docs-site/.vitepress/docs-server.json
 AGENTS.md
 CLAUDE.md
 LOOPLY_COMMANDS.md
+looply-test-2/
+tools/code-context-dotnet-helper/bin/
+tools/code-context-dotnet-helper/obj/
 
-!bin/
-!bin/run.js
-!bin/dev.js
+!/bin/
+!/bin/run.js
+!/bin/dev.js
