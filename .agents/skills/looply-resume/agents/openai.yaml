@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-resume"
+  short_description: "Use to resume a persisted feature workflow from its saved state, especially when multiple sessions exist."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-resume <feature-name> [session-label] \"[notes...]\""
+
+policy:
+  allow_implicit_invocation: false

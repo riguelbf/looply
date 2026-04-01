@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-platform-foundation-evolution"
+  short_description: "Use when the main problem is shared platform baseline, guardrails, pipelines, identity or observability foundation rather than a single workload feature."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-platform-foundation-evolution <initiative-name> \"[constraints...]\""
+
+policy:
+  allow_implicit_invocation: false

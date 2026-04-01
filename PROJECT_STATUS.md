@@ -22,16 +22,19 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - aprofundar o `refresh-context` para entender melhor API, dados, auth, mensageria e observabilidade
 - fechar workflows dedicados para cloud e plataforma no `engineering-base`
 - alinhar a documentacao oficial com o estado real da CLI
-- reforcar `status` como interface operacional principal do produto
+- revisar paridade de operacao entre `Codex` e `Claude`
 
 ## Next Up
 
-- revisar paridade de operacao entre `Codex` e `Claude`
 - avaliar se precisamos de snapshots adicionais para catalogo e workflows
 - decidir a proxima fatia de especializacao operacional antes de qualquer GUI
+- endurecer outras saidas humanas do CLI para tambem respeitarem `locale`
 
 ## Recently Completed
 
+- `status` agora destaca `LOOPLY STATUS` e mostra mini workflow, `Voce esta aqui`, outputs, bloqueios e proximo passo
+- `status` ganhou empty state mais util quando ainda nao existe feature ativa
+- `status` passou a respeitar `locale` do projeto, alternando a saida entre `pt-BR` e `en`
 - separacao de packs concluida em `product-base`, `engineering-base` e `software-delivery-suite`
 - camada de snapshots adicionada com `context-snapshot.json` e `project-snapshot.json`
 - `status` agora pode emitir estado normalizado via `looply status --json`
@@ -86,6 +89,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 - fortalecer entendimento de projeto existente antes de qualquer camada GUI
 - deixar `status` e `refresh-context` como superficies centrais de valor do CLI
+- tornar o `status` a melhor superficie de orientacao para saber onde o usuario esta e o que falta no workflow
 - garantir que workflows e docs reflitam o produto real, nao uma versao anterior dele
 
 ## Open Questions

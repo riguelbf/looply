@@ -46,6 +46,10 @@ export interface FeatureWorkflowState {
   lastInterventionAt: string;
   lastInterventionSummary: string;
   interventions: FeatureWorkflowInterventionEntry[];
+  relevantFiles: string[];
+  relevantModules: string[];
+  relevantSymbols: string[];
+  relatedTests: string[];
   file: string;
 }
 
@@ -66,6 +70,11 @@ export async function readFeatureWorkflowStates(targetRoot: string): Promise<Fea
       lastInterventionAt: lastIntervention?.createdAt ?? "",
       lastInterventionSummary: lastIntervention?.summary ?? "",
       interventions: control?.interventions ?? []
+      ,
+      relevantFiles: [],
+      relevantModules: [],
+      relevantSymbols: [],
+      relatedTests: []
     });
   }
 

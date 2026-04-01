@@ -1,0 +1,5 @@
+interface:
+  display_name: "$looply"
+  short_description: "Looply entrypoint for workflow discovery and next-step guidance in Codex."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply"

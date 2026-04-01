@@ -1,0 +1,886 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 960" font-family="'Inter', 'SF Pro Display', -apple-system, sans-serif">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="sidebarGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FAFBFC"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="pipelineGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="33%" stop-color="#8B5CF6"/>
+      <stop offset="66%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#C4B5FD"/>
+    </linearGradient>
+    <!-- Shadows -->
+    <filter id="cardShadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <filter id="smallShadow" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.06"/>
+    </filter>
+    <filter id="glowPurple">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#6366F1" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Window Chrome -->
+  <rect width="1780" height="960" rx="12" fill="#F1F5F9"/>
+
+  <!-- Title Bar -->
+  <rect width="1780" height="36" rx="12" fill="#E2E8F0"/>
+  <rect y="12" width="1780" height="24" fill="#E2E8F0"/>
+  <!-- Traffic lights -->
+  <circle cx="20" cy="18" r="6" fill="#EF4444"/>
+  <circle cx="40" cy="18" r="6" fill="#F59E0B"/>
+  <circle cx="60" cy="18" r="6" fill="#22C55E"/>
+  <text x="830" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Looply Desktop</text>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <rect x="0" y="36" width="240" height="924" fill="url(#sidebarGrad)"/>
+
+  <!-- Logo -->
+  <g transform="translate(24, 56)">
+    <rect width="32" height="32" rx="8" fill="url(#accentGrad)"/>
+    <text x="16" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="white">L</text>
+    <text x="44" y="22" font-size="18" font-weight="700" fill="#F8FAFC">Looply</text>
+    <text x="44" y="34" font-size="10" fill="#64748B">v2.0.0</text>
+  </g>
+
+  <!-- Search -->
+  <rect x="16" y="104" width="208" height="36" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+  <text x="40" y="126" font-size="12" fill="#64748B">Search commands...</text>
+  <text x="196" y="126" font-size="10" fill="#475569" font-family="monospace">/</text>
+  <!-- Search icon -->
+  <circle cx="28" cy="122" r="5" fill="none" stroke="#64748B" stroke-width="1.5"/>
+  <line x1="32" y1="126" x2="35" y2="129" stroke="#64748B" stroke-width="1.5"/>
+
+  <!-- Nav Section: Overview -->
+  <text x="24" y="168" font-size="10" font-weight="600" fill="#475569" letter-spacing="0.5">OVERVIEW</text>
+
+  <!-- Nav Item: Dashboard (Active) -->
+  <rect x="8" y="178" width="224" height="36" rx="8" fill="#6366F1" opacity="0.15"/>
+  <rect x="8" y="178" width="3" height="36" rx="1.5" fill="#6366F1"/>
+  <g transform="translate(24, 188)">
+    <rect width="16" height="16" rx="3" fill="none" stroke="#6366F1" stroke-width="1.5"/>
+    <rect x="3" y="3" width="4" height="4" rx="1" fill="#6366F1"/>
+    <rect x="9" y="3" width="4" height="4" rx="1" fill="#6366F1"/>
+    <rect x="3" y="9" width="4" height="4" rx="1" fill="#6366F1"/>
+    <rect x="9" y="9" width="4" height="4" rx="1" fill="#6366F1"/>
+  </g>
+  <text x="52" y="201" font-size="13" font-weight="500" fill="#C7D2FE">Dashboard</text>
+
+  <!-- Nav Item: Status -->
+  <g transform="translate(24, 226)">
+    <circle cx="8" cy="8" r="7" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M5,8 L7,10 L11,6" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="239" font-size="13" fill="#94A3B8">Status</text>
+  <rect x="180" y="228" width="36" height="18" rx="9" fill="#22C55E" opacity="0.2"/>
+  <text x="198" y="240" text-anchor="middle" font-size="10" font-weight="600" fill="#22C55E">OK</text>
+
+  <!-- Nav Section: Workflows -->
+  <text x="24" y="278" font-size="10" font-weight="600" fill="#475569" letter-spacing="0.5">WORKFLOWS</text>
+
+  <!-- Nav Item: Features -->
+  <g transform="translate(24, 292)">
+    <path d="M2,2 L14,2 L14,14 L2,14 Z" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M5,6 L11,6 M5,10 L9,10" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="305" font-size="13" fill="#94A3B8">Features</text>
+  <rect x="180" y="294" width="28" height="18" rx="9" fill="#6366F1" opacity="0.2"/>
+  <text x="194" y="306" text-anchor="middle" font-size="10" font-weight="600" fill="#818CF8">3</text>
+
+  <!-- Nav Item: Workflows -->
+  <g transform="translate(24, 324)">
+    <path d="M2,8 L6,2 L10,8 L14,2" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M2,14 L6,8 L10,14 L14,8" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="337" font-size="13" fill="#94A3B8">Workflows</text>
+
+  <!-- Nav Item: Agents -->
+  <g transform="translate(24, 356)">
+    <circle cx="8" cy="6" r="4" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M1,16 Q8,12 15,16" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="369" font-size="13" fill="#94A3B8">Agents</text>
+
+  <!-- Nav Item: Tasks -->
+  <g transform="translate(24, 388)">
+    <rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M5,8 L7,10 L11,6" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="401" font-size="13" fill="#94A3B8">Tasks</text>
+
+  <!-- Nav Section: Knowledge -->
+  <text x="24" y="440" font-size="10" font-weight="600" fill="#475569" letter-spacing="0.5">KNOWLEDGE</text>
+
+  <!-- Nav Item: Packs -->
+  <g transform="translate(24, 454)">
+    <rect x="1" y="4" width="14" height="10" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M4,4 L4,2 L12,2 L12,4" stroke="#94A3B8" stroke-width="1.5" fill="none"/>
+  </g>
+  <text x="52" y="467" font-size="13" fill="#94A3B8">Packs</text>
+
+  <!-- Nav Item: Knowledge -->
+  <g transform="translate(24, 486)">
+    <path d="M2,14 L2,2 Q8,0 8,4 L8,14 Q8,12 2,12" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M8,4 Q8,0 14,2 L14,14 Q8,12 8,14" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="499" font-size="13" fill="#94A3B8">Knowledge Base</text>
+
+  <!-- Nav Item: Templates -->
+  <g transform="translate(24, 518)">
+    <rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <line x1="8" y1="5" x2="8" y2="11" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="5" y1="8" x2="11" y2="8" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="531" font-size="13" fill="#94A3B8">Templates</text>
+
+  <!-- Nav Section: Project -->
+  <text x="24" y="570" font-size="10" font-weight="600" fill="#475569" letter-spacing="0.5">PROJECT</text>
+
+  <!-- Nav Item: Context -->
+  <g transform="translate(24, 584)">
+    <circle cx="8" cy="8" r="7" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="8" y="12" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8">i</text>
+  </g>
+  <text x="52" y="597" font-size="13" fill="#94A3B8">Context</text>
+
+  <!-- Nav Item: Sessions -->
+  <g transform="translate(24, 616)">
+    <rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <circle cx="8" cy="8" r="3" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="629" font-size="13" fill="#94A3B8">Sessions</text>
+
+  <!-- Nav Item: History -->
+  <g transform="translate(24, 648)">
+    <circle cx="8" cy="8" r="7" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <path d="M8,4 L8,8 L11,10" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="661" font-size="13" fill="#94A3B8">History</text>
+
+  <!-- Nav Section: Settings -->
+  <text x="24" y="700" font-size="10" font-weight="600" fill="#475569" letter-spacing="0.5">SETTINGS</text>
+
+  <!-- Nav Item: Hosts -->
+  <g transform="translate(24, 714)">
+    <rect x="2" y="4" width="12" height="8" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <circle cx="5" cy="8" r="1" fill="#94A3B8"/>
+    <circle cx="8" cy="8" r="1" fill="#94A3B8"/>
+    <circle cx="11" cy="8" r="1" fill="#94A3B8"/>
+  </g>
+  <text x="52" y="727" font-size="13" fill="#94A3B8">Hosts</text>
+
+  <!-- Nav Item: Doctor -->
+  <g transform="translate(24, 746)">
+    <path d="M5,2 L11,2 L11,14 L5,14 Z" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="7" y1="5" x2="9" y2="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="7" y1="8" x2="9" y2="8" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+  <text x="52" y="759" font-size="13" fill="#94A3B8">Doctor</text>
+
+  <!-- Nav Item: Settings -->
+  <g transform="translate(24, 778)">
+    <circle cx="8" cy="8" r="6" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    <circle cx="8" cy="8" r="2" fill="#94A3B8"/>
+  </g>
+  <text x="52" y="791" font-size="13" fill="#94A3B8">Settings</text>
+
+  <!-- Sidebar Footer -->
+  <line x1="16" y1="880" x2="224" y2="880" stroke="#334155" stroke-width="1"/>
+  <g transform="translate(24, 896)">
+    <circle cx="16" cy="16" r="16" fill="#334155"/>
+    <text x="16" y="21" text-anchor="middle" font-size="12" font-weight="600" fill="#E2E8F0">RM</text>
+    <text x="44" y="14" font-size="12" font-weight="500" fill="#E2E8F0">Riguel M.</text>
+    <text x="44" y="28" font-size="10" fill="#64748B">Project: looply</text>
+  </g>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+
+  <!-- Header Bar -->
+  <rect x="240" y="36" width="1200" height="56" fill="url(#headerGrad)" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Breadcrumb -->
+  <text x="268" y="62" font-size="11" fill="#94A3B8">Home</text>
+  <text x="298" y="62" font-size="11" fill="#94A3B8">/</text>
+  <text x="308" y="62" font-size="13" font-weight="600" fill="#1E293B">Dashboard</text>
+
+  <!-- Header Actions -->
+  <g transform="translate(1040, 50)">
+    <!-- Refresh Context Button -->
+    <rect width="130" height="32" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+    <g transform="translate(12, 8)">
+      <path d="M12,2 A6,6 0 1,1 6,8" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <path d="M12,2 L10,4 L14,4 Z" fill="#64748B"/>
+    </g>
+    <text x="32" y="21" font-size="11" font-weight="500" fill="#475569">Refresh Context</text>
+  </g>
+
+  <g transform="translate(1180, 50)">
+    <!-- Sync Button -->
+    <rect width="80" height="32" rx="8" fill="url(#accentGrad)" filter="url(#smallShadow)"/>
+    <text x="40" y="21" text-anchor="middle" font-size="12" font-weight="600" fill="white">Sync</text>
+  </g>
+
+  <g transform="translate(1270, 50)">
+    <!-- Notification -->
+    <rect width="32" height="32" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+    <g transform="translate(9, 7)">
+      <path d="M7,0 Q7,0 7,2 Q2,4 2,8 L0,10 L14,10 L12,8 Q12,4 7,2" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <circle cx="7" cy="12" r="2" fill="none" stroke="#64748B" stroke-width="1.5"/>
+    </g>
+    <circle cx="24" cy="10" r="4" fill="#EF4444"/>
+    <text x="24" y="13" text-anchor="middle" font-size="7" font-weight="700" fill="white">2</text>
+  </g>
+
+  <g transform="translate(1312, 50)">
+    <!-- Terminal -->
+    <rect width="32" height="32" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+    <g transform="translate(8, 8)">
+      <rect width="16" height="14" rx="2" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <path d="M4,5 L7,7 L4,9" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <line x1="9" y1="9" x2="12" y2="9" stroke="#64748B" stroke-width="1.5"/>
+    </g>
+  </g>
+
+  <!-- ==================== DASHBOARD CONTENT ==================== -->
+
+  <!-- Row 1: Metric Cards -->
+  <!-- Card 1: Active Features -->
+  <g transform="translate(264, 108)">
+    <rect width="222" height="100" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="20" y="30" font-size="11" font-weight="500" fill="#64748B">Active Features</text>
+    <text x="20" y="62" font-size="32" font-weight="700" fill="#1E293B">3</text>
+    <rect x="20" y="74" width="60" height="18" rx="9" fill="#DBEAFE"/>
+    <text x="50" y="86" text-anchor="middle" font-size="10" font-weight="500" fill="#3B82F6">In Progress</text>
+    <!-- Mini chart -->
+    <g transform="translate(140, 30)">
+      <rect x="0" y="30" width="12" height="20" rx="3" fill="#C7D2FE"/>
+      <rect x="18" y="20" width="12" height="30" rx="3" fill="#A5B4FC"/>
+      <rect x="36" y="10" width="12" height="40" rx="3" fill="#818CF8"/>
+      <rect x="54" y="0" width="12" height="50" rx="3" fill="url(#accentGrad)"/>
+    </g>
+  </g>
+
+  <!-- Card 2: Workflow Progress -->
+  <g transform="translate(502, 108)">
+    <rect width="222" height="100" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="20" y="30" font-size="11" font-weight="500" fill="#64748B">Workflow Progress</text>
+    <text x="20" y="62" font-size="32" font-weight="700" fill="#1E293B">67%</text>
+    <rect x="20" y="74" width="60" height="18" rx="9" fill="#D1FAE5"/>
+    <text x="50" y="86" text-anchor="middle" font-size="10" font-weight="500" fill="#10B981">On Track</text>
+    <!-- Circular progress -->
+    <g transform="translate(170, 40)">
+      <circle cx="24" cy="24" r="22" fill="none" stroke="#E2E8F0" stroke-width="5"/>
+      <circle cx="24" cy="24" r="22" fill="none" stroke="url(#accentGrad)" stroke-width="5" stroke-dasharray="92,46" stroke-linecap="round" transform="rotate(-90, 24, 24)"/>
+      <text x="24" y="28" text-anchor="middle" font-size="11" font-weight="700" fill="#6366F1">67%</text>
+    </g>
+  </g>
+
+  <!-- Card 3: Gates -->
+  <g transform="translate(740, 108)">
+    <rect width="222" height="100" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="20" y="30" font-size="11" font-weight="500" fill="#64748B">Quality Gates</text>
+    <text x="20" y="62" font-size="32" font-weight="700" fill="#1E293B">5/8</text>
+    <rect x="20" y="74" width="60" height="18" rx="9" fill="#FEF3C7"/>
+    <text x="50" y="86" text-anchor="middle" font-size="10" font-weight="500" fill="#D97706">3 Pending</text>
+    <!-- Gate indicators -->
+    <g transform="translate(140, 30)">
+      <circle cx="8" cy="8" r="6" fill="#22C55E"/><text x="8" y="12" text-anchor="middle" font-size="8" fill="white">&#10003;</text>
+      <circle cx="26" cy="8" r="6" fill="#22C55E"/><text x="26" y="12" text-anchor="middle" font-size="8" fill="white">&#10003;</text>
+      <circle cx="44" cy="8" r="6" fill="#22C55E"/><text x="44" y="12" text-anchor="middle" font-size="8" fill="white">&#10003;</text>
+      <circle cx="62" cy="8" r="6" fill="#22C55E"/><text x="62" y="12" text-anchor="middle" font-size="8" fill="white">&#10003;</text>
+      <circle cx="8" cy="26" r="6" fill="#22C55E"/><text x="8" y="30" text-anchor="middle" font-size="8" fill="white">&#10003;</text>
+      <circle cx="26" cy="26" r="6" fill="#F59E0B"/>
+      <circle cx="44" cy="26" r="6" fill="#F59E0B"/>
+      <circle cx="62" cy="26" r="6" fill="#94A3B8"/>
+    </g>
+  </g>
+
+  <!-- Card 4: Agents Active -->
+  <g transform="translate(978, 108)">
+    <rect width="222" height="100" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="20" y="30" font-size="11" font-weight="500" fill="#64748B">Active Agents</text>
+    <text x="20" y="62" font-size="32" font-weight="700" fill="#1E293B">4</text>
+    <rect x="20" y="74" width="78" height="18" rx="9" fill="#EDE9FE"/>
+    <text x="59" y="86" text-anchor="middle" font-size="10" font-weight="500" fill="#7C3AED">12 Available</text>
+    <!-- Agent avatars -->
+    <g transform="translate(140, 30)">
+      <circle cx="10" cy="15" r="14" fill="#6366F1" stroke="white" stroke-width="2"/>
+      <text x="10" y="19" text-anchor="middle" font-size="10" font-weight="600" fill="white">A</text>
+      <circle cx="30" cy="15" r="14" fill="#8B5CF6" stroke="white" stroke-width="2"/>
+      <text x="30" y="19" text-anchor="middle" font-size="10" font-weight="600" fill="white">B</text>
+      <circle cx="50" cy="15" r="14" fill="#A78BFA" stroke="white" stroke-width="2"/>
+      <text x="50" y="19" text-anchor="middle" font-size="10" font-weight="600" fill="white">R</text>
+      <circle cx="70" cy="15" r="14" fill="#C4B5FD" stroke="white" stroke-width="2"/>
+      <text x="70" y="19" text-anchor="middle" font-size="10" font-weight="600" fill="white">D</text>
+    </g>
+  </g>
+
+  <!-- ==================== Row 2: Feature Pipeline ==================== -->
+  <g transform="translate(264, 228)">
+    <rect width="936" height="320" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- Card Header -->
+    <text x="24" y="30" font-size="15" font-weight="700" fill="#1E293B">Feature Pipeline</text>
+    <text x="24" y="46" font-size="11" fill="#64748B">Track features from idea to production</text>
+
+    <!-- Tabs -->
+    <g transform="translate(24, 58)">
+      <rect width="70" height="28" rx="6" fill="#6366F1"/>
+      <text x="35" y="19" text-anchor="middle" font-size="11" font-weight="600" fill="white">All (3)</text>
+      <rect x="78" width="90" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="123" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">In Progress</text>
+      <rect x="176" width="80" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="216" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Blocked</text>
+      <rect x="264" width="90" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="309" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Completed</text>
+    </g>
+
+    <!-- Pipeline Stage Headers -->
+    <g transform="translate(24, 100)">
+      <rect width="140" height="24" rx="6" fill="#DBEAFE"/>
+      <text x="70" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#3B82F6">DISCOVERY</text>
+      <rect x="158" width="140" height="24" rx="6" fill="#E0E7FF"/>
+      <text x="228" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#6366F1">PLANNING</text>
+      <rect x="316" width="280" height="24" rx="6" fill="#EDE9FE"/>
+      <text x="456" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#7C3AED">DELIVERY</text>
+      <rect x="614" width="140" height="24" rx="6" fill="#D1FAE5"/>
+      <text x="684" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#059669">RELEASED</text>
+
+      <!-- Connecting arrows -->
+      <line x1="140" y1="12" x2="158" y2="12" stroke="#CBD5E1" stroke-width="1.5"/>
+      <line x1="298" y1="12" x2="316" y2="12" stroke="#CBD5E1" stroke-width="1.5"/>
+      <line x1="596" y1="12" x2="614" y2="12" stroke="#CBD5E1" stroke-width="1.5"/>
+    </g>
+
+    <!-- Feature Row 1: pix-webhook-retry -->
+    <g transform="translate(24, 140)">
+      <rect width="888" height="52" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <!-- Feature name -->
+      <circle cx="18" cy="26" r="10" fill="#6366F1"/>
+      <text x="18" y="30" text-anchor="middle" font-size="10" font-weight="700" fill="white">P</text>
+      <text x="36" y="22" font-size="12" font-weight="600" fill="#1E293B">pix-webhook-retry</text>
+      <text x="36" y="36" font-size="10" fill="#64748B">story-to-production</text>
+
+      <!-- Progress bar spanning stages -->
+      <g transform="translate(200, 16)">
+        <rect width="540" height="6" rx="3" fill="#E2E8F0"/>
+        <rect width="360" height="6" rx="3" fill="url(#accentGrad)"/>
+        <!-- Stage dots -->
+        <circle cx="0" cy="3" r="5" fill="#22C55E" stroke="white" stroke-width="2"/>
+        <circle cx="108" cy="3" r="5" fill="#22C55E" stroke="white" stroke-width="2"/>
+        <circle cx="216" cy="3" r="5" fill="#6366F1" stroke="white" stroke-width="2" filter="url(#glowPurple)"/>
+        <circle cx="324" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="432" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="540" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <!-- Labels -->
+        <text x="0" y="22" text-anchor="middle" font-size="8" fill="#64748B">PRD</text>
+        <text x="108" y="22" text-anchor="middle" font-size="8" fill="#64748B">Stories</text>
+        <text x="216" y="22" text-anchor="middle" font-size="8" fill="#6366F1" font-weight="600">Impl</text>
+        <text x="324" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Review</text>
+        <text x="432" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Release</text>
+        <text x="540" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">SRE</text>
+      </g>
+
+      <!-- Status badge -->
+      <rect x="768" y="14" width="90" height="24" rx="6" fill="#DBEAFE"/>
+      <text x="813" y="30" text-anchor="middle" font-size="10" font-weight="600" fill="#3B82F6">Implementing</text>
+      <!-- Agent avatar -->
+      <circle cx="870" cy="26" r="10" fill="#8B5CF6"/>
+      <text x="870" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="white">BE</text>
+    </g>
+
+    <!-- Feature Row 2: auth-token-migration -->
+    <g transform="translate(24, 200)">
+      <rect width="888" height="52" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <circle cx="18" cy="26" r="10" fill="#F59E0B"/>
+      <text x="18" y="30" text-anchor="middle" font-size="10" font-weight="700" fill="white">A</text>
+      <text x="36" y="22" font-size="12" font-weight="600" fill="#1E293B">auth-token-migration</text>
+      <text x="36" y="36" font-size="10" fill="#64748B">idea-to-prd</text>
+
+      <g transform="translate(200, 16)">
+        <rect width="540" height="6" rx="3" fill="#E2E8F0"/>
+        <rect width="90" height="6" rx="3" fill="url(#orangeGrad)"/>
+        <circle cx="0" cy="3" r="5" fill="#F59E0B" stroke="white" stroke-width="2" filter="url(#glowPurple)"/>
+        <circle cx="108" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="216" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="324" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="432" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="540" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <text x="0" y="22" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="600">PRD</text>
+        <text x="108" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Stories</text>
+        <text x="216" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Design</text>
+        <text x="324" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Impl</text>
+        <text x="432" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Review</text>
+        <text x="540" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Release</text>
+      </g>
+
+      <rect x="768" y="14" width="90" height="24" rx="6" fill="#FEF3C7"/>
+      <text x="813" y="30" text-anchor="middle" font-size="10" font-weight="600" fill="#D97706">Discovery</text>
+      <circle cx="870" cy="26" r="10" fill="#F59E0B"/>
+      <text x="870" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="white">PM</text>
+    </g>
+
+    <!-- Feature Row 3: cloud-topology-v2 -->
+    <g transform="translate(24, 260)">
+      <rect width="888" height="52" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+      <circle cx="18" cy="26" r="10" fill="#EF4444"/>
+      <text x="18" y="30" text-anchor="middle" font-size="10" font-weight="700" fill="white">C</text>
+      <text x="36" y="22" font-size="12" font-weight="600" fill="#1E293B">cloud-topology-v2</text>
+      <text x="36" y="36" font-size="10" fill="#64748B">cloud-workload-design</text>
+
+      <g transform="translate(200, 16)">
+        <rect width="540" height="6" rx="3" fill="#E2E8F0"/>
+        <rect width="180" height="6" rx="3" fill="#EF4444"/>
+        <circle cx="0" cy="3" r="5" fill="#22C55E" stroke="white" stroke-width="2"/>
+        <circle cx="108" cy="3" r="5" fill="#EF4444" stroke="white" stroke-width="2"/>
+        <circle cx="216" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="324" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="432" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <circle cx="540" cy="3" r="5" fill="#E2E8F0" stroke="white" stroke-width="2"/>
+        <text x="0" y="22" text-anchor="middle" font-size="8" fill="#64748B">PRD</text>
+        <text x="108" y="22" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="600">Blocked</text>
+        <text x="216" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Arch</text>
+        <text x="324" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Impl</text>
+        <text x="432" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Review</text>
+        <text x="540" y="22" text-anchor="middle" font-size="8" fill="#94A3B8">Release</text>
+      </g>
+
+      <rect x="768" y="14" width="90" height="24" rx="6" fill="#FEE2E2"/>
+      <text x="813" y="30" text-anchor="middle" font-size="10" font-weight="600" fill="#EF4444">Gate Failed</text>
+      <circle cx="870" cy="26" r="10" fill="#EF4444"/>
+      <text x="870" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="white">CA</text>
+    </g>
+  </g>
+
+  <!-- ==================== Row 3: Left Column - Workflow Detail ==================== -->
+  <g transform="translate(264, 564)">
+    <rect width="458" height="376" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+
+    <text x="24" y="30" font-size="15" font-weight="700" fill="#1E293B">Workflow Detail</text>
+    <text x="24" y="46" font-size="11" fill="#64748B">pix-webhook-retry / story-to-production</text>
+
+    <!-- Workflow Stages Timeline (Vertical) -->
+    <g transform="translate(24, 64)">
+      <!-- Stage 1: Technical Design - Completed -->
+      <circle cx="12" cy="12" r="10" fill="#22C55E"/>
+      <text x="12" y="16" text-anchor="middle" font-size="10" fill="white">&#10003;</text>
+      <text x="32" y="10" font-size="12" font-weight="600" fill="#1E293B">Technical Design</text>
+      <text x="32" y="24" font-size="10" fill="#64748B">architect / create-tech-spec</text>
+      <rect x="320" y="2" width="70" height="20" rx="4" fill="#D1FAE5"/>
+      <text x="355" y="16" text-anchor="middle" font-size="9" font-weight="500" fill="#059669">Completed</text>
+      <line x1="12" y1="24" x2="12" y2="50" stroke="#22C55E" stroke-width="2"/>
+
+      <!-- Stage 2: Architecture Decision - Completed -->
+      <circle cx="12" cy="56" r="10" fill="#22C55E"/>
+      <text x="12" y="60" text-anchor="middle" font-size="10" fill="white">&#10003;</text>
+      <text x="32" y="54" font-size="12" font-weight="600" fill="#1E293B">Architecture Decision</text>
+      <text x="32" y="68" font-size="10" fill="#64748B">architect / create-adr</text>
+      <rect x="320" y="46" width="70" height="20" rx="4" fill="#D1FAE5"/>
+      <text x="355" y="60" text-anchor="middle" font-size="9" font-weight="500" fill="#059669">Completed</text>
+      <line x1="12" y1="68" x2="12" y2="94" stroke="#22C55E" stroke-width="2"/>
+
+      <!-- Gate: design-approved -->
+      <rect x="0" y="86" width="24" height="12" rx="3" fill="#22C55E"/>
+      <text x="12" y="95" text-anchor="middle" font-size="7" font-weight="700" fill="white">GATE</text>
+      <text x="32" y="95" font-size="10" font-weight="600" fill="#22C55E">design-approved</text>
+      <line x1="12" y1="100" x2="12" y2="118" stroke="#6366F1" stroke-width="2" stroke-dasharray="4,2"/>
+
+      <!-- Stage 3: Implementation - Active -->
+      <circle cx="12" cy="124" r="10" fill="#6366F1" filter="url(#glowPurple)"/>
+      <g transform="translate(8, 120)">
+        <rect width="8" height="8" rx="2" fill="white" opacity="0.9"/>
+      </g>
+      <text x="32" y="122" font-size="12" font-weight="600" fill="#1E293B">Implementation</text>
+      <text x="32" y="136" font-size="10" fill="#64748B">backend / implement-api</text>
+      <rect x="320" y="114" width="70" height="20" rx="4" fill="#E0E7FF"/>
+      <text x="355" y="128" text-anchor="middle" font-size="9" font-weight="600" fill="#6366F1">Active</text>
+      <line x1="12" y1="136" x2="12" y2="162" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="4,2"/>
+
+      <!-- Stage 4: Technical Review - Pending -->
+      <circle cx="12" cy="168" r="10" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="32" y="166" font-size="12" font-weight="500" fill="#94A3B8">Technical Review</text>
+      <text x="32" y="180" font-size="10" fill="#CBD5E1">reviewer / review-code</text>
+      <rect x="320" y="158" width="70" height="20" rx="4" fill="#F1F5F9"/>
+      <text x="355" y="172" text-anchor="middle" font-size="9" fill="#94A3B8">Pending</text>
+      <line x1="12" y1="180" x2="12" y2="206" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,2"/>
+
+      <!-- Stage 5: Release Preparation - Pending -->
+      <circle cx="12" cy="212" r="10" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="32" y="210" font-size="12" font-weight="500" fill="#94A3B8">Release Preparation</text>
+      <text x="32" y="224" font-size="10" fill="#CBD5E1">devops / prepare-service-release</text>
+      <line x1="12" y1="224" x2="12" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4,2"/>
+
+      <!-- Stage 6: Operability Review - Pending -->
+      <circle cx="12" cy="256" r="10" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+      <text x="32" y="254" font-size="12" font-weight="500" fill="#94A3B8">Operability Review</text>
+      <text x="32" y="268" font-size="10" fill="#CBD5E1">sre / assess-service-operability</text>
+      <rect x="320" y="246" width="70" height="20" rx="4" fill="#F1F5F9"/>
+      <text x="355" y="260" text-anchor="middle" font-size="9" fill="#94A3B8">Pending</text>
+    </g>
+
+    <!-- Action Buttons -->
+    <g transform="translate(24, 344)">
+      <rect width="100" height="28" rx="6" fill="url(#accentGrad)"/>
+      <text x="50" y="19" text-anchor="middle" font-size="11" font-weight="600" fill="white">Continue</text>
+
+      <rect x="110" width="80" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="150" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Replay</text>
+
+      <rect x="200" width="100" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="250" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Reconcile</text>
+
+      <rect x="310" width="90" height="28" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="355" y="19" text-anchor="middle" font-size="11" font-weight="500" fill="#64748B">Run Task</text>
+    </g>
+  </g>
+
+  <!-- ==================== Row 3: Right Column ==================== -->
+
+  <!-- Project Context Card -->
+  <g transform="translate(738, 564)">
+    <rect width="462" height="180" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+
+    <text x="24" y="30" font-size="15" font-weight="700" fill="#1E293B">Project Context</text>
+    <rect x="380" y="14" width="60" height="22" rx="6" fill="#D1FAE5"/>
+    <text x="410" y="29" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Synced</text>
+
+    <!-- Context Tags Grid -->
+    <g transform="translate(24, 48)">
+      <!-- Languages -->
+      <text x="0" y="10" font-size="10" font-weight="600" fill="#64748B">Languages</text>
+      <rect x="72" y="-2" width="72" height="20" rx="4" fill="#DBEAFE"/>
+      <text x="108" y="12" text-anchor="middle" font-size="10" fill="#3B82F6">TypeScript</text>
+      <rect x="150" y="-2" width="50" height="20" rx="4" fill="#DBEAFE"/>
+      <text x="175" y="12" text-anchor="middle" font-size="10" fill="#3B82F6">Node</text>
+
+      <!-- Frameworks -->
+      <text x="0" y="36" font-size="10" font-weight="600" fill="#64748B">Frameworks</text>
+      <rect x="72" y="24" width="56" height="20" rx="4" fill="#EDE9FE"/>
+      <text x="100" y="38" text-anchor="middle" font-size="10" fill="#7C3AED">VitePress</text>
+      <rect x="134" y="24" width="74" height="20" rx="4" fill="#EDE9FE"/>
+      <text x="171" y="38" text-anchor="middle" font-size="10" fill="#7C3AED">Commander</text>
+
+      <!-- API -->
+      <text x="0" y="62" font-size="10" font-weight="600" fill="#64748B">APIs</text>
+      <rect x="72" y="50" width="46" height="20" rx="4" fill="#FEF3C7"/>
+      <text x="95" y="64" text-anchor="middle" font-size="10" fill="#D97706">REST</text>
+      <rect x="124" y="50" width="34" height="20" rx="4" fill="#FEF3C7"/>
+      <text x="141" y="64" text-anchor="middle" font-size="10" fill="#D97706">CLI</text>
+
+      <!-- Auth -->
+      <text x="0" y="88" font-size="10" font-weight="600" fill="#64748B">Auth</text>
+      <rect x="72" y="76" width="60" height="20" rx="4" fill="#FCE7F3"/>
+      <text x="102" y="90" text-anchor="middle" font-size="10" fill="#DB2777">Token</text>
+
+      <!-- Observability -->
+      <text x="240" y="10" font-size="10" font-weight="600" fill="#64748B">Observability</text>
+      <rect x="320" y="-2" width="56" height="20" rx="4" fill="#D1FAE5"/>
+      <text x="348" y="12" text-anchor="middle" font-size="10" fill="#059669">Logging</text>
+
+      <!-- Data -->
+      <text x="240" y="36" font-size="10" font-weight="600" fill="#64748B">Data</text>
+      <rect x="320" y="24" width="46" height="20" rx="4" fill="#FFEDD5"/>
+      <text x="343" y="38" text-anchor="middle" font-size="10" fill="#EA580C">JSON</text>
+      <rect x="372" y="24" width="42" height="20" rx="4" fill="#FFEDD5"/>
+      <text x="393" y="38" text-anchor="middle" font-size="10" fill="#EA580C">YAML</text>
+
+      <!-- Messaging -->
+      <text x="240" y="62" font-size="10" font-weight="600" fill="#64748B">Messaging</text>
+      <rect x="320" y="50" width="62" height="20" rx="4" fill="#F0FDF4"/>
+      <text x="351" y="64" text-anchor="middle" font-size="10" fill="#16A34A">Webhooks</text>
+
+      <!-- Modules -->
+      <text x="240" y="88" font-size="10" font-weight="600" fill="#64748B">Modules</text>
+      <rect x="320" y="76" width="48" height="20" rx="4" fill="#F1F5F9"/>
+      <text x="344" y="90" text-anchor="middle" font-size="10" fill="#475569">Packs</text>
+      <rect x="374" y="76" width="48" height="20" rx="4" fill="#F1F5F9"/>
+      <text x="398" y="90" text-anchor="middle" font-size="10" fill="#475569">Hosts</text>
+    </g>
+
+    <!-- Refresh button -->
+    <g transform="translate(24, 148)">
+      <rect width="130" height="24" rx="6" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="500" fill="#64748B">Refresh Context</text>
+    </g>
+  </g>
+
+  <!-- Agents & Quick Actions Card -->
+  <g transform="translate(738, 760)">
+    <rect width="462" height="180" rx="12" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#E2E8F0" stroke-width="1"/>
+
+    <text x="24" y="30" font-size="15" font-weight="700" fill="#1E293B">Quick Actions</text>
+
+    <!-- Action Grid -->
+    <g transform="translate(24, 48)">
+      <!-- Row 1 -->
+      <rect width="130" height="50" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/>
+      <g transform="translate(12, 12)">
+        <circle cx="8" cy="8" r="8" fill="#3B82F6"/>
+        <text x="8" y="12" text-anchor="middle" font-size="10" fill="white">+</text>
+      </g>
+      <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">New Feature</text>
+      <text x="36" y="36" font-size="9" fill="#64748B">idea-to-prd</text>
+
+      <g transform="translate(142, 0)">
+        <rect width="130" height="50" rx="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+        <g transform="translate(12, 12)">
+          <circle cx="8" cy="8" r="8" fill="#7C3AED"/>
+          <path d="M4,8 L8,4 L12,8 M8,4 L8,12" fill="none" stroke="white" stroke-width="1.5"/>
+        </g>
+        <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">Run Agent</text>
+        <text x="36" y="36" font-size="9" fill="#64748B">Manual invoke</text>
+      </g>
+
+      <g transform="translate(284, 0)">
+        <rect width="130" height="50" rx="8" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+        <g transform="translate(12, 12)">
+          <circle cx="8" cy="8" r="8" fill="#EA580C"/>
+          <path d="M5,8 L11,8 M8,5 L8,11" fill="none" stroke="white" stroke-width="1.5" transform="rotate(45,8,8)"/>
+        </g>
+        <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">Run Task</text>
+        <text x="36" y="36" font-size="9" fill="#64748B">Execute task</text>
+      </g>
+
+      <!-- Row 2 -->
+      <g transform="translate(0, 60)">
+        <rect width="130" height="50" rx="8" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+        <g transform="translate(12, 12)">
+          <circle cx="8" cy="8" r="8" fill="#059669"/>
+          <path d="M4,8 L12,8" fill="none" stroke="white" stroke-width="1.5"/>
+          <path d="M8,8 L5,5 M8,8 L5,11" fill="none" stroke="white" stroke-width="1.5"/>
+        </g>
+        <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">Replay</text>
+        <text x="36" y="36" font-size="9" fill="#64748B">Rewind stage</text>
+      </g>
+
+      <g transform="translate(142, 60)">
+        <rect width="130" height="50" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+        <g transform="translate(12, 12)">
+          <circle cx="8" cy="8" r="8" fill="#DC2626"/>
+          <path d="M12,4 A6,6 0 1,1 4,8 M12,4 L10,6 L14,6 Z" fill="none" stroke="white" stroke-width="1.5"/>
+        </g>
+        <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">Reconcile</text>
+        <text x="36" y="36" font-size="9" fill="#64748B">Recalculate path</text>
+      </g>
+
+      <g transform="translate(284, 60)">
+        <rect width="130" height="50" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+        <g transform="translate(12, 12)">
+          <circle cx="8" cy="8" r="8" fill="#475569"/>
+          <rect x="4" y="5" width="8" height="6" rx="1" fill="none" stroke="white" stroke-width="1.5"/>
+          <circle cx="8" cy="8" r="1" fill="white"/>
+        </g>
+        <text x="36" y="22" font-size="11" font-weight="600" fill="#1E293B">Install Pack</text>
+        <text x="36" y="36" font-size="9" fill="#64748B">Add artifacts</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== CHAT PANEL (Right Side) ==================== -->
+
+  <!-- Chat Panel Separator -->
+  <line x1="1440" y1="36" x2="1440" y2="940" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Chat Panel Background -->
+  <rect x="1440" y="36" width="340" height="904" fill="#FFFFFF"/>
+
+  <!-- Chat Header -->
+  <rect x="1440" y="36" width="340" height="52" fill="#FAFBFC" stroke="#E2E8F0" stroke-width="1"/>
+  <g transform="translate(1460, 48)">
+    <!-- Host indicator -->
+    <rect width="28" height="28" rx="8" fill="url(#accentGrad)"/>
+    <text x="14" y="19" text-anchor="middle" font-size="12" font-weight="700" fill="white">C</text>
+    <text x="38" y="14" font-size="13" font-weight="700" fill="#1E293B">Claude Code</text>
+    <circle cx="126" cy="10" r="4" fill="#22C55E"/>
+    <text x="134" y="14" font-size="10" fill="#64748B">Online</text>
+    <text x="38" y="28" font-size="10" fill="#64748B">Host chat - slash commands enabled</text>
+  </g>
+  <!-- Chat menu dots -->
+  <g transform="translate(1746, 56)">
+    <circle cx="0" cy="0" r="2" fill="#94A3B8"/>
+    <circle cx="0" cy="7" r="2" fill="#94A3B8"/>
+    <circle cx="0" cy="14" r="2" fill="#94A3B8"/>
+  </g>
+
+  <!-- Chat Messages Area -->
+  <rect x="1440" y="88" width="340" height="770" fill="#FAFBFC"/>
+
+  <!-- System Message -->
+  <g transform="translate(1456, 104)">
+    <rect width="308" height="40" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/>
+    <text x="12" y="17" font-size="10" font-weight="600" fill="#3B82F6">Session started</text>
+    <text x="12" y="31" font-size="9" fill="#64748B">Feature: pix-webhook-retry | Agent: backend</text>
+    <text x="280" y="17" font-size="9" fill="#94A3B8">10:32</text>
+  </g>
+
+  <!-- User Message 1 -->
+  <g transform="translate(1520, 160)">
+    <rect width="244" height="52" rx="12" fill="url(#accentGrad)"/>
+    <text x="16" y="20" font-size="11" fill="white">/looply:story-to-production</text>
+    <text x="16" y="36" font-size="11" fill="#C7D2FE">pix-webhook-retry story-01</text>
+    <text x="220" y="46" font-size="9" fill="#A5B4FC">10:33</text>
+  </g>
+
+  <!-- Agent Response 1 -->
+  <g transform="translate(1456, 228)">
+    <!-- Agent avatar -->
+    <circle cx="12" cy="12" r="12" fill="#1E293B"/>
+    <text x="12" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#C7D2FE">AI</text>
+    <rect x="30" width="278" height="90" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="42" y="18" font-size="11" font-weight="600" fill="#1E293B">Starting story-to-production</text>
+    <text x="42" y="34" font-size="10" fill="#64748B">Executing: technical-design stage</text>
+    <text x="42" y="50" font-size="10" fill="#64748B">Agent: architect / create-tech-spec</text>
+    <!-- Status pill -->
+    <rect x="42" y="58" width="80" height="18" rx="4" fill="#D1FAE5"/>
+    <text x="82" y="71" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Completed</text>
+    <text x="282" y="82" font-size="9" fill="#94A3B8">10:34</text>
+  </g>
+
+  <!-- Agent Response 2: Gate -->
+  <g transform="translate(1456, 336)">
+    <circle cx="12" cy="12" r="12" fill="#1E293B"/>
+    <text x="12" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#C7D2FE">AI</text>
+    <rect x="30" width="278" height="64" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="42" y="10" width="50" height="16" rx="4" fill="#22C55E"/>
+    <text x="67" y="22" text-anchor="middle" font-size="8" font-weight="700" fill="white">GATE</text>
+    <text x="98" y="22" font-size="10" font-weight="600" fill="#22C55E">design-approved</text>
+    <text x="42" y="42" font-size="10" fill="#64748B">Tech spec and ADR validated.</text>
+    <text x="42" y="54" font-size="10" fill="#64748B">Proceeding to implementation...</text>
+    <text x="282" y="56" font-size="9" fill="#94A3B8">10:41</text>
+  </g>
+
+  <!-- Agent Response 3: Current -->
+  <g transform="translate(1456, 418)">
+    <circle cx="12" cy="12" r="12" fill="#1E293B"/>
+    <text x="12" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#C7D2FE">AI</text>
+    <rect x="30" width="278" height="80" rx="12" fill="white" stroke="#6366F1" stroke-width="1.5"/>
+    <text x="42" y="18" font-size="11" font-weight="600" fill="#1E293B">Implementation in progress</text>
+    <text x="42" y="34" font-size="10" fill="#64748B">Agent: backend / implement-api</text>
+    <!-- Progress -->
+    <rect x="42" y="44" width="200" height="4" rx="2" fill="#E2E8F0"/>
+    <rect x="42" y="44" width="120" height="4" rx="2" fill="url(#accentGrad)"/>
+    <text x="42" y="62" font-size="9" fill="#6366F1" font-weight="500">60% - Creating retry handler...</text>
+    <!-- Typing indicator -->
+    <g transform="translate(42, 66)">
+      <circle cx="0" cy="4" r="2" fill="#6366F1" opacity="0.4">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="8" cy="4" r="2" fill="#6366F1" opacity="0.4">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" begin="0.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="16" cy="4" r="2" fill="#6366F1" opacity="0.4">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" begin="0.4s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <text x="282" y="72" font-size="9" fill="#94A3B8">now</text>
+  </g>
+
+  <!-- User Message 2 -->
+  <g transform="translate(1520, 516)">
+    <rect width="244" height="36" rx="12" fill="url(#accentGrad)"/>
+    <text x="16" y="22" font-size="11" fill="white">Include dead letter queue support</text>
+    <text x="220" y="30" font-size="9" fill="#A5B4FC">10:48</text>
+  </g>
+
+  <!-- Agent Acknowledgment -->
+  <g transform="translate(1456, 568)">
+    <circle cx="12" cy="12" r="12" fill="#1E293B"/>
+    <text x="12" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#C7D2FE">AI</text>
+    <rect x="30" width="278" height="48" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="42" y="19" font-size="10" fill="#1E293B">Understood. Adding DLQ pattern to the</text>
+    <text x="42" y="33" font-size="10" fill="#1E293B">retry handler implementation.</text>
+    <text x="282" y="40" font-size="9" fill="#94A3B8">10:48</text>
+  </g>
+
+  <!-- Suggested Actions / Chips -->
+  <g transform="translate(1456, 634)">
+    <text x="0" y="10" font-size="9" font-weight="600" fill="#94A3B8" letter-spacing="0.5">SUGGESTIONS</text>
+    <rect y="18" width="148" height="26" rx="6" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/>
+    <text x="12" y="35" font-size="10" fill="#3B82F6">/looply:workflow-status</text>
+    <rect x="156" y="18" width="100" height="26" rx="6" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+    <text x="168" y="35" font-size="10" fill="#7C3AED">/looply:next</text>
+    <rect y="50" width="110" height="26" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+    <text x="12" y="67" font-size="10" fill="#059669">/looply:resume</text>
+    <rect x="118" y="50" width="140" height="26" rx="6" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+    <text x="130" y="67" font-size="10" fill="#EA580C">looply reconcile</text>
+  </g>
+
+  <!-- Artifacts Panel (collapsed) -->
+  <g transform="translate(1456, 720)">
+    <rect width="308" height="36" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <g transform="translate(12, 10)">
+      <rect width="14" height="14" rx="2" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <path d="M4,7 L10,7 M7,4 L7,10" stroke="#64748B" stroke-width="1"/>
+    </g>
+    <text x="34" y="23" font-size="11" font-weight="500" fill="#475569">Artifacts (3)</text>
+    <text x="260" y="23" font-size="10" fill="#94A3B8">tech-spec, adr, api</text>
+  </g>
+
+  <!-- Session Info -->
+  <g transform="translate(1456, 768)">
+    <rect width="308" height="28" rx="6" fill="#F1F5F9"/>
+    <text x="12" y="18" font-size="9" fill="#64748B">Session: s-4a8f2 | Duration: 16m | Tokens: 24.3k</text>
+  </g>
+
+  <!-- Chat Input Area -->
+  <rect x="1440" y="858" width="340" height="82" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Slash command hint -->
+  <g transform="translate(1456, 866)">
+    <rect width="308" height="24" rx="4" fill="#F8FAFC"/>
+    <text x="8" y="16" font-size="9" fill="#94A3B8">Type / for commands, @ to mention agents, or ask anything</text>
+  </g>
+
+  <!-- Input field -->
+  <g transform="translate(1456, 896)">
+    <rect width="264" height="36" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+    <text x="16" y="23" font-size="12" fill="#94A3B8">Message Claude Code...</text>
+    <!-- Attachment icon -->
+    <g transform="translate(224, 10)">
+      <path d="M6,0 L6,10 Q6,14 10,14 Q14,14 14,10 L14,4" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+    </g>
+
+    <!-- Send button -->
+    <rect x="272" width="36" height="36" rx="10" fill="url(#accentGrad)"/>
+    <g transform="translate(282, 10)">
+      <path d="M0,14 L7,0 L14,14 L7,10 Z" fill="white" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- ==================== Bottom Status Bar ==================== -->
+  <rect x="240" y="940" width="1540" height="20" fill="#1E293B"/>
+  <text x="260" y="954" font-size="10" fill="#64748B">Host: Claude Code</text>
+  <text x="400" y="954" font-size="10" fill="#64748B">Scope: project</text>
+  <text x="520" y="954" font-size="10" fill="#64748B">Mode: balanced</text>
+  <text x="650" y="954" font-size="10" fill="#64748B">Locale: pt-BR</text>
+  <text x="780" y="954" font-size="10" fill="#64748B">Pack: software-delivery-suite v2.0.0</text>
+  <circle cx="1710" cy="950" r="4" fill="#22C55E"/>
+  <text x="1700" y="954" text-anchor="end" font-size="10" fill="#64748B">Connected</text>
+</svg>

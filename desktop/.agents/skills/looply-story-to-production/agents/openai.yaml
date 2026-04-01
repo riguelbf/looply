@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-story-to-production"
+  short_description: "Use when a delivery story already exists and needs technical design, implementation, review and release preparation. Do not use before discovery and planning are complete."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-story-to-production <feature-name> \"<story-reference>\" \"[constraints...]\""
+
+policy:
+  allow_implicit_invocation: false

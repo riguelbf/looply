@@ -164,7 +164,8 @@ O caminho recomendado no Codex agora e:
 - usar as skills geradas em `.agents/skills/` para descoberta e invocacao explicita
 - abrir `/skills` e procurar por `looply` quando o usuario nao souber qual workflow usar
 - começar por `$looply` como skill de descoberta e roteamento
-- usar `$looply-cloud-workload-design` e `$looply-platform-foundation-evolution` quando o problema principal for cloud ou plataforma
+- usar `\$looply:<workflow>` para chamar workflows diretamente no Codex
+- usar `\$looply:cloud-workload-design` e `\$looply:platform-foundation-evolution` quando o problema principal for cloud ou plataforma
 
 ## Fluxo recomendado da v1
 
@@ -318,6 +319,7 @@ Esses sinais continuam heuristicas. Para projeto existente, o repositorio real c
 - `looply sessions`
 - `looply integrations`
 - `looply docs`
+- `looply completion`
 
 Veja todos:
 
@@ -325,7 +327,38 @@ Veja todos:
 looply --help
 looply docs --help
 looply integrations --help
+looply completion --help
 ```
+
+## Autocomplete do shell
+
+O `looply` agora pode gerar autocomplete para `bash`, `zsh` e `PowerShell` a partir da arvore real da CLI.
+
+Gerar o script:
+
+```bash
+looply completion bash
+looply completion zsh
+looply completion powershell
+```
+
+Ver as instrucoes de instalacao:
+
+```bash
+looply completion install bash
+looply completion install zsh
+looply completion install powershell
+```
+
+Instalar e habilitar automaticamente:
+
+```bash
+looply completion install zsh --enable
+looply completion install bash --enable
+looply completion install powershell --enable
+```
+
+Durante `looply install`, a CLI tambem pode perguntar se deve habilitar autocomplete no shell atual. Com `--yes`, o `looply` tenta habilitar automaticamente quando o shell atual for suportado.
 
 ## Documentacao
 
