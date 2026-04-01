@@ -3,11 +3,13 @@ import { confirm, isCancel, text } from "@clack/prompts";
 import path from "node:path";
 import fs from "fs-extra";
 import { runInstallFlow } from "../lib/install-flow.js";
+import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
+import { runWithPerfSession, withPerfSpan } from "../lib/perf/session.js";
 import { resolveLooplySourceRoot } from "../lib/source-root.js";
 import { createSpinner, showIntro, showOutro } from "../ui/feedback.js";
 
 export function registerInitCommand(program: Command): void {
-  program
+  addProfileOption(program
     .command("init")
     .description("Bootstrap looply files in the current repository")
     .option("--dir <dir>", "Target directory")
@@ -19,54 +21,64 @@ export function registerInitCommand(program: Command): void {
     .option("--locale <locale>", "Output locale such as pt-BR or en")
     .option("--project-mode <mode>", "Project mode such as existing-project or greenfield")
     .option("--interaction-mode <mode>", "Interaction mode such as guided, balanced or autonomous")
-    .option("--enable-shell-autocomplete", "Enable shell autocomplete after install")
+    .option("--enable-shell-autocomplete", "Enable shell autocomplete after install"))
     .action(async (options) => {
       showIntro("looply init");
-
       const targetDirectory = await resolveTargetDirectory(options.dir);
       if (!targetDirectory) {
         return;
       }
 
-      const shouldProceed = options.yes
-        ? true
-        : await confirm({
-            message: `Create looply bootstrap structure in ${targetDirectory}?`,
-            initialValue: true
-          });
+      await runWithPerfSession({
+        command: "init",
+        mode: resolvePerfMode(options.profile),
+        targetRoot: targetDirectory,
+        metadata: {
+          yes: Boolean(options.yes)
+        }
+      }, async () => {
+        const shouldProceed = options.yes
+          ? true
+          : await confirm({
+              message: `Create looply bootstrap structure in ${targetDirectory}?`,
+              initialValue: true
+            });
 
-      if (isCancel(shouldProceed) || !shouldProceed) {
-        showOutro("Initialization cancelled");
-        return;
-      }
+        if (isCancel(shouldProceed) || !shouldProceed) {
+          showOutro("Initialization cancelled");
+          return;
+        }
 
-      const loading = createSpinner("Creating bootstrap structure");
-      await createBootstrapStructure(targetDirectory);
-      loading.stop("Bootstrap structure created");
+        const loading = createSpinner("Creating bootstrap structure");
+        await withPerfSpan("init.create-bootstrap-structure", async () => {
+          await createBootstrapStructure(targetDirectory);
+        });
+        loading.stop("Bootstrap structure created");
 
-      const installAfterInit = options.yes
-        ? true
-        : await confirm({
-            message: "Install a looply pack now?",
-            initialValue: true
-          });
+        const installAfterInit = options.yes
+          ? true
+          : await confirm({
+              message: "Install a looply pack now?",
+              initialValue: true
+            });
 
-      if (isCancel(installAfterInit) || !installAfterInit) {
-        showOutro(`Initialized looply in ${targetDirectory}`);
-        return;
-      }
+        if (isCancel(installAfterInit) || !installAfterInit) {
+          showOutro(`Initialized looply in ${targetDirectory}`);
+          return;
+        }
 
-      await runInstallFlow({
-        sourceRoot: resolveLooplySourceRoot(options.sourceRoot),
-        currentWorkingDirectory: targetDirectory,
-        hostOption: options.host,
-        scopeOption: options.scope ?? "project",
-        packOption: options.pack ?? "software-delivery-suite",
-        localeOption: options.locale,
-        projectModeOption: options.projectMode,
-        interactionModeOption: options.interactionMode,
-        enableShellAutocomplete: options.enableShellAutocomplete,
-        yes: options.yes
+        await runInstallFlow({
+          sourceRoot: resolveLooplySourceRoot(options.sourceRoot),
+          currentWorkingDirectory: targetDirectory,
+          hostOption: options.host,
+          scopeOption: options.scope ?? "project",
+          packOption: options.pack ?? "software-delivery-suite",
+          localeOption: options.locale,
+          projectModeOption: options.projectMode,
+          interactionModeOption: options.interactionMode,
+          enableShellAutocomplete: options.enableShellAutocomplete,
+          yes: options.yes
+        });
       });
     });
 }

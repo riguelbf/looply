@@ -1,11 +1,13 @@
 import type { Command } from "commander";
 import path from "node:path";
 import { runInstallFlow } from "../lib/install-flow.js";
+import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
+import { runWithPerfSession } from "../lib/perf/session.js";
 import { resolveLooplySourceRoot } from "../lib/source-root.js";
 import { showIntro } from "../ui/feedback.js";
 
 export function registerInstallCommand(program: Command): void {
-  program
+  addProfileOption(program
     .command("install")
     .description("Install a looply pack into one or more target hosts")
     .option("--host <host>", "Target host list such as codex,claude")
@@ -17,20 +19,30 @@ export function registerInstallCommand(program: Command): void {
     .option("--enable-shell-autocomplete", "Enable shell autocomplete after install")
     .option("--dir <dir>", "Target directory for project scope install (defaults to current directory)")
     .option("--source-root <dir>", "looply source directory that contains packs/")
-    .option("--yes", "Skip confirmation and use resolved values")
+    .option("--yes", "Skip confirmation and use resolved values"))
     .action(async (options) => {
       showIntro("looply install");
-      await runInstallFlow({
-        sourceRoot: resolveLooplySourceRoot(options.sourceRoot),
-        currentWorkingDirectory: path.resolve(options.dir ?? process.cwd()),
-        hostOption: options.host,
-        scopeOption: options.scope,
-        packOption: options.pack,
-        localeOption: options.locale,
-        projectModeOption: options.projectMode,
-        interactionModeOption: options.interactionMode,
-        enableShellAutocomplete: options.enableShellAutocomplete,
-        yes: options.yes
+      const targetRoot = path.resolve(options.dir ?? process.cwd());
+      await runWithPerfSession({
+        command: "install",
+        mode: resolvePerfMode(options.profile),
+        targetRoot,
+        metadata: {
+          yes: Boolean(options.yes)
+        }
+      }, async () => {
+        await runInstallFlow({
+          sourceRoot: resolveLooplySourceRoot(options.sourceRoot),
+          currentWorkingDirectory: targetRoot,
+          hostOption: options.host,
+          scopeOption: options.scope,
+          packOption: options.pack,
+          localeOption: options.locale,
+          projectModeOption: options.projectMode,
+          interactionModeOption: options.interactionMode,
+          enableShellAutocomplete: options.enableShellAutocomplete,
+          yes: options.yes
+        });
       });
     });
 }

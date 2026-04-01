@@ -7,6 +7,7 @@ import {
   writeProjectInventoryMarkdown
 } from "./context-documents.js";
 import { writeContextSnapshot } from "./context-snapshot.js";
+import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 import { inferInferencePolicy, readProjectContextFile } from "./project-context.js";
 import { readInteractionPolicyFile } from "./interaction-policy.js";
 import { readLocaleFile } from "./locale.js";
@@ -62,28 +63,35 @@ export interface RefreshContextResult {
 }
 
 export async function refreshContext(targetRoot: string): Promise<RefreshContextResult> {
-  const [projectContext, locale, interactionPolicy] = await Promise.all([
+  const [projectContext, locale, interactionPolicy] = await withPerfSpan("refresh-context.load-project-settings", async () => Promise.all([
     readProjectContextFile(targetRoot),
     readLocaleFile(targetRoot),
     readInteractionPolicyFile(targetRoot)
-  ]);
+  ]));
 
   const projectMode = projectContext?.mode ?? "existing-project";
   const outputLocale = locale?.outputLocale ?? "en";
   const interactionMode = interactionPolicy?.mode ?? "balanced";
   const inferencePolicy = inferInferencePolicy(projectMode);
   const primaryContextRoot = projectContext?.primaryContextRoot ?? targetRoot;
-  const analysis = await analyzeProject(primaryContextRoot, projectMode);
+  const analysis = await withPerfSpan("refresh-context.analyze-project", async () => analyzeProject(primaryContextRoot, projectMode));
+  setPerfMetadata("refresh-context.projectMode", projectMode);
+  setPerfMetadata("refresh-context.languageCount", analysis.languages.length);
+  setPerfMetadata("refresh-context.frameworkCount", analysis.frameworks.length);
+  setPerfMetadata("refresh-context.moduleHintCount", analysis.moduleHints.length);
+  if (isContextPerfMode()) {
+    setPerfMetadata("refresh-context.integrationHintCount", analysis.integrationHints.length);
+  }
 
-  const contextIndexFile = await writeContextIndexMarkdown({
+  const contextIndexFile = await withPerfSpan("refresh-context.write-context-index", async () => writeContextIndexMarkdown({
     targetRoot,
     projectMode,
     outputLocale,
     interactionMode,
     inferencePolicy
-  });
+  }));
 
-  const projectContextFile = await refreshProjectContextMarkdown({
+  const projectContextFile = await withPerfSpan("refresh-context.write-project-context", async () => refreshProjectContextMarkdown({
     targetRoot,
     projectMode,
     outputLocale,
@@ -91,9 +99,9 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     inferencePolicy,
     primaryContextRoot,
     data: analysis
-  });
+  }));
 
-  const architectureContextFile = await writeArchitectureContextMarkdown({
+  const architectureContextFile = await withPerfSpan("refresh-context.write-architecture-context", async () => writeArchitectureContextMarkdown({
     targetRoot,
     projectMode,
     outputLocale,
@@ -101,9 +109,9 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     inferencePolicy,
     primaryContextRoot,
     data: analysis
-  });
+  }));
 
-  const projectInventoryFile = await writeProjectInventoryMarkdown({
+  const projectInventoryFile = await withPerfSpan("refresh-context.write-project-inventory", async () => writeProjectInventoryMarkdown({
     targetRoot,
     projectMode,
     outputLocale,
@@ -111,9 +119,9 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     inferencePolicy,
     primaryContextRoot,
     data: analysis
-  });
+  }));
 
-  const contextSnapshotFile = await writeContextSnapshot({
+  const contextSnapshotFile = await withPerfSpan("refresh-context.write-context-snapshot", async () => writeContextSnapshot({
     targetRoot,
     primaryContextRoot,
     projectMode,
@@ -121,7 +129,7 @@ export async function refreshContext(targetRoot: string): Promise<RefreshContext
     interactionMode,
     inferencePolicy,
     data: analysis
-  });
+  }));
 
   return {
     targetRoot,

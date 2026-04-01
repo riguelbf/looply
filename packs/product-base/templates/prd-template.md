@@ -6,6 +6,14 @@ summary: Template for product requirement document
 
 # PRD
 
+## Status
+
+## Owner
+
+## Stakeholders
+
+## Target Release
+
 ## Problem
 
 ## Business Goal
@@ -20,7 +28,11 @@ summary: Template for product requirement document
 
 ## Personas Or Actors
 
+## Assumptions
+
 ## User Journey
+
+## User Stories And Examples
 
 ## Business Rules
 
@@ -35,6 +47,8 @@ summary: Template for product requirement document
 ## Open Questions
 
 ## Candidate Stories
+
+## Delivery Milestones
 
 ## Rollout Considerations
 

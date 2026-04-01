@@ -2,6 +2,7 @@ import { cancel, confirm, isCancel, multiselect, select } from "@clack/prompts";
 import chalk from "chalk";
 import { resolveHostPublishers } from "../hosts/index.js";
 import { detectSupportedShell, installShellCompletion } from "./cli-completion/install.js";
+import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 import { detectProjectMode } from "./project-context.js";
 import type {
   HostPublisher,
@@ -29,27 +30,37 @@ export interface InstallFlowInput {
 }
 
 export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> {
-  const availablePacks = await listAvailablePacks(input.sourceRoot);
+  const availablePacks = await withPerfSpan("install-flow.list-available-packs", async () => listAvailablePacks(input.sourceRoot));
 
-  const hosts = await resolveHostOptions(input.hostOption, input.yes);
-  const scope = await resolveScopeOption(input.scopeOption, input.yes);
-  const pack = await resolvePackOption(input.packOption, availablePacks, input.yes);
-  const locale = await resolveLocaleOption(input.localeOption, input.yes);
-  const projectMode = await resolveProjectModeOption(input.projectModeOption, input.currentWorkingDirectory, scope, input.yes);
-  const interactionMode = await resolveInteractionModeOption(input.interactionModeOption, input.yes);
+  const hosts = await withPerfSpan("install-flow.resolve-hosts", async () => resolveHostOptions(input.hostOption, input.yes));
+  const scope = await withPerfSpan("install-flow.resolve-scope", async () => resolveScopeOption(input.scopeOption, input.yes));
+  const pack = await withPerfSpan("install-flow.resolve-pack", async () => resolvePackOption(input.packOption, availablePacks, input.yes));
+  const locale = await withPerfSpan("install-flow.resolve-locale", async () => resolveLocaleOption(input.localeOption, input.yes));
+  const projectMode = await withPerfSpan("install-flow.resolve-project-mode", async () => resolveProjectModeOption(input.projectModeOption, input.currentWorkingDirectory, scope, input.yes));
+  const interactionMode = await withPerfSpan("install-flow.resolve-interaction-mode", async () => resolveInteractionModeOption(input.interactionModeOption, input.yes));
 
   if (!hosts || !scope || !pack || !locale || !projectMode || !interactionMode) {
     return false;
   }
 
+  setPerfMetadata("install.hostCount", hosts.length);
+  setPerfMetadata("install.scope", scope);
+  setPerfMetadata("install.pack", pack);
+  setPerfMetadata("install.locale", locale);
+  setPerfMetadata("install.projectMode", projectMode);
+  setPerfMetadata("install.interactionMode", interactionMode);
+  if (isContextPerfMode()) {
+    setPerfMetadata("install.availablePackCount", availablePacks.length);
+  }
+
   const publishers = resolveHostPublishers(hosts);
-  const preflightOk = await runPreflightChecks({
+  const preflightOk = await withPerfSpan("install-flow.preflight-checks", async () => runPreflightChecks({
     publishers,
     scope,
     pack,
     sourceRoot: input.sourceRoot,
     currentWorkingDirectory: input.currentWorkingDirectory
-  });
+  }));
 
   if (!preflightOk) {
     showOutro("Fix the prerequisite failures before running install again");
@@ -69,7 +80,7 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
 
   for (const publisher of publishers) {
     const loading = createSpinner(`Installing ${publisher.hostName}`);
-    const result = await publisher.install({
+    const result = await withPerfSpan(`install-flow.publish.${publisher.hostName}`, async () => publisher.install({
       host: publisher.hostName,
       scope,
       pack,
@@ -78,7 +89,7 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
       interactionMode,
       sourceRoot: input.sourceRoot,
       currentWorkingDirectory: input.currentWorkingDirectory
-    });
+    }));
 
     loading.stop(
       `Installed ${chalk.cyan(result.pack)} for ${chalk.cyan(result.host)} in ${chalk.cyan(result.scope)} scope`
@@ -86,10 +97,10 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
     installResults.push(result);
   }
 
-  const shellCompletionResult = await maybeEnableShellCompletion({
+  const shellCompletionResult = await withPerfSpan("install-flow.enable-shell-autocomplete", async () => maybeEnableShellCompletion({
     enableShellAutocomplete: input.enableShellAutocomplete,
     yes: input.yes
-  });
+  }));
 
   showOutro(
     installResults

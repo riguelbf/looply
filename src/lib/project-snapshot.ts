@@ -18,6 +18,7 @@ import { readInstallManifestFromTarget } from "./manifest.js";
 import { readProjectContextFile } from "./project-context.js";
 import { readSessionLinks } from "./session-links.js";
 import { readUpgradeHistoryFromTarget } from "./upgrade-history.js";
+import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 
 export interface ProjectSnapshotDocument {
   version: 3;
@@ -94,19 +95,24 @@ export function resolveProjectSnapshotFile(targetRoot: string): string {
 }
 
 export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectSnapshotDocument> {
-  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot, codeContext] = await Promise.all([
-    readInstallManifestFromTarget(targetRoot),
-    readLocaleFile(targetRoot),
-    readProjectContextFile(targetRoot),
-    readInteractionPolicyFile(targetRoot),
-    readSessionLinks(targetRoot),
-    readUpgradeHistoryFromTarget(targetRoot),
-    readFeatureWorkflowStates(targetRoot),
-    readContextSnapshot(targetRoot),
-    readCodeContext(targetRoot)
-  ]);
+  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot, codeContext] = await withPerfSpan(
+    "project-snapshot.read-state",
+    async () => Promise.all([
+      readInstallManifestFromTarget(targetRoot),
+      readLocaleFile(targetRoot),
+      readProjectContextFile(targetRoot),
+      readInteractionPolicyFile(targetRoot),
+      readSessionLinks(targetRoot),
+      readUpgradeHistoryFromTarget(targetRoot),
+      readFeatureWorkflowStates(targetRoot),
+      readContextSnapshot(targetRoot),
+      readCodeContext(targetRoot)
+    ])
+  );
   const executionHintsByHost = manifest
-    ? await Promise.all(
+    ? await withPerfSpan(
+        "project-snapshot.read-execution-hints",
+        async () => Promise.all(
         manifest.installs.map(async (entry) => ({
           host: entry.host,
           scope: entry.scope,
@@ -114,7 +120,16 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
           hints: await readExecutionHintsDocument(targetRoot, entry.host)
         }))
       )
+      )
     : [];
+  setPerfMetadata("project-snapshot.featureCount", features.length);
+  setPerfMetadata("project-snapshot.installCount", manifest?.installs.length ?? 0);
+  setPerfMetadata("project-snapshot.sessionCount", sessions.sessions.length);
+  setPerfMetadata("project-snapshot.historyCount", history.entries.length);
+  if (isContextPerfMode()) {
+    setPerfMetadata("project-snapshot.codeContextModules", codeContext?.modules.length ?? 0);
+    setPerfMetadata("project-snapshot.hostCount", executionHintsByHost.length);
+  }
 
   return {
     version: 3,
@@ -189,8 +204,8 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
 
 export async function writeProjectSnapshot(targetRoot: string): Promise<string> {
   const file = resolveProjectSnapshotFile(targetRoot);
-  const snapshot = await buildProjectSnapshot(targetRoot);
+  const snapshot = await withPerfSpan("project-snapshot.build", async () => buildProjectSnapshot(targetRoot));
   await fs.ensureDir(path.dirname(file));
-  await fs.writeJson(file, snapshot, { spaces: 2 });
+  await withPerfSpan("project-snapshot.write-file", async () => fs.writeJson(file, snapshot, { spaces: 2 }));
   return file;
 }

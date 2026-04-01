@@ -23,6 +23,20 @@ summary: Visual response template for workflow decisions in host conversations
 | Next Command |  |
 | Ready For Next Gate |  |
 
+## Quick Update
+
+### Health
+
+### What Changed
+
+### Decision Made
+
+### Why It Matters
+
+### Immediate Next Step
+
+## Current State
+
 ## Workflow
 
 ## Stage
@@ -36,6 +50,8 @@ summary: Visual response template for workflow decisions in host conversations
 ## Decision
 
 ## Next Step
+
+## Decisions Needed
 
 ## Host
 
@@ -52,5 +68,5 @@ summary: Visual response template for workflow decisions in host conversations
 | Item | Status | Notes |
 | --- | --- | --- |
 | Current stage reconciled | Done |  |
-| Missing artifacts identified | Pending |  |
+| Decision captured clearly | Pending |  |
 | Next step ready | Pending |  |

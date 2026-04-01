@@ -2,19 +2,25 @@ import type { Command } from "commander";
 import path from "node:path";
 import chalk from "chalk";
 import { refreshContext } from "../lib/context-refresh.js";
+import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
+import { runWithPerfSession } from "../lib/perf/session.js";
 import { createSpinner, showIntro, showOutro } from "../ui/feedback.js";
 
 export function registerRefreshContextCommand(program: Command): void {
-  program
+  addProfileOption(program
     .command("refresh-context")
     .description("Refresh project context and inventory from the current repository")
-    .option("--dir <dir>", "Target directory for project context refresh (defaults to current directory)")
+    .option("--dir <dir>", "Target directory for project context refresh (defaults to current directory)"))
     .action(async (options) => {
       showIntro("looply refresh-context");
       const targetRoot = path.resolve(options.dir ?? process.cwd());
       const loading = createSpinner(`Refreshing context for ${targetRoot}`);
 
-      const result = await refreshContext(targetRoot);
+      const result = await runWithPerfSession({
+        command: "refresh-context",
+        mode: resolvePerfMode(options.profile),
+        targetRoot
+      }, async () => refreshContext(targetRoot));
 
       loading.stop(`Context refreshed for ${chalk.cyan(result.targetRoot)}`);
       console.log(chalk.bold("Detected"));

@@ -17,5 +17,6 @@ Bootstrap looply files in the current repository
 - `--locale <locale>`: Output locale such as pt-BR or en
 - `--project-mode <mode>`: Project mode such as existing-project or greenfield
 - `--interaction-mode <mode>`: Interaction mode such as guided, balanced or autonomous
+- `--enable-shell-autocomplete`: Enable shell autocomplete after install
 
 [Voltar para comandos](../commands)

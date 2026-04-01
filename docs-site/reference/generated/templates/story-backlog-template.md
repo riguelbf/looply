@@ -12,21 +12,23 @@ Template for a PRD story backlog
 
 ## Backlog Objective
 
-## Story Order
+## Backlog Table
 
-## Story 1
-
-## Story 2
-
-## Story 3
-
-## Cross Story Dependencies
+| Priority | Story | Outcome | Dependencies | Estimate | Release |
+| --- | --- | --- | --- | --- | --- |
+| P1 |  |  |  |  |  |
+| P2 |  |  |  |  |  |
+| P3 |  |  |  |  |  |
 
 ## Sequencing Rationale
 
+## Dependency Notes
+
 ## Suggested First Slice
 
-## Notes
+## Test And Rollout Notes
+
+## Open Risks And Decisions
 
 ## Arquivo
 

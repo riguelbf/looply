@@ -14,6 +14,7 @@ Install a looply pack into one or more target hosts
 - `--locale <locale>`: Output locale such as pt-BR or en
 - `--project-mode <mode>`: Project mode such as existing-project or greenfield
 - `--interaction-mode <mode>`: Interaction mode such as guided, balanced or autonomous
+- `--enable-shell-autocomplete`: Enable shell autocomplete after install
 - `--dir <dir>`: Target directory for project scope install (defaults to current directory)
 - `--source-root <dir>`: looply source directory that contains packs/
 - `--yes`: Skip confirmation and use resolved values

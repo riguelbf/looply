@@ -23,55 +23,69 @@ summary: Template for persisted feature workflow state
 | Next Command |  |
 | Ready For Next Gate |  |
 
-## Feature
+## Quick Status
 
-## Workflow
+### Health
+
+### Current Focus
+
+### Current Progress
+
+### Top Risks
+
+### Decisions Needed
+
+### Next Three Actions
+
+## Current Execution
+
+## Feature
 
 ## Phase
 
-## Orchestrator
-
-## Project Context
-
-### Project Mode
-
-### Primary Context Root
-
-### Inference Policy
-
-### Context Status
-
-### Context Coverage
-
-### Context Validation Notes
-
-## Interaction Policy
-
-### Interaction Mode
-
-### Ask When
-
-### Avoid Repeated Clarifications
-
-## Problem Statement
-
-## Business Goal
-
-## Success Metric
-
-## Active Artifact
-
-## Selected Story
+## Workflow
 
 ## Current Stage
 
 ## Current Gate
 
-## Gate Status
+## Active Artifact
 
 ## Completed Outputs
 
 ## Missing Outputs
+
+## Handoff Snapshot
+
+### Next Workflow
+
+### Next Agent
+
+### Next Task
+
+### Next Command
+
+### Ready For Next Gate
+
+## Risks And Questions
+
+## Blocked By
+
+## Open Questions
+
+## Constraints
+
+## Decision Rationale
+
+## Related Integrations
+
+## Lightweight Context
+
+### Problem Statement
+
+### Business Goal
+
+### Success Metric
 
 ## Completion Table
 
@@ -81,56 +95,58 @@ summary: Template for persisted feature workflow state
 | Missing outputs listed | Pending |  |
 | Next gate readiness confirmed | Pending |  |
 
-## Recommended Next Workflow
-
-## Ready For Next Gate
-
 ## Host
-
-## Next Agent
-
-## Next Task
-
-## Next Command
 
 ## Next Handoff
 
 ## Story Acceptance Criteria
 
-## Related Integrations
-
-## Integration Context Notes
-
-## Blocked By
-
-## Decision Rationale
-
-## Open Questions
-
-## Constraints
-
 ## Last Updated
 
-## Discovery Focus
+## Detailed Context Notes
 
-### Discovery Outcome
+### Project Context
 
-### PRD Status
+#### Project Mode
 
-### Discovery Risks
+#### Primary Context Root
 
-## Planning Focus
+#### Inference Policy
 
-### Story Backlog Status
+#### Context Status
 
-### Selected Story Goal
+#### Context Coverage
+
+#### Context Validation Notes
+
+### Interaction Policy
+
+#### Interaction Mode
+
+#### Ask When
+
+#### Avoid Repeated Clarifications
+
+### Discovery Notes
+
+#### Discovery Outcome
+
+#### PRD Status
+
+#### Discovery Risks
 
 ### Planning Notes
 
-## Delivery Focus
+#### Story Backlog Status
 
-### Technical Design Status
+#### Selected Story Goal
 
-### Delivery Risks
+#### Planning Notes
 
-### Release Readiness Notes
+### Delivery Notes
+
+#### Technical Design Status
+
+#### Delivery Risks
+
+#### Release Readiness Notes

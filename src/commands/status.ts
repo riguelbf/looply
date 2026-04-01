@@ -2,6 +2,8 @@ import type { Command } from "commander";
 import chalk from "chalk";
 import path from "node:path";
 import { loadArtifactCatalog } from "../lib/artifact-catalog.js";
+import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
+import { runWithPerfSession, withPerfSpan } from "../lib/perf/session.js";
 import { buildProjectSnapshot, writeProjectSnapshot } from "../lib/project-snapshot.js";
 import { resolveLooplySourceRoot } from "../lib/source-root.js";
 import { showOutro } from "../ui/feedback.js";
@@ -9,22 +11,34 @@ import { showOutro } from "../ui/feedback.js";
 type StatusLocale = "en" | "pt-BR";
 
 export function registerStatusCommand(program: Command): void {
-  program
+  addProfileOption(program
     .command("status")
     .description("Show a consolidated operational status for the current project")
     .option("--dir <dir>", "Target directory for project status (defaults to current directory)")
     .option("--limit <count>", "Maximum number of recent history entries to show", "3")
     .option("--features <count>", "Maximum number of feature states to show", "5")
-    .option("--json", "Print the normalized project snapshot as JSON")
+    .option("--json", "Print the normalized project snapshot as JSON"))
     .action(async (options) => {
       const targetRoot = path.resolve(options.dir ?? process.cwd());
       const historyLimit = toPositiveNumber(options.limit, 3);
       const featureLimit = toPositiveNumber(options.features, 5);
-      const [snapshot, catalog] = await Promise.all([
-        buildProjectSnapshot(targetRoot),
-        loadArtifactCatalog(resolveLooplySourceRoot())
-      ]);
-      const snapshotFile = await writeProjectSnapshot(targetRoot);
+      const { snapshot, catalog, snapshotFile } = await runWithPerfSession({
+        command: "status",
+        mode: resolvePerfMode(options.profile),
+        targetRoot,
+        metadata: {
+          historyLimit,
+          featureLimit,
+          json: Boolean(options.json)
+        }
+      }, async () => {
+        const [snapshot, catalog] = await Promise.all([
+          withPerfSpan("status.build-project-snapshot", async () => buildProjectSnapshot(targetRoot)),
+          withPerfSpan("status.load-artifact-catalog", async () => loadArtifactCatalog(resolveLooplySourceRoot()))
+        ]);
+        const snapshotFile = await withPerfSpan("status.write-project-snapshot", async () => writeProjectSnapshot(targetRoot));
+        return { snapshot, catalog, snapshotFile };
+      });
 
       if (options.json) {
         console.log(JSON.stringify(snapshot, null, 2));

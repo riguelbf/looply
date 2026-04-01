@@ -10,9 +10,17 @@ Template for a single delivery story
 
 # Story
 
-## Title
+## Story Summary
 
-## Goal
+## User Story
+
+Format expected:
+
+As a ...
+I want ...
+So that ...
+
+## User Value
 
 ## Linked PRD
 
@@ -24,17 +32,25 @@ Template for a single delivery story
 
 ## Acceptance Criteria
 
+Preferir criterios testaveis no formato Given / When / Then quando isso ajudar.
+
+## Definition Of Done
+
 ## Dependencies
 
 ## Impacted Areas
+
+## Edge Cases
 
 ## Technical Notes
 
 ## Risks
 
-## Test Notes
+## Test Plan
 
-## Rollout Notes
+## Observability And Rollout Notes
+
+## Open Questions
 
 ## Arquivo
 

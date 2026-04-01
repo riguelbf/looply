@@ -10,17 +10,31 @@ Template for release planning
 
 # Release Plan
 
-## Preconditions
+## Release Summary
+
+## Release Owner
+
+## Target Window
+
+## Rollout Strategy
+
+## Dependency Readiness
+
+## Preconditions And Preflight Checks
 
 ## Publication Steps
 
-## Verification
+## Verification Checklist
 
-## Rollback
+## Monitoring And Alerts
 
-## Monitoring
+## Stop Or Abort Criteria
 
-## Communication
+## Rollback Plan
+
+## Communication Plan
+
+## Post Release Review
 
 ## Handoff Contract
 
@@ -41,7 +55,9 @@ Template for release planning
 | Item | Status | Notes |
 | --- | --- | --- |
 | Preconditions mapped | Done |  |
-| Verification defined | Pending |  |
+| Verification checklist defined | Pending |  |
+| Monitoring and alerts confirmed | Pending |  |
+| Abort criteria defined | Pending |  |
 | Handoff contract prepared | Pending |  |
 | Rollback ready | Pending |  |
 

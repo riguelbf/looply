@@ -21,6 +21,20 @@ summary: Visual response template for workflow decisions in host conversations
 | Next Task |  |
 | Ready For Next Gate |  |
 
+## Quick Update
+
+### Health
+
+### What Changed
+
+### Decision Made
+
+### Why It Matters
+
+### Immediate Next Step
+
+## Current State
+
 ## Workflow
 
 ## Stage
@@ -34,6 +48,8 @@ summary: Visual response template for workflow decisions in host conversations
 ## Decision
 
 ## Next Step
+
+## Decisions Needed
 
 ## Missing Artifacts
 

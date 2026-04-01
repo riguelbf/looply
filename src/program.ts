@@ -9,6 +9,7 @@ import { registerIntegrationsCommand } from "./commands/integrations.js";
 import { registerInspectCommand } from "./commands/inspect.js";
 import { registerInstallCommand } from "./commands/install.js";
 import { registerListCommand } from "./commands/list.js";
+import { registerPerfCommand } from "./commands/perf.js";
 import { registerReinstallCommand } from "./commands/reinstall.js";
 import { registerRefreshContextCommand } from "./commands/refresh-context.js";
 import { registerRefreshCodeContextCommand } from "./commands/refresh-code-context.js";
@@ -57,6 +58,7 @@ export function buildProgram(): Command {
   registerListCommand(program);
   registerInspectCommand(program);
   registerCompletionCommand(program);
+  registerPerfCommand(program);
 
   return program;
 }

@@ -10,6 +10,16 @@ Template for requirement brief
 
 # Requirement Brief
 
+## Status
+
+## Owner
+
+## Stakeholders
+
+## Target Decision Date
+
+## Decision Needed
+
 ## Problem
 
 ## Goal
@@ -26,11 +36,15 @@ Template for requirement brief
 
 ## Constraints
 
+## Assumptions
+
 ## Open Questions
 
 ## Risks
 
 ## Signals Of Value
+
+## Validation Approach
 
 ## Recommended Next Step
 

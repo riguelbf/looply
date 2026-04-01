@@ -6,9 +6,27 @@ summary: Template for review report
 
 # Review Report
 
-## Findings
+## Review Scope
+
+## Findings Summary
+
+## Findings By Severity
+
+### Critical
+
+### High
+
+### Medium
+
+### Low
 
 ## Risks
+
+## Requirement Coverage
+
+## Test Coverage And Gaps
+
+## Security And Reliability Notes
 
 ## Approval Status
 

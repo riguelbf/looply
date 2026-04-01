@@ -21,63 +21,53 @@ summary: Template for persisted feature workflow state
 | Next Task |  |
 | Ready For Next Gate |  |
 
+## Quick Status
+
+### Health
+
+### Current Focus
+
+### Current Progress
+
+### Top Risks
+
+### Decisions Needed
+
+### Next Three Actions
+
+## Current Execution
+
 ## Feature
 
 ## Workflow
 
 ## Phase
 
-## Orchestrator
+## Current Stage
 
-## Project Context
+## Current Gate
 
-### Project Mode
+## Active Artifact
 
-### Primary Context Root
+## Completed Outputs
 
-### Inference Policy
+## Missing Outputs
 
-### Context Status
+## Handoff Snapshot
 
-### Context Coverage
+### Recommended Next Workflow
 
-### Context Validation Notes
+### Next Agent
 
-## Interaction Policy
+### Next Task
 
-### Interaction Mode
-
-### Ask When
-
-### Avoid Repeated Clarifications
+### Ready For Next Gate
 
 ## Problem Statement
 
 ## Business Goal
 
 ## Success Metric
-
-## Active Artifact
-
-## Selected Story
-
-## Current Stage
-
-## Current Gate
-
-## Gate Status
-
-## Completed Outputs
-
-## Missing Outputs
-
-## Recommended Next Workflow
-
-## Ready For Next Gate
-
-## Next Agent
-
-## Next Task
 
 ## Next Handoff
 
@@ -97,26 +87,52 @@ summary: Template for persisted feature workflow state
 
 ## Last Updated
 
-## Discovery Focus
+## Detailed Context Notes
 
-### Discovery Outcome
+### Orchestrator
 
-### PRD Status
+### Project Context
 
-### Discovery Risks
+#### Project Mode
 
-## Planning Focus
+#### Primary Context Root
 
-### Story Backlog Status
+#### Inference Policy
 
-### Selected Story Goal
+#### Context Status
+
+#### Context Coverage
+
+#### Context Validation Notes
+
+### Interaction Policy
+
+#### Interaction Mode
+
+#### Ask When
+
+#### Avoid Repeated Clarifications
+
+### Discovery Notes
+
+#### Discovery Outcome
+
+#### PRD Status
+
+#### Discovery Risks
 
 ### Planning Notes
 
-## Delivery Focus
+#### Story Backlog Status
 
-### Technical Design Status
+#### Selected Story Goal
 
-### Delivery Risks
+#### Planning Notes
 
-### Release Readiness Notes
+### Delivery Notes
+
+#### Technical Design Status
+
+#### Delivery Risks
+
+#### Release Readiness Notes

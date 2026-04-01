@@ -12,7 +12,7 @@ Check whether installed hosts have updates available
 
 Generate or inspect shell completion for the looply CLI
 
-- options: 4
+- options: 6
 
 ## [docs](./commands/docs)
 
@@ -36,7 +36,7 @@ Show upgrade and sync history for the current project
 
 Bootstrap looply files in the current repository
 
-- options: 9
+- options: 10
 
 ## [inspect](./commands/inspect)
 
@@ -48,7 +48,7 @@ Inspect a single artifact
 
 Install a looply pack into one or more target hosts
 
-- options: 9
+- options: 10
 
 ## [integrations](./commands/integrations)
 
