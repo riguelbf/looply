@@ -82,6 +82,15 @@ export const workflowCommandSchema = z.object({
 });
 
 export const workflowPhaseSchema = z.enum(["discovery", "planning", "delivery", "status"]);
+export const exampleKindSchema = z.enum(["workflow-example", "template-example", "task-example", "handoff-example"]);
+export const exampleQualitySchema = z.enum(["strong", "reference", "edge-case"]);
+export const exampleApplicabilitySchema = z.object({
+  workflows: z.array(z.string()).default([]),
+  tasks: z.array(z.string()).default([]),
+  templates: z.array(z.string()).default([]),
+  agents: z.array(z.string()).default([]),
+  handoffs: z.array(z.string()).default([])
+});
 
 export const workflowSchema = artifactSchema.extend({
   inputs: z.array(z.string()).default([]),
@@ -104,6 +113,32 @@ export const checklistSchema = artifactSchema;
 
 export const templateSchema = artifactSchema;
 
+export const exampleSchema = artifactSchema.extend({
+  kind: exampleKindSchema,
+  quality: exampleQualitySchema.default("strong"),
+  applies_to: exampleApplicabilitySchema,
+  host_support: z.array(z.enum(["codex", "claude"])).default([]),
+  project_modes: z.array(z.enum(["existing-project", "greenfield"])).default([]),
+  interaction_modes: z.array(z.enum(["guided", "balanced", "autonomous"])).default([]),
+  locale: z.enum(["en", "pt-BR"]).optional(),
+  tags: z.array(z.string()).default([])
+}).superRefine((value, context) => {
+  const totalApplicability =
+    value.applies_to.workflows.length +
+    value.applies_to.tasks.length +
+    value.applies_to.templates.length +
+    value.applies_to.agents.length +
+    value.applies_to.handoffs.length;
+
+  if (totalApplicability === 0) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "applies_to must target at least one workflow, task, template, agent or handoff",
+      path: ["applies_to"]
+    });
+  }
+});
+
 export const packSchema = artifactSchema.extend({
   pack_version: z.string().min(1),
   domains: z.array(z.string()).default([]),
@@ -121,4 +156,5 @@ export type WorkflowFrontmatter = z.infer<typeof workflowSchema>;
 export type KnowledgeFrontmatter = z.infer<typeof knowledgeSchema>;
 export type ChecklistFrontmatter = z.infer<typeof checklistSchema>;
 export type TemplateFrontmatter = z.infer<typeof templateSchema>;
+export type ExampleFrontmatter = z.infer<typeof exampleSchema>;
 export type PackFrontmatter = z.infer<typeof packSchema>;
