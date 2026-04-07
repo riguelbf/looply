@@ -19,9 +19,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/coding-standards.md
   - ../knowledge/architecture-principles.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/reviewer-best-practices.md
 constraints:
   - Do not redefine architecture during review without justification
+  - Apply YAGNI as a review gate — flag speculative options, dead exports, unused parameters and premature abstractions as blocking findings
 escalation_rules:
   - Escalate systemic architectural issues to architect
 ---

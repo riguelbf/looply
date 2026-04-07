@@ -19,9 +19,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/architecture-principles.md
   - ../knowledge/cloud-operating-model.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/platform-engineer-best-practices.md
 constraints:
   - Do not push product-specific logic into shared platform assets without justification
+  - Apply YAGNI — do not generalize a platform asset before the second real consumer exists; a hypothetical second consumer is not enough
 escalation_rules:
   - Escalate workload-specific architecture to cloud-architect
   - Escalate governance policy conflicts to cloud-governance

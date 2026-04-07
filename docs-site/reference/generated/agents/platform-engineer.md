@@ -15,11 +15,13 @@ Sem summary declarada.
 
 - `../knowledge/architecture-principles.md`
 - `../knowledge/cloud-operating-model.md`
+- `../knowledge/yagni-principles.md`
 - `../knowledge/specialists/platform-engineer-best-practices.md`
 
 ## Constraints
 
 - `Do not push product-specific logic into shared platform assets without justification`
+- `Apply YAGNI — do not generalize a platform asset before the second real consumer exists; a hypothetical second consumer is not enough`
 
 ## Escalation rules
 

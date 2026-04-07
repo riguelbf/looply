@@ -16,11 +16,13 @@ Sem summary declarada.
 
 - `../knowledge/architecture-principles.md`
 - `../knowledge/cloud-operating-model.md`
+- `../knowledge/yagni-principles.md`
 - `../knowledge/specialists/architect-best-practices.md`
 
 ## Constraints
 
 - `Do not invent business rules`
+- `Apply YAGNI — do not design for hypothetical future requirements; add structural complexity only when the current scope pushes for it`
 
 ## Escalation rules
 

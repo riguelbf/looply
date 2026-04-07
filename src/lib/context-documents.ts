@@ -161,6 +161,7 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "- `.looply/custom/project-context.md`",
     "- `.looply/custom/architecture-context.md`",
     "- `.looply/state/project-inventory.md`",
+    "- `.looply/state/harness-report.md` (advisory — read before starting a workflow; blocking errors must be resolved first)",
     "- `.looply/custom/session-context.md`",
     "- `.looply/custom/integrations/integrations-index.md`",
     "- `.looply/custom/features/<feature-name>/workflow-status.md`",

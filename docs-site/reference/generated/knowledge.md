@@ -98,3 +98,9 @@ Best practices for operability, reliability and production readiness
 
 - arquivo: `packs/engineering-base/knowledge/specialists/sre-best-practices.md`
 
+## [yagni-principles](./knowledge/yagni-principles)
+
+YAGNI principles for code output — build the smallest thing that delivers the approved scope
+
+- arquivo: `packs/engineering-base/knowledge/yagni-principles.md`
+

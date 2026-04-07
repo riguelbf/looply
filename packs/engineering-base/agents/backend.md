@@ -18,9 +18,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/coding-standards.md
   - ../knowledge/architecture-principles.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/backend-best-practices.md
 constraints:
   - Do not change domain rules without explicit guidance
+  - Apply YAGNI — no speculative options, wrappers or abstractions without a real call-site in the current scope
 escalation_rules:
   - Escalate structural gaps to architect
 ---

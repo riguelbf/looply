@@ -20,9 +20,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/architecture-principles.md
   - ../knowledge/cloud-operating-model.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/architect-best-practices.md
 constraints:
   - Do not invent business rules
+  - Apply YAGNI — do not design for hypothetical future requirements; add structural complexity only when the current scope pushes for it
 escalation_rules:
   - Escalate unresolved business ambiguity to pm-analyst
 ---

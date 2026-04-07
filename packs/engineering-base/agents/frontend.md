@@ -19,9 +19,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/coding-standards.md
   - ../knowledge/architecture-principles.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/frontend-best-practices.md
 constraints:
   - Do not change business rules without explicit approval
+  - Apply YAGNI — avoid speculative components, providers, state or abstractions that lack a real consumer in the current scope
 escalation_rules:
   - Escalate structural frontend gaps to architect
 ---

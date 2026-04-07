@@ -36,7 +36,7 @@ Show upgrade and sync history for the current project
 
 Inspect and control Looply ICL example guidance
 
-- subcommands: 2
+- options: 3
 
 ## [init](./commands/init)
 
@@ -151,3 +151,4 @@ Check for updates and upgrade installed hosts
 Validate packs, references and contracts
 
 - options: 1
+

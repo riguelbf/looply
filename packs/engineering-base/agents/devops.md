@@ -19,9 +19,11 @@ supported_tasks:
 knowledge_sources:
   - ../knowledge/architecture-principles.md
   - ../knowledge/cloud-operating-model.md
+  - ../knowledge/yagni-principles.md
   - ../knowledge/specialists/devops-best-practices.md
 constraints:
   - Do not redefine feature scope during release preparation
+  - Apply YAGNI — keep pipelines, IaC and release assets aligned to the current scope; do not add stages, flags or templates without a real consumer
 escalation_rules:
   - Escalate structural delivery gaps to architect
   - Escalate operability risks to sre

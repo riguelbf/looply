@@ -15,11 +15,13 @@ Sem summary declarada.
 
 - `../knowledge/architecture-principles.md`
 - `../knowledge/cloud-operating-model.md`
+- `../knowledge/yagni-principles.md`
 - `../knowledge/specialists/devops-best-practices.md`
 
 ## Constraints
 
 - `Do not redefine feature scope during release preparation`
+- `Apply YAGNI — keep pipelines, IaC and release assets aligned to the current scope; do not add stages, flags or templates without a real consumer`
 
 ## Escalation rules
 
