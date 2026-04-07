@@ -10,6 +10,8 @@ import { deriveFeatureCodeImpact } from "./code-context/feature-impact.js";
 import { type CodeContextDocument } from "./code-context/schema.js";
 import { readCodeContext, resolveCodeContextFile } from "./code-context/storage.js";
 import { readContextSnapshot, resolveContextSnapshotFile, type ContextSnapshotDocument } from "./context-snapshot.js";
+import { readExampleIndexDocument, resolveExampleIndexFile } from "./example-documents.js";
+import { resolveEffectiveExamplePolicy } from "./example-policy.js";
 import { readExecutionHintsDocument } from "./execution-hints.js";
 import { readFeatureWorkflowStates, type FeatureWorkflowState } from "./feature-workflow-state.js";
 import { readInteractionPolicyFile } from "./interaction-policy.js";
@@ -21,7 +23,7 @@ import { readUpgradeHistoryFromTarget } from "./upgrade-history.js";
 import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 
 export interface ProjectSnapshotDocument {
-  version: 3;
+  version: 4;
   generatedAt: string;
   targetRoot: string;
   summary: {
@@ -71,6 +73,15 @@ export interface ProjectSnapshotDocument {
     file: string;
     snapshot: CodeContextDocument | null;
   };
+  icl: {
+    effectiveMode: "on" | "reduced" | "off";
+    modeSource: "project" | "global" | "default";
+    policyFile: string;
+    globalPolicyFile: string;
+    indexFile: string;
+    availableExampleCount: number;
+    selectedExampleCount: number;
+  };
   sessions: Array<{
     label: string;
     feature: string;
@@ -95,7 +106,7 @@ export function resolveProjectSnapshotFile(targetRoot: string): string {
 }
 
 export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectSnapshotDocument> {
-  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot, codeContext] = await withPerfSpan(
+  const [manifest, locale, projectContext, interactionPolicy, sessions, history, features, contextSnapshot, codeContext, exampleIndex, examplePolicy] = await withPerfSpan(
     "project-snapshot.read-state",
     async () => Promise.all([
       readInstallManifestFromTarget(targetRoot),
@@ -106,7 +117,9 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
       readUpgradeHistoryFromTarget(targetRoot),
       readFeatureWorkflowStates(targetRoot),
       readContextSnapshot(targetRoot),
-      readCodeContext(targetRoot)
+      readCodeContext(targetRoot),
+      readExampleIndexDocument(targetRoot),
+      resolveEffectiveExamplePolicy(targetRoot)
     ])
   );
   const executionHintsByHost = manifest
@@ -129,10 +142,11 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
   if (isContextPerfMode()) {
     setPerfMetadata("project-snapshot.codeContextModules", codeContext?.modules.length ?? 0);
     setPerfMetadata("project-snapshot.hostCount", executionHintsByHost.length);
+    setPerfMetadata("project-snapshot.exampleCount", exampleIndex?.availableExampleCount ?? 0);
   }
 
   return {
-    version: 3,
+    version: 4,
     generatedAt: new Date().toISOString(),
     targetRoot,
     summary: {
@@ -184,6 +198,15 @@ export async function buildProjectSnapshot(targetRoot: string): Promise<ProjectS
     codeContext: {
       file: resolveCodeContextFile(targetRoot),
       snapshot: codeContext
+    },
+    icl: {
+      effectiveMode: exampleIndex?.effectiveMode ?? examplePolicy.mode,
+      modeSource: exampleIndex?.modeSource ?? examplePolicy.source,
+      policyFile: examplePolicy.projectFile,
+      globalPolicyFile: examplePolicy.globalFile,
+      indexFile: resolveExampleIndexFile(targetRoot),
+      availableExampleCount: exampleIndex?.availableExampleCount ?? 0,
+      selectedExampleCount: exampleIndex?.selectedExampleCount ?? 0
     },
     sessions: sessions.sessions,
     features: features.map((feature) => ({

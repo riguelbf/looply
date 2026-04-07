@@ -78,8 +78,18 @@ export function registerStatusCommand(program: Command): void {
       console.log(`${text.locale}: ${chalk.cyan(snapshot.project.locale)}`);
       console.log(`${text.projectMode}: ${chalk.cyan(snapshot.project.projectMode)}`);
       console.log(`${text.interactionMode}: ${chalk.cyan(snapshot.project.interactionMode)}`);
+      console.log(`${text.iclMode}: ${chalk.cyan(snapshot.icl.effectiveMode)}`);
+      console.log(chalk.dim(`${text.iclSource}: ${snapshot.icl.modeSource}`));
       console.log(chalk.dim(`${text.contextRoot}: ${snapshot.project.primaryContextRoot}`));
       console.log(chalk.dim(`${text.inferencePolicy}: ${snapshot.project.inferencePolicy}`));
+      console.log("");
+
+      console.log(chalk.bold(text.iclGuidance));
+      console.log(`${text.iclMode}: ${chalk.cyan(snapshot.icl.effectiveMode)}`);
+      console.log(`${text.iclSource}: ${chalk.cyan(snapshot.icl.modeSource)}`);
+      console.log(`${text.availableExamples}: ${chalk.cyan(String(snapshot.icl.availableExampleCount))}`);
+      console.log(`${text.selectedExamples}: ${chalk.cyan(String(snapshot.icl.selectedExampleCount))}`);
+      console.log(chalk.dim(`${text.stateFile}: ${snapshot.icl.indexFile}`));
       console.log("");
 
       console.log(chalk.bold(text.publishedHosts));
@@ -547,8 +557,13 @@ function getStatusText(locale: StatusLocale) {
       locale: "locale",
       projectMode: "project-mode",
       interactionMode: "interaction-mode",
+      iclMode: "icl-mode",
+      iclSource: "icl-source",
       contextRoot: "context-root",
       inferencePolicy: "inference-policy",
+      iclGuidance: "ICL Guidance",
+      availableExamples: "examples disponíveis",
+      selectedExamples: "examples selecionados",
       publishedHosts: "Hosts Publicados",
       noPublishedHosts: "Nenhuma superfície de host publicada encontrada.",
       workflows: "workflows",
@@ -665,8 +680,13 @@ function getStatusText(locale: StatusLocale) {
     locale: "locale",
     projectMode: "project-mode",
     interactionMode: "interaction-mode",
+    iclMode: "icl-mode",
+    iclSource: "icl-source",
     contextRoot: "context-root",
     inferencePolicy: "inference-policy",
+    iclGuidance: "ICL Guidance",
+    availableExamples: "available examples",
+    selectedExamples: "selected examples",
     publishedHosts: "Published Hosts",
     noPublishedHosts: "No published host surfaces found.",
     workflows: "workflows",
