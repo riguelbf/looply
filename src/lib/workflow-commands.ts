@@ -58,11 +58,14 @@ export function renderClaudeWorkflowCommand(input: {
   outputLocale: "en" | "pt-BR";
   projectMode: "existing-project" | "greenfield";
   interactionMode: "guided" | "balanced" | "autonomous";
+  iclMode: "on" | "reduced" | "off";
   playbookReference: string;
   packReference: string;
   customReference: string;
   hintsReference: string;
   stateTemplateReference: string;
+  exampleHintsReference: string;
+  exampleReferences: string[];
 }): string {
   const { command } = input;
   const stateFileHint = ".looply/custom/features/$1/workflow-status.md";
@@ -83,6 +86,7 @@ export function renderClaudeWorkflowCommand(input: {
     `- Workflow state template: @${input.stateTemplateReference}`,
     `- Custom overrides: @${input.customReference}`,
     `- Execution hints: @${input.hintsReference}`,
+    `- Example hints: @${input.exampleHintsReference}`,
     "- Context index: `./.looply/state/context-index.md`",
     "- Project context: `./.looply/custom/project-context.md`",
     "- Session context: `./.looply/custom/session-context.md`",
@@ -124,6 +128,12 @@ export function renderClaudeWorkflowCommand(input: {
     renderSuggestedNextStep(command, "claude")
   );
 
+  lines.push("", ...renderExampleGuidanceLines({
+    host: "claude",
+    mode: input.iclMode,
+    exampleReferences: input.exampleReferences
+  }));
+
   lines.push(
     "",
     "Help mode:",
@@ -149,13 +159,14 @@ export function renderClaudeWorkflowCommand(input: {
     "9. Preserve managed files as canonical and place local overrides only in `.looply/custom`.",
     "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
     "11. When the current task declares templates or checklists, use them as the default output contract and quality bar.",
-    `12. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
-    `13. When project mode is \`${input.projectMode}\`, treat the local project root as the default feature context unless the user points to another folder.`,
+    "12. When curated examples are referenced, use them only for style, structure and quality calibration.",
+    `13. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+    `14. When project mode is \`${input.projectMode}\`, treat the local project root as the default feature context unless the user points to another folder.`,
     input.projectMode === "existing-project"
-      ? "14. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
-      : "14. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
-    "15. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it before trusting it.",
-    `16. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`
+      ? "15. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "15. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "16. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it before trusting it.",
+    `17. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`
   );
 
   return lines.join("\n");
@@ -166,11 +177,14 @@ export function renderCodexWorkflowCommand(input: {
   outputLocale: "en" | "pt-BR";
   projectMode: "existing-project" | "greenfield";
   interactionMode: "guided" | "balanced" | "autonomous";
+  iclMode: "on" | "reduced" | "off";
   playbookReference: string;
   packReference: string;
   customReference: string;
   hintsReference: string;
   stateTemplateReference: string;
+  exampleHintsReference: string;
+  exampleReferences: string[];
 }): string {
   const { command } = input;
   const stateFileHint = ".looply/custom/features/<feature-name>/workflow-status.md";
@@ -193,6 +207,7 @@ export function renderCodexWorkflowCommand(input: {
     `- ${input.stateTemplateReference}`,
     `- ${input.customReference}`,
     `- ${input.hintsReference}`,
+    `- ${input.exampleHintsReference}`,
     "- ./.looply/state/context-index.md",
     "- ./.looply/custom/project-context.md",
     "- ./.looply/custom/session-context.md",
@@ -226,6 +241,12 @@ export function renderCodexWorkflowCommand(input: {
     "Suggested next step:",
     renderSuggestedNextStep(command, "codex")
   );
+
+  lines.push("", ...renderExampleGuidanceLines({
+    host: "codex",
+    mode: input.iclMode,
+    exampleReferences: input.exampleReferences
+  }));
 
   if (command.arguments.length === 0) {
     lines.push("- Use the raw user request as workflow input.");
@@ -261,13 +282,14 @@ export function renderCodexWorkflowCommand(input: {
     "9. Read execution hints only as advisory metadata for cost and context selection.",
     "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
     "11. When the current task declares templates or checklists, use them as the default output contract and quality bar.",
-    `12. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
-    `13. When project mode is ${input.projectMode}, treat the local project root as the default feature context unless the user points to another folder.`,
+    "12. When curated examples are referenced, use them only for style, structure and quality calibration.",
+    `13. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
+    `14. When project mode is ${input.projectMode}, treat the local project root as the default feature context unless the user points to another folder.`,
     input.projectMode === "existing-project"
-      ? "14. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
-      : "14. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
-    "15. If a context file has `status: empty`, `status: draft` or `status: stale`, inspect the codebase before trusting it.",
-    `16. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`
+      ? "15. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "15. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "16. If a context file has `status: empty`, `status: draft` or `status: stale`, inspect the codebase before trusting it.",
+    `17. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`
   );
 
   return lines.join("\n");
@@ -294,6 +316,7 @@ export function renderCodexSkillDocument(input: {
   outputLocale: "en" | "pt-BR";
   projectMode: "existing-project" | "greenfield";
   interactionMode: "guided" | "balanced" | "autonomous";
+  iclMode: "on" | "reduced" | "off";
   playbookReference: string;
   packReference: string;
   customReference: string;
@@ -302,6 +325,8 @@ export function renderCodexSkillDocument(input: {
   contextIndexReference: string;
   projectContextReference: string;
   sessionContextReference: string;
+  exampleHintsReference: string;
+  exampleReferences: string[];
 }): string {
   const { skill } = input;
   const commandForExample: WorkflowCommandDefinition = {
@@ -335,6 +360,7 @@ export function renderCodexSkillDocument(input: {
     `- Workflow state template: ${input.stateTemplateReference}`,
     `- Custom overrides: ${input.customReference}`,
     `- Execution hints: ${input.hintsReference}`,
+    `- Example hints: ${input.exampleHintsReference}`,
     `- Context index: ${input.contextIndexReference}`,
     `- Project context: ${input.projectContextReference}`,
     `- Session context: ${input.sessionContextReference}`,
@@ -346,6 +372,12 @@ export function renderCodexSkillDocument(input: {
     "",
     "Example:",
     `- ${renderExampleInvocation(commandForExample, "codex")}`,
+    "",
+    ...renderExampleGuidanceLines({
+      host: "codex",
+      mode: input.iclMode,
+      exampleReferences: input.exampleReferences
+    }),
     "",
     "Execution rules:",
     "1. Start by reading the workflow playbook and the feature state file if it already exists.",
@@ -359,8 +391,9 @@ export function renderCodexSkillDocument(input: {
       : "7. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
     "8. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.",
     `9. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`,
-    "10. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
-    "11. Do not use emojis."
+    "10. When curated examples are referenced, use them only for style, structure and quality calibration.",
+    "11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
+    "12. Do not use emojis."
   ];
 
   if (skill.arguments.length > 0) {
@@ -426,9 +459,10 @@ export function renderCodexLauncherSkillDocument(input: {
     "7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
     "8. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
     "9. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
-    "10. Prefer explicit next-step guidance over generic explanations.",
-    `11. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
-    `12. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
+    "10. When curated examples are referenced by a workflow command, treat them as style guidance only.",
+    "11. Prefer explicit next-step guidance over generic explanations.",
+    `12. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
+    `13. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
     "",
     "Available workflows:"
   ];
@@ -763,6 +797,37 @@ function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "clau
     default:
       return `- Host: ${renderHostLabel(host)}. Check the workflow state file for the next recommended command.`;
   }
+}
+
+function renderExampleGuidanceLines(input: {
+  host: "claude" | "codex";
+  mode: "on" | "reduced" | "off";
+  exampleReferences: string[];
+}): string[] {
+  const lines = [
+    "Curated example guidance:",
+    `- ICL mode: \`${input.mode}\``
+  ];
+
+  if (input.mode === "off") {
+    lines.push("- Example guidance is disabled for this project. Use templates, checklists, workflow state and the live codebase only.");
+    return lines;
+  }
+
+  lines.push("- Use examples only for style, structure and quality calibration.");
+  lines.push("- Do not copy feature-specific names, identifiers or business details from examples.");
+
+  if (input.exampleReferences.length === 0) {
+    lines.push("- No example was selected for this workflow.");
+    return lines;
+  }
+
+  lines.push("- Selected examples:");
+  for (const reference of input.exampleReferences) {
+    lines.push(`- ${input.host === "claude" ? `@${reference}` : reference}`);
+  }
+
+  return lines;
 }
 
 function renderExampleInvocation(command: WorkflowCommandDefinition, host: "claude" | "codex"): string {

@@ -4,6 +4,7 @@ import path from "node:path";
 import fs from "fs-extra";
 import { globby } from "globby";
 import { loadArtifactCatalog } from "../../lib/artifact-catalog.js";
+import { writeExampleDocuments } from "../../lib/example-documents.js";
 import { buildExecutionHintsDocument } from "../../lib/execution-hints.js";
 import { buildWorkflowPlaybookDocument } from "../../lib/workflow-playbook.js";
 import {
@@ -230,6 +231,7 @@ export class FileHostPublisher implements HostPublisher {
         outputLocale: input.locale,
         projectMode: input.projectMode,
         interactionMode: input.interactionMode,
+        iclMode: workflowCommands.iclMode,
         commands: workflowCommands.commands
       }),
       "utf8"
@@ -388,6 +390,7 @@ export class FileHostPublisher implements HostPublisher {
         outputLocale: locale,
         projectMode,
         interactionMode,
+        iclMode: workflowCommands.iclMode,
         commands: workflowCommands.commands
       }),
       "utf8"
@@ -781,6 +784,7 @@ export class FileHostPublisher implements HostPublisher {
     outputLocale: "en" | "pt-BR";
     projectMode: "existing-project" | "greenfield";
     interactionMode: "guided" | "balanced" | "autonomous";
+    iclMode: "on" | "reduced" | "off";
     commands: WorkflowCommandDefinition[];
   }): string {
     const commandLines = input.commands.length === 0
@@ -795,6 +799,8 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/custom/`,
       `- ./.looply/state/workflow-playbook.${this.hostName}.md`,
       `- ./.looply/state/execution-hints.${this.hostName}.json`,
+      `- ./.looply/state/example-index.json`,
+      `- ./.looply/state/example-hints.${this.hostName}.json`,
       `- ./.looply/state/locale.json`,
       `- ./.looply/state/project-context.json`,
       `- ./.looply/state/context-index.md`,
@@ -811,6 +817,7 @@ export class FileHostPublisher implements HostPublisher {
       `Default output locale: \`${input.outputLocale}\``,
       `Project mode: \`${input.projectMode}\``,
       `Interaction mode: \`${input.interactionMode}\``,
+      `ICL example guidance: \`${input.iclMode}\``,
       "",
       "Invocable workflow aliases:",
       ...commandLines,
@@ -825,16 +832,17 @@ export class FileHostPublisher implements HostPublisher {
             "5. Prefer the generated Codex skills in `./.agents/skills/` for explicit skill invocation and native skill discovery.",
             "6. Before acting as a specialist, inspect the current agent `knowledge_sources`, especially specialist `best-practices` files.",
             "7. If the current task declares templates or checklists, use them as the default artifact contract and quality bar.",
-            "8. If the user writes `/looply:... help`, explain the alias instead of executing it.",
-            `9. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
-            `10. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
+            "8. When a workflow command references curated examples, use them only for style and quality calibration.",
+            "9. If the user writes `/looply:... help`, explain the alias instead of executing it.",
+            `10. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+            `11. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
             input.projectMode === "existing-project"
-              ? "11. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
-              : "11. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
-            "12. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
-            "13. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
-            `14. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
-            "15. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
+              ? "12. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
+              : "12. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
+            "13. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
+            "14. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
+            `15. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
+            "16. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
           ]
         : []),
       "",
@@ -869,19 +877,30 @@ export class FileHostPublisher implements HostPublisher {
     outputLocale: "en" | "pt-BR";
     projectMode: "existing-project" | "greenfield";
     interactionMode: "guided" | "balanced" | "autonomous";
-  }): Promise<{ files: string[]; additionalFiles: string[]; commands: WorkflowCommandDefinition[] }> {
+  }): Promise<{ files: string[]; additionalFiles: string[]; commands: WorkflowCommandDefinition[]; iclMode: "on" | "reduced" | "off" }> {
     const catalog = await loadArtifactCatalog(input.sourceRoot);
     const commands = listWorkflowCommands({
       pack: input.pack,
       artifacts: catalog,
       packClosure: input.packClosure
     });
+    const exampleDocuments = await writeExampleDocuments({
+      targetRoot: input.targetRoot,
+      host: input.host,
+      pack: input.pack,
+      packClosure: input.packClosure,
+      artifacts: catalog,
+      outputLocale: input.outputLocale,
+      projectMode: input.projectMode,
+      interactionMode: input.interactionMode
+    });
 
     if (commands.length === 0) {
       return {
         files: [],
-        additionalFiles: [],
-        commands
+        additionalFiles: [exampleDocuments.indexFile, exampleDocuments.hintsFile],
+        commands,
+        iclMode: exampleDocuments.effectiveMode
       };
     }
 
@@ -918,28 +937,41 @@ export class FileHostPublisher implements HostPublisher {
         path.dirname(commandFile),
         stateTemplateFile
       );
+      const exampleHintsReference = relativePathForDisplay(path.dirname(commandFile), exampleDocuments.hintsFile);
+      const exampleReferences = (exampleDocuments.selectedByAlias.get(command.alias) ?? []).map((example) =>
+        relativePathForDisplay(
+          path.dirname(commandFile),
+          path.join(input.targetRoot, ".looply", "managed", "packs", example.pack, example.file)
+        )
+      );
       const content = input.host === "claude"
         ? renderClaudeWorkflowCommand({
             command,
             outputLocale: input.outputLocale,
             projectMode: input.projectMode,
             interactionMode: input.interactionMode,
+            iclMode: exampleDocuments.effectiveMode,
             playbookReference,
             packReference,
             customReference,
             hintsReference,
-            stateTemplateReference
+            stateTemplateReference,
+            exampleHintsReference,
+            exampleReferences
           })
         : renderCodexWorkflowCommand({
             command,
             outputLocale: input.outputLocale,
             projectMode: input.projectMode,
             interactionMode: input.interactionMode,
+            iclMode: exampleDocuments.effectiveMode,
             playbookReference,
             packReference,
             customReference,
             hintsReference,
-            stateTemplateReference
+            stateTemplateReference,
+            exampleHintsReference,
+            exampleReferences
           });
 
       await fs.writeFile(commandFile, content, "utf8");
@@ -964,7 +996,7 @@ export class FileHostPublisher implements HostPublisher {
     await fs.writeFile(helpFile, helpContent, "utf8");
     writtenFiles.push(helpFile);
 
-    const additionalFiles: string[] = [];
+    const additionalFiles: string[] = [exampleDocuments.indexFile, exampleDocuments.hintsFile];
     if (input.host === "codex") {
       const codexIndexFile = path.join(input.targetRoot, "LOOPLY_COMMANDS.md");
       const codexIndexContent = renderCodexCommandIndex({
@@ -987,11 +1019,14 @@ export class FileHostPublisher implements HostPublisher {
         outputLocale: input.outputLocale,
         projectMode: input.projectMode,
         interactionMode: input.interactionMode,
+        iclMode: exampleDocuments.effectiveMode,
         pack: input.pack,
         packClosure: input.packClosure,
         commands,
         workflowPlaybookFile: input.workflowPlaybookFile,
-        executionHintsFile: input.executionHintsFile
+        executionHintsFile: input.executionHintsFile,
+        exampleHintsFile: exampleDocuments.hintsFile,
+        selectedByAlias: exampleDocuments.selectedByAlias
       });
       additionalFiles.push(...skillFiles);
 
@@ -1011,7 +1046,8 @@ export class FileHostPublisher implements HostPublisher {
     return {
       files: writtenFiles,
       additionalFiles,
-      commands
+      commands,
+      iclMode: exampleDocuments.effectiveMode
     };
   }
 
@@ -1319,11 +1355,14 @@ looply perf trace summary --dir . --json
     outputLocale: "en" | "pt-BR";
     projectMode: "existing-project" | "greenfield";
     interactionMode: "guided" | "balanced" | "autonomous";
+    iclMode: "on" | "reduced" | "off";
     pack: string;
     packClosure: string[];
     commands: WorkflowCommandDefinition[];
     workflowPlaybookFile: string;
     executionHintsFile: string;
+    exampleHintsFile: string;
+    selectedByAlias: Map<string, import("../../lib/example-selection.js").SelectedExample[]>;
   }): Promise<string[]> {
     const skillsRoot = this.resolveCodexSkillsRoot(input.targetRoot, input.scope);
     const packRoot = path.join(input.targetRoot, ".looply", "managed", "packs", input.pack);
@@ -1353,6 +1392,7 @@ looply perf trace summary --dir . --json
           outputLocale: input.outputLocale,
           projectMode: input.projectMode,
           interactionMode: input.interactionMode,
+          iclMode: input.iclMode,
           playbookReference: relativePathForDisplay(skillRoot, input.workflowPlaybookFile),
           packReference: relativePathForDisplay(skillRoot, packRoot),
           customReference: relativePathForDisplay(skillRoot, customRoot),
@@ -1360,7 +1400,14 @@ looply perf trace summary --dir . --json
           stateTemplateReference: relativePathForDisplay(skillRoot, stateTemplateFile),
           contextIndexReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "context-index.md")),
           projectContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "project-context.md")),
-          sessionContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "session-context.md"))
+          sessionContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "session-context.md")),
+          exampleHintsReference: relativePathForDisplay(skillRoot, input.exampleHintsFile),
+          exampleReferences: (input.selectedByAlias.get(skill.alias) ?? []).map((example) =>
+            relativePathForDisplay(
+              skillRoot,
+              path.join(input.targetRoot, ".looply", "managed", "packs", example.pack, example.file)
+            )
+          )
         }),
         "utf8"
       );
