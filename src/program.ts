@@ -4,6 +4,7 @@ import { registerCompletionCommand } from "./commands/completion.js";
 import { registerDoctorCommand } from "./commands/doctor.js";
 import { registerDocsCommand } from "./commands/docs.js";
 import { registerHistoryCommand } from "./commands/history.js";
+import { registerIclCommand } from "./commands/icl.js";
 import { registerInitCommand } from "./commands/init.js";
 import { registerIntegrationsCommand } from "./commands/integrations.js";
 import { registerInspectCommand } from "./commands/inspect.js";
@@ -54,6 +55,7 @@ export function buildProgram(): Command {
   registerDoctorCommand(program);
   registerDocsCommand(program);
   registerHistoryCommand(program);
+  registerIclCommand(program);
   registerIntegrationsCommand(program);
   registerListCommand(program);
   registerInspectCommand(program);
