@@ -3,6 +3,7 @@ import { globby } from "globby";
 import {
   agentSchema,
   checklistSchema,
+  exampleSchema,
   knowledgeSchema,
   packSchema,
   taskSchema,
@@ -10,6 +11,7 @@ import {
   workflowSchema,
   type AgentFrontmatter,
   type ChecklistFrontmatter,
+  type ExampleFrontmatter,
   type KnowledgeFrontmatter,
   type PackFrontmatter,
   type TaskFrontmatter,
@@ -20,7 +22,7 @@ import { supportedHosts } from "../lib/host-publisher.js";
 import { readMarkdownArtifact } from "../lib/markdown-artifact.js";
 
 type ValidationSeverity = "error" | "warning";
-type ArtifactType = "agent" | "task" | "workflow" | "knowledge" | "checklist" | "template" | "pack";
+type ArtifactType = "agent" | "task" | "workflow" | "knowledge" | "checklist" | "template" | "example" | "pack";
 
 interface ValidationMessage {
   severity: ValidationSeverity;
@@ -41,6 +43,7 @@ interface PackRegistry {
   knowledge: Map<string, NamedArtifact<KnowledgeFrontmatter>>;
   checklists: Map<string, NamedArtifact<ChecklistFrontmatter>>;
   templates: Map<string, NamedArtifact<TemplateFrontmatter>>;
+  examples: Map<string, NamedArtifact<ExampleFrontmatter>>;
 }
 
 export interface ValidationReport {
@@ -315,6 +318,10 @@ function inferArtifactType(relativeFile: string): ArtifactType | null {
     return "checklist";
   }
 
+  if (relativeFile.includes("/examples/")) {
+    return "example";
+  }
+
   if (relativeFile.includes("/templates/")) {
     return "template";
   }
@@ -336,6 +343,8 @@ function parseByType(type: ArtifactType, frontmatter: Record<string, unknown>) {
       return checklistSchema.safeParse(frontmatter);
     case "template":
       return templateSchema.safeParse(frontmatter);
+    case "example":
+      return exampleSchema.safeParse(frontmatter);
     case "pack":
       return packSchema.safeParse(frontmatter);
   }
@@ -354,7 +363,8 @@ function getOrCreateRegistry(registries: Map<string, PackRegistry>, packName: st
     workflows: new Map(),
     knowledge: new Map(),
     checklists: new Map(),
-    templates: new Map()
+    templates: new Map(),
+    examples: new Map()
   };
 
   registries.set(packName, created);
@@ -372,6 +382,7 @@ function registerArtifact(
     | KnowledgeFrontmatter
     | ChecklistFrontmatter
     | TemplateFrontmatter
+    | ExampleFrontmatter
     | PackFrontmatter,
   errors: ValidationMessage[]
 ): void {
@@ -418,6 +429,8 @@ function getRegistryMap(registry: PackRegistry, type: Exclude<ArtifactType, "pac
       return registry.checklists;
     case "template":
       return registry.templates;
+    case "example":
+      return registry.examples;
   }
 }
 
