@@ -2,6 +2,22 @@
 
 Os workflows publicados pelo `software-delivery-suite` combinam discovery, planning e delivery com handoffs claros e gates explicitos.
 
+## Example Guidance
+
+Por default, o Looply publica exemplos curados para ajudar o host a calibrar:
+
+- formato de `PRD`
+- formato de `story`
+- updates de `workflow-status`
+- reports como `review-report`
+
+Se o usuario quiser reduzir peso de contexto durante troubleshooting de latencia:
+
+- `looply icl set reduced`
+- `looply icl set off`
+
+O workflow continua igual. O que muda e apenas a camada de guidance adicional.
+
 ## Sequencia recomendada
 
 1. `idea-to-prd`

@@ -104,6 +104,7 @@ O comando acima:
 - grava estado em `.looply/`
 - preserva espaco de customizacao em `.looply/custom/`
 - considera o codebase local como base principal quando o projeto ja existe
+- habilita `ICL example guidance` por padrao para calibrar estilo e qualidade dos outputs do host
 
 Se quiser um fluxo guiado, basta rodar:
 
@@ -117,6 +118,8 @@ looply install
 looply validate
 looply doctor --host codex,claude --scope project
 looply refresh-context
+looply icl status
+looply icl set reduced
 looply status
 looply status --json
 looply replay pix-webhook-retry --from tech-spec
@@ -127,6 +130,35 @@ looply list workflow
 looply inspect workflow idea-to-prd
 looply docs open
 ```
+
+## ICL example guidance
+
+O `looply` agora suporta uma camada explicita de `ICL` usando exemplos curados publicados junto com os packs.
+
+Esses exemplos:
+
+- calibram estilo, densidade e qualidade dos outputs
+- nao substituem `workflow-status`, templates, checklists ou o codebase real
+- sao selecionados em quantidade pequena por workflow
+- ficam ligados por padrao
+
+Modos disponiveis:
+
+- `on`: usa a selecao normal de exemplos curados
+- `reduced`: usa menos exemplos para reduzir peso de contexto
+- `off`: remove referencias de exemplos do material publicado para host
+
+Comandos uteis:
+
+```bash
+looply icl status
+looply icl set on
+looply icl set reduced
+looply icl set off
+looply icl set off --scope global
+```
+
+Use `reduced` ou `off` quando quiser investigar se a latencia do workflow esta sendo impactada por guidance adicional no host.
 
 ## Como usar os workflows
 
@@ -201,6 +233,7 @@ O estado da feature preserva:
 - caminho de recuperacao recomendado
 
 Use `looply status` ou `looply status --json` para ver esse estado reconciliado.
+O `status` tambem mostra o modo efetivo de `ICL`, a origem da politica e a contagem de exemplos disponiveis e selecionados.
 
 ## Fluxos avancados
 
@@ -246,6 +279,12 @@ Exemplo de sequencia:
 - `en`
 
 O idioma e persistido na instalacao e influencia o output esperado do host.
+
+### `icl example guidance`
+
+- `on`: padrao do projeto quando nao existe override
+- `reduced`: reduz o guidance publicado para o host
+- `off`: desliga referencias de exemplos sem remover o restante do workflow
 
 ## Estado e arquivos gerados
 

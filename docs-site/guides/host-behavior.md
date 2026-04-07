@@ -8,8 +8,33 @@ Independentemente do host:
 
 - usar os artefatos do pack instalado como base operacional
 - respeitar `project-mode`, `interaction-mode` e `locale`
+- respeitar tambem a politica de `ICL example guidance`
 - usar `workflow-status` para retomada e reconciliacao
 - seguir `agents`, `tasks`, `workflows`, `templates`, `knowledge` e `checklists`
+
+## ICL Example Guidance
+
+O Looply pode publicar exemplos curados para calibrar a forma dos outputs do host.
+
+Regras:
+
+- exemplos servem para estilo, estrutura e nivel de qualidade
+- exemplos nao substituem `workflow-status`, templates, checklists ou o codebase real
+- exemplos nao devem ser copiados com detalhes de negocio de forma literal
+
+Modos:
+
+- `on`: publica a selecao normal de exemplos
+- `reduced`: publica menos guidance
+- `off`: nao publica referencias de exemplos para o host
+
+Comandos relevantes:
+
+```bash
+looply icl status
+looply icl set reduced
+looply icl set off
+```
 
 ## Project Mode
 
@@ -147,6 +172,8 @@ Em `greenfield` com `guided`:
 - `.looply/state/project-context.json`
 - `.looply/state/interaction-policy.json`
 - `.looply/state/locale.json`
+- `.looply/state/example-index.json`
+- `.looply/state/example-hints.<host>.json`
 - `.looply/custom/project-context.md`
 - `.looply/custom/session-context.md`
 - `.looply/custom/features/<feature-name>/workflow-status.md`

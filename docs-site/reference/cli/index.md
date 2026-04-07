@@ -14,6 +14,8 @@ Esta secao organiza a CLI do looply em grupos. A CLI cuida de instalacao, manute
 - `sync`
 - `doctor`
 - `validate`
+- `icl`
+- `perf`
 - `check-updates`
 - `upgrade`
 - `history`
@@ -32,13 +34,15 @@ Esta secao organiza a CLI do looply em grupos. A CLI cuida de instalacao, manute
 2. `validate`
 3. `doctor`
 4. usar slash commands no host
-5. `sync` ou `upgrade` quando o pack evoluir
+5. ajustar `icl` se quiser reduzir ou desligar example guidance
+6. `sync` ou `upgrade` quando o pack evoluir
 
 ## Onde olhar depois
 
 - [Slash Commands](/guides/slash-commands)
 - [Hosts Suportados](/guides/hosts)
 - [Referencia completa dos comandos](/reference/generated/commands)
+- [Comportamento dos Hosts](/guides/host-behavior)
 
 ## Scripts do modulo de docs
 

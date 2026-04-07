@@ -32,6 +32,12 @@ Show upgrade and sync history for the current project
 
 - options: 3
 
+## [icl](./commands/icl)
+
+Inspect and control Looply ICL example guidance
+
+- subcommands: 2
+
 ## [init](./commands/init)
 
 Bootstrap looply files in the current repository
@@ -61,6 +67,12 @@ Manage external integration contexts for looply
 List available packs and artifacts
 
 - options: 1
+
+## [perf](./commands/perf)
+
+Inspect locally recorded looply performance sessions
+
+- options: 13
 
 ## [reconcile](./commands/reconcile)
 
@@ -139,4 +151,3 @@ Check for updates and upgrade installed hosts
 Validate packs, references and contracts
 
 - options: 1
-
