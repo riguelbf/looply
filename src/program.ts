@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { registerCheckUpdatesCommand } from "./commands/check-updates.js";
+import { registerAutonomyCommand } from "./commands/autonomy.js";
 import { registerCompletionCommand } from "./commands/completion.js";
 import { registerDoctorCommand } from "./commands/doctor.js";
 import { registerDocsCommand } from "./commands/docs.js";
@@ -40,6 +41,7 @@ export function buildProgram(): Command {
   registerInstallCommand(program);
   registerUninstallCommand(program);
   registerReinstallCommand(program);
+  registerAutonomyCommand(program);
   registerRefreshContextCommand(program);
   registerRefreshCodeContextCommand(program);
   registerReplayCommand(program);

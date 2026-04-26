@@ -31,6 +31,7 @@ O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md).
 - suporte a `Claude Code` e `Codex`
 - `refresh-context` e `refresh-code-context` para atualizar contexto do projeto e code-context
 - `status` consolidado com snapshots, features, sessoes, hosts e ICL
+- `autonomy` para derivar o proximo ciclo host-driven de uma feature
 - `icl` para gerir example guidance dos workflows
 - `integrations` para expor contextos e touchpoints de integracoes conhecidas
 - `replay`, `run-task`, `run-agent`, `reconcile`
@@ -127,6 +128,7 @@ looply validate
 looply doctor --host codex,claude --scope project
 looply refresh-context
 looply refresh-code-context
+looply autonomy pix-webhook-retry
 looply icl status
 looply icl set reduced
 looply status
@@ -152,6 +154,19 @@ Ele hoje serve para:
 - disparar acoes controladas de workflow quando necessario
 
 O contrato principal do desktop continua sendo ler snapshots e contexto persistido do core, sem duplicar regras de negocio.
+
+## Host Contract
+
+O arquivo [HOST_CONTRACT.md](./HOST_CONTRACT.md) descreve o protocolo de autonomia que o host deve seguir.
+
+Ele complementa `AGENTS.md`, `LOOPLY_COMMANDS.md` e o workflow playbook com um ciclo curto:
+
+1. ler snapshot e estado persistido
+2. escolher uma unica acao
+3. executar uma etapa pequena
+4. verificar o resultado
+5. persistir o novo estado
+6. repetir ou bloquear
 
 ## ICL example guidance
 

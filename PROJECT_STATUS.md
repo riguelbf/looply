@@ -20,6 +20,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## In Progress
 
 - fechar o primeiro slice de `cli-autocomplete` a partir da arvore real do Commander
+- publicar o contrato de host e o primeiro motor de autonomia host-driven
 - evoluir `multi-language-code-context` para ser consumido por `status` e pelo desktop
 - consolidar `ICL example guidance` como default dos workflows relevantes
 - amadurecer o companion desktop local com overview, features, integrations e actions seguras
@@ -35,6 +36,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Recently Completed
 
 - `status` agora consolida snapshot do projeto, features, sessions, hosts e estado de ICL
+- `HOST_CONTRACT.md` e o motor `autonomy` passaram a existir como protocolo host-driven
 - `refresh-context` e `refresh-code-context` agora publicam snapshots consumiveis para contexto e code-context
 - `ICL example guidance` entrou como camada explicita para calibrar os workflows
 - `integrations` passou a expor contexto de integracoes e seus touchpoints
@@ -77,7 +79,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Current Product Shape
 
 - `CLI`
-  - install, sync, upgrade, doctor, validate, status, docs, integrations, sessions, refresh-context, refresh-code-context, icl, replay, run-task, run-agent, list, inspect
+  - install, sync, upgrade, doctor, validate, status, docs, integrations, sessions, refresh-context, refresh-code-context, autonomy, icl, replay, run-task, run-agent, list, inspect
 - `Desktop`
   - overview, status, hosts, features, integrations, settings
 - `Artifacts`

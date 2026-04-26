@@ -428,6 +428,7 @@ export function renderCodexLauncherSkillDocument(input: {
   interactionMode: "guided" | "balanced" | "autonomous";
   playbookReference: string;
   commandsIndexReference: string;
+  hostContractReference: string;
   commands: WorkflowCommandDefinition[];
 }): string {
   const lines = [
@@ -441,6 +442,7 @@ export function renderCodexLauncherSkillDocument(input: {
     "Primary references:",
     `- Workflow playbook: ${input.playbookReference}`,
     `- Command index: ${input.commandsIndexReference}`,
+    `- Host contract: ${input.hostContractReference}`,
     "- Project contract: ../../../AGENTS.md",
     "",
     "When to use:",
@@ -457,12 +459,13 @@ export function renderCodexLauncherSkillDocument(input: {
     "5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.",
     "6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.",
     "7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
-    "8. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
-    "9. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
-    "10. When curated examples are referenced by a workflow command, treat them as style guidance only.",
-    "11. Prefer explicit next-step guidance over generic explanations.",
-    `12. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
-    `13. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
+    "8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md` and use `looply autonomy <feature>` to derive the next cycle.",
+    "9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
+    "10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
+    "11. When curated examples are referenced by a workflow command, treat them as style guidance only.",
+    "12. Prefer explicit next-step guidance over generic explanations.",
+    `13. Use ${input.outputLocale} for user-facing responses unless the user explicitly asks for another language.`,
+    `14. Respect project mode ${input.projectMode} and interaction mode ${input.interactionMode}.`,
     "",
     "Available workflows:"
   ];

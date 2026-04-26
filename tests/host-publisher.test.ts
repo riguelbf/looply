@@ -39,10 +39,12 @@ describe("host publisher", () => {
     const helpCommand = await fs.readFile(path.join(targetRoot, ".claude", "commands", "looply:help.md"), "utf8");
     const hookGuide = await fs.readFile(path.join(targetRoot, ".claude", "LOOPLY_HOOKS.md"), "utf8");
     const hookScript = await fs.readFile(path.join(targetRoot, ".claude", "hooks", "looply-perf-hook.mjs"), "utf8");
+    const hostContract = await fs.readFile(path.join(targetRoot, "HOST_CONTRACT.md"), "utf8");
     const exampleIndex = await fs.readJson(path.join(targetRoot, ".looply", "state", "example-index.json"));
     const exampleHints = await fs.readJson(path.join(targetRoot, ".looply", "state", "example-hints.claude.json"));
 
     assert.match(entrypoint, /ICL example guidance: `on`/);
+    assert.match(entrypoint, /HOST_CONTRACT\.md/);
     assert.match(entrypoint, /\.looply\/state\/example-index\.json/);
     assert.match(entrypoint, /\.claude\/LOOPLY_HOOKS\.md/);
     assert.match(ideaCommand, /Example hints:/);
@@ -50,6 +52,7 @@ describe("host publisher", () => {
     assert.match(helpCommand, /Available commands:/);
     assert.match(hookGuide, /looply-perf-hook\.mjs/);
     assert.match(hookScript, /user-prompt-submit/);
+    assert.match(hostContract, /looply autonomy <feature>/);
     assert.equal(exampleIndex.effectiveMode, "on");
     assert.ok(Array.isArray(exampleHints.commands));
     assert.ok(exampleHints.commands.some((command: { alias: string }) => command.alias === "looply:idea-to-prd"));

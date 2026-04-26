@@ -13,6 +13,7 @@ Product hardening, host parity and local desktop expansion
 - `status` mais forte por feature, gate e proximo passo
 - `icl example guidance` como camada explicita de calibracao
 - `cli-autocomplete` derivado da arvore real do Commander
+- `HOST_CONTRACT.md` e motor de autonomia host-driven
 - exemplo ponta a ponta versionado em `examples/`
 - evolucao da modelagem de integracoes externas
 - companion desktop local para leitura, status e retomada
@@ -101,6 +102,7 @@ Product hardening, host parity and local desktop expansion
 - `refresh-code-context` funcional
 - `status` consolidado por feature
 - `cli-autocomplete` entregue para shells suportados
+- `HOST_CONTRACT.md` publicado e consumido pelo host
 - exemplo ponta a ponta versionado
 - desktop local com leitura do snapshot e retomada de feature
 - docs cobrindo a jornada real de uso

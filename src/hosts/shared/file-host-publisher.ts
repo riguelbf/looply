@@ -4,6 +4,7 @@ import path from "node:path";
 import fs from "fs-extra";
 import { globby } from "globby";
 import { loadArtifactCatalog } from "../../lib/artifact-catalog.js";
+import { buildHostContractDocument } from "../../lib/host-contract.js";
 import { writeExampleDocuments } from "../../lib/example-documents.js";
 import { buildExecutionHintsDocument } from "../../lib/execution-hints.js";
 import { buildWorkflowPlaybookDocument } from "../../lib/workflow-playbook.js";
@@ -42,6 +43,8 @@ import type { InstallManifest, UninstallResult } from "../../lib/publishing-mode
 import { readInteractionPolicyFile, resolveInteractionPolicyFile, writeInteractionPolicyFile } from "../../lib/interaction-policy.js";
 import { readLocaleFile, resolveLocaleFile, writeLocaleFile } from "../../lib/locale.js";
 import { readProjectContextFile, resolveProjectContextFile, writeProjectContextFile } from "../../lib/project-context.js";
+import { resolveCodeContextFile } from "../../lib/code-context/storage.js";
+import { resolveContextSnapshotFile } from "../../lib/context-snapshot.js";
 import { resolvePackClosure } from "../../lib/packs.js";
 import { resolveGlobalCodexSkillsRoot, resolveTargetRoot } from "../../lib/runtime-paths.js";
 import { ensureSessionLinksFile, resolveSessionLinksFile } from "../../lib/session-links.js";
@@ -118,6 +121,7 @@ export class FileHostPublisher implements HostPublisher {
     const projectContextMarkdownFile = resolveProjectContextMarkdownFile(targetRoot);
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
+    const hostContractFile = path.join(targetRoot, "HOST_CONTRACT.md");
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
     const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
     await fs.ensureDir(targetRoot);
@@ -162,6 +166,7 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, projectContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
+      this.toRelativeTargetPath(targetRoot, hostContractFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...claudeHookFiles.map((file) => this.toRelativeTargetPath(targetRoot, file))
@@ -213,6 +218,28 @@ export class FileHostPublisher implements HostPublisher {
         ? "codebase-first-with-artifact-acceleration"
         : "artifact-first-with-explicit-assumptions"
     });
+    await fs.writeFile(
+      hostContractFile,
+      buildHostContractDocument({
+        host: input.host,
+        outputLocale: input.locale,
+        projectMode: input.projectMode,
+        interactionMode: input.interactionMode,
+        entrypointReference: relativePathForDisplay(path.dirname(hostContractFile), entrypointFile),
+        workflowPlaybookReference: relativePathForDisplay(path.dirname(hostContractFile), workflowPlaybookFile),
+        hostContractReference: relativePathForDisplay(path.dirname(hostContractFile), hostContractFile),
+        contextIndexReference: relativePathForDisplay(path.dirname(hostContractFile), contextIndexFile),
+        projectContextReference: relativePathForDisplay(path.dirname(hostContractFile), projectContextMarkdownFile),
+        sessionContextReference: relativePathForDisplay(path.dirname(hostContractFile), sessionContextMarkdownFile),
+        projectSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "project-snapshot.json")),
+        contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
+        codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
+        commandIndexReference: input.host === "codex"
+          ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
+          : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
+      }),
+      "utf8"
+    );
     const integrationFiles = await writeIntegrationDocuments({
       targetRoot,
       projectMode: input.projectMode,
@@ -280,6 +307,7 @@ export class FileHostPublisher implements HostPublisher {
     const projectContextMarkdownFile = resolveProjectContextMarkdownFile(targetRoot);
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
+    const hostContractFile = path.join(targetRoot, "HOST_CONTRACT.md");
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
     const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
     const locale = (await readLocaleFile(targetRoot))?.outputLocale ?? "en";
@@ -324,6 +352,7 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, projectContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
+      this.toRelativeTargetPath(targetRoot, hostContractFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...claudeHookFiles.map((file) => this.toRelativeTargetPath(targetRoot, file))
@@ -372,6 +401,28 @@ export class FileHostPublisher implements HostPublisher {
         ? "codebase-first-with-artifact-acceleration"
         : "artifact-first-with-explicit-assumptions"
     });
+    await fs.writeFile(
+      hostContractFile,
+      buildHostContractDocument({
+        host: input.host,
+        outputLocale: locale,
+        projectMode,
+        interactionMode,
+        entrypointReference: relativePathForDisplay(path.dirname(hostContractFile), entrypointFile),
+        workflowPlaybookReference: relativePathForDisplay(path.dirname(hostContractFile), workflowPlaybookFile),
+        hostContractReference: relativePathForDisplay(path.dirname(hostContractFile), hostContractFile),
+        contextIndexReference: relativePathForDisplay(path.dirname(hostContractFile), contextIndexFile),
+        projectContextReference: relativePathForDisplay(path.dirname(hostContractFile), projectContextMarkdownFile),
+        sessionContextReference: relativePathForDisplay(path.dirname(hostContractFile), sessionContextMarkdownFile),
+        projectSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "project-snapshot.json")),
+        contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
+        codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
+        commandIndexReference: input.host === "codex"
+          ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
+          : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
+      }),
+      "utf8"
+    );
     const integrationFiles = await writeIntegrationDocuments({
       targetRoot,
       projectMode,
@@ -810,6 +861,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/custom/integrations/integrations-index.md`,
       `- ./.looply/custom/session-context.md`,
       `- ./.looply/custom/session-links.json`,
+      `- ./HOST_CONTRACT.md`,
       ...(input.host === "claude" ? ["- ./.claude/LOOPLY_HOOKS.md"] : []),
       ...(input.host === "codex" ? ["- ./LOOPLY_COMMANDS.md"] : []),
       ...(input.host === "codex" ? ["- ./.agents/skills/"] : []),
@@ -1038,7 +1090,8 @@ export class FileHostPublisher implements HostPublisher {
         interactionMode: input.interactionMode,
         pack: input.pack,
         commands,
-        workflowPlaybookFile: input.workflowPlaybookFile
+        workflowPlaybookFile: input.workflowPlaybookFile,
+        hostContractFile: path.join(input.targetRoot, "HOST_CONTRACT.md")
       });
       additionalFiles.push(...launcherSkillFiles);
     }
@@ -1427,6 +1480,7 @@ looply perf trace summary --dir . --json
     pack: string;
     commands: WorkflowCommandDefinition[];
     workflowPlaybookFile: string;
+    hostContractFile: string;
   }): Promise<string[]> {
     const skillsRoot = this.resolveCodexSkillsRoot(input.targetRoot, input.scope);
     const skillRoot = path.join(skillsRoot, "looply");
@@ -1445,6 +1499,7 @@ looply perf trace summary --dir . --json
         interactionMode: input.interactionMode,
         playbookReference: relativePathForDisplay(skillRoot, input.workflowPlaybookFile),
         commandsIndexReference: relativePathForDisplay(skillRoot, commandsIndexFile),
+        hostContractReference: relativePathForDisplay(skillRoot, input.hostContractFile),
         commands: input.commands
       }),
       "utf8"

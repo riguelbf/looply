@@ -2,6 +2,12 @@
 
 Referencia gerada a partir de `src/commands/`.
 
+## [autonomy](./commands/autonomy)
+
+Plan a host-driven autonomous cycle for a feature workflow
+
+- options: 4
+
 ## [check-updates](./commands/check-updates)
 
 Check whether installed hosts have updates available
@@ -150,5 +156,5 @@ Check for updates and upgrade installed hosts
 
 Validate packs, references and contracts
 
-- options: 1
+- options: 4
 
