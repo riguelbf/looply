@@ -12,34 +12,39 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Snapshot
 
 - Project: `looply`
-- Stage: `v2 hardening in progress`
-- Primary focus: plataforma de artefatos para engenharia com IA assistida
+- Stage: `v2 hardening + local desktop expansion`
+- Primary focus: plataforma de artefatos para engenharia com IA assistida, com operacao CLI-first e companion desktop local
 - Hosts: `Claude Code`, `Codex`
-- Main pack: `software-delivery-suite`
+- Main pack: `engineering-base`
 
 ## In Progress
 
-- aprofundar o `refresh-context` para entender melhor API, dados, auth, mensageria e observabilidade
-- fechar workflows dedicados para cloud e plataforma no `engineering-base`
-- alinhar a documentacao oficial com o estado real da CLI
-- revisar paridade de operacao entre `Codex` e `Claude`
+- fechar o primeiro slice de `cli-autocomplete` a partir da arvore real do Commander
+- evoluir `multi-language-code-context` para ser consumido por `status` e pelo desktop
+- consolidar `ICL example guidance` como default dos workflows relevantes
+- amadurecer o companion desktop local com overview, features, integrations e actions seguras
+- alinhar `refresh-context`, `refresh-code-context` e `project-snapshot` com o estado real do repositorio
 
 ## Next Up
 
-- avaliar se precisamos de snapshots adicionais para catalogo e workflows
-- decidir a proxima fatia de especializacao operacional antes de qualquer GUI
-- endurecer outras saidas humanas do CLI para tambem respeitarem `locale`
+- concluir a primeira entrega de autocomplete em `bash` e `zsh`
+- decidir se `code-context` fica separado de `refresh-context` ou vira uma etapa integrada
+- expandir o desktop para detalhes de workflow, feature control e retomada
+- finalizar a historia de integracoes externas com contextos e touchpoints mais claros
 
 ## Recently Completed
 
-- `status` agora destaca `LOOPLY STATUS` e mostra mini workflow, `Voce esta aqui`, outputs, bloqueios e proximo passo
-- `status` ganhou empty state mais util quando ainda nao existe feature ativa
-- `status` passou a respeitar `locale` do projeto, alternando a saida entre `pt-BR` e `en`
+- `status` agora consolida snapshot do projeto, features, sessions, hosts e estado de ICL
+- `refresh-context` e `refresh-code-context` agora publicam snapshots consumiveis para contexto e code-context
+- `ICL example guidance` entrou como camada explicita para calibrar os workflows
+- `integrations` passou a expor contexto de integracoes e seus touchpoints
+- o desktop local passou a ler snapshot, listar features, integracoes e acoes de workflow
+- `workflow-status` continua a ser a superficie de retomada para features em andamento
+- `cli-autocomplete` entrou como nova frente de CLI baseada na arvore real do comando
+- `multi-language-code-context` passou a existir como snapshot dedicado e surfacing no status
 - separacao de packs concluida em `product-base`, `engineering-base` e `software-delivery-suite`
 - camada de snapshots adicionada com `context-snapshot.json` e `project-snapshot.json`
 - `status` agora pode emitir estado normalizado via `looply status --json`
-- `refresh-context` agora publica snapshot consumivel por ferramentas locais
-- tech spec inicial do companion desktop registrada para retomada futura, sem virar prioridade do roadmap
 - `refresh-context` agora gera `architecture-context.md` e detecta melhor sinais de stack, automacao, testes, infra e workspace
 - `devops` e `sre` adicionados ao `engineering-base`, com tasks e operabilidade entrando no `story-to-production`
 - hosts reforcados para consumir `knowledge_sources`, `best-practices`, templates e checklists como contrato de execucao
@@ -72,9 +77,11 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Current Product Shape
 
 - `CLI`
-  - install, sync, upgrade, doctor, validate, status, docs, integrations, sessions
+  - install, sync, upgrade, doctor, validate, status, docs, integrations, sessions, refresh-context, refresh-code-context, icl, replay, run-task, run-agent, list, inspect
+- `Desktop`
+  - overview, status, hosts, features, integrations, settings
 - `Artifacts`
-  - agents, tasks, workflows, knowledge, templates, checklists
+  - agents, tasks, workflows, knowledge, templates, checklists, context snapshots
 - `Packs`
   - `product-base`
   - `engineering-base`
@@ -87,17 +94,17 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Product Direction Right Now
 
-- fortalecer entendimento de projeto existente antes de qualquer camada GUI
-- deixar `status` e `refresh-context` como superficies centrais de valor do CLI
-- tornar o `status` a melhor superficie de orientacao para saber onde o usuario esta e o que falta no workflow
-- garantir que workflows e docs reflitam o produto real, nao uma versao anterior dele
+- fortalecer entendimento do projeto existente antes de ampliar a superficie desktop
+- manter `CLI-first`, usando o desktop como companion local de leitura e retomada
+- deixar `status`, `refresh-context` e `refresh-code-context` como superficies centrais de valor do CLI
+- garantir que workflows, snapshots e docs reflitam o produto real, nao uma versao anterior dele
 
 ## Open Questions
 
-- qual deve ser a combinacao final entre `AGENTS.md`, `LOOPLY_COMMANDS.md` e `skills` no `Codex`
+- qual deve ser o limite entre `refresh-context` e `refresh-code-context`
+- quanto de acao o desktop deve oferecer antes de deixar de ser readonly
 - como manter a melhor paridade possivel entre `Claude` e `Codex`
-- como desenhar a fase de especializacao profunda sem acoplar cedo demais o produto
-- quando iniciar a estrategia de personas e engenharia reversa de dominio
+- quando iniciar a especializacao profunda por dominio sem acoplar cedo demais o produto
 
 ## Notes
 

@@ -24,10 +24,18 @@ O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md).
 ## O que existe hoje
 
 - CLI `looply`
+- companion desktop local para leitura, status, features, hosts, integrations e retomada
 - portal de documentacao com `VitePress`
 - pack base `engineering-base`
 - pack agregador `software-delivery-suite`
 - suporte a `Claude Code` e `Codex`
+- `refresh-context` e `refresh-code-context` para atualizar contexto do projeto e code-context
+- `status` consolidado com snapshots, features, sessoes, hosts e ICL
+- `icl` para gerir example guidance dos workflows
+- `integrations` para expor contextos e touchpoints de integracoes conhecidas
+- `replay`, `run-task`, `run-agent`, `reconcile`
+- `list` e `inspect` para descoberta de workflows
+- `cli-autocomplete` baseado na arvore real do Commander
 - workflows principais:
   - `idea-to-prd`
   - `prd-to-stories`
@@ -48,7 +56,6 @@ O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md).
   - `reviewer`
   - `devops`
   - `sre`
-  - `delivery-orchestrator`
 
 ## O que nao existe na v1
 
@@ -105,6 +112,7 @@ O comando acima:
 - preserva espaco de customizacao em `.looply/custom/`
 - considera o codebase local como base principal quando o projeto ja existe
 - habilita `ICL example guidance` por padrao para calibrar estilo e qualidade dos outputs do host
+- publica o contexto necessario para `Codex`, `Claude Code` e o desktop local consumirem o mesmo estado
 
 Se quiser um fluxo guiado, basta rodar:
 
@@ -118,6 +126,7 @@ looply install
 looply validate
 looply doctor --host codex,claude --scope project
 looply refresh-context
+looply refresh-code-context
 looply icl status
 looply icl set reduced
 looply status
@@ -130,6 +139,19 @@ looply list workflow
 looply inspect workflow idea-to-prd
 looply docs open
 ```
+
+## Desktop local
+
+O desktop local e um companion do `looply`, nao uma substituicao da CLI.
+
+Ele hoje serve para:
+
+- ver o snapshot do projeto e as features ativas
+- navegar hosts, integrations e status
+- abrir detalhes de workflow e retomada
+- disparar acoes controladas de workflow quando necessario
+
+O contrato principal do desktop continua sendo ler snapshots e contexto persistido do core, sem duplicar regras de negocio.
 
 ## ICL example guidance
 
