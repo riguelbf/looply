@@ -53,6 +53,7 @@ describe("host publisher", () => {
     assert.match(hookGuide, /looply-perf-hook\.mjs/);
     assert.match(hookScript, /user-prompt-submit/);
     assert.match(hostContract, /looply autonomy <feature>/);
+    assert.match(hostContract, /host-status-contract\.json/);
     assert.equal(exampleIndex.effectiveMode, "on");
     assert.ok(Array.isArray(exampleHints.commands));
     assert.ok(exampleHints.commands.some((command: { alias: string }) => command.alias === "looply:idea-to-prd"));

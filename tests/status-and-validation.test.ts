@@ -380,8 +380,16 @@ describe("status and validation", () => {
     assert.match(output, /codex-main/);
     assert.match(output, /Snapshot/);
     assert.match(output, /project-snapshot\.json/);
+    assert.match(output, /Status Contract/);
+    assert.match(output, /host-status-contract\.json/);
     assert.match(output, /Autonomia/);
     assert.match(output, /looply autonomy pix-webhook-retry/);
+
+    const hostStatusContract = await fs.readJson(path.join(targetRoot, ".looply", "state", "host-status-contract.json"));
+    assert.equal(hostStatusContract.primary.feature, "pix-webhook-retry");
+    assert.equal(hostStatusContract.primary.autonomyCommand, "looply autonomy pix-webhook-retry");
+    assert.equal(hostStatusContract.primary.nextCommand, "looply run-task pix-webhook-retry review-code");
+    assert.equal(hostStatusContract.primary.shouldUseAutonomy, true);
   });
 });
 

@@ -459,7 +459,7 @@ export function renderCodexLauncherSkillDocument(input: {
     "5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.",
     "6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.",
     "7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.",
-    "8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md` and use `looply autonomy <feature>` to derive the next cycle.",
+    "8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.",
     "9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.",
     "10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.",
     "11. When curated examples are referenced by a workflow command, treat them as style guidance only.",

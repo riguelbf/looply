@@ -12,6 +12,7 @@ export function buildHostContractDocument(input: {
   projectContextReference: string;
   sessionContextReference: string;
   projectSnapshotReference: string;
+  statusContractReference: string;
   contextSnapshotReference: string;
   codeContextReference: string;
   commandIndexReference?: string;
@@ -35,6 +36,7 @@ export function buildHostContractDocument(input: {
     `- Project context: \`${input.projectContextReference}\``,
     `- Session context: \`${input.sessionContextReference}\``,
     `- Project snapshot: \`${input.projectSnapshotReference}\``,
+    `- Host status contract: \`${input.statusContractReference}\``,
     `- Context snapshot: \`${input.contextSnapshotReference}\``,
     `- Code-context snapshot: \`${input.codeContextReference}\``,
     commandIndexLine,
@@ -42,6 +44,7 @@ export function buildHostContractDocument(input: {
     "## Responsibilities",
     "",
     "- Read the persisted workflow state before asking for more context.",
+    "- Prefer the host status contract when it exists, then fall back to the full snapshot only when the contract is stale or incomplete.",
     "- Choose a single next action per cycle.",
     "- Prefer the smallest possible command or edit that advances the current stage.",
     "- Persist the result before planning the next step.",
@@ -49,7 +52,7 @@ export function buildHostContractDocument(input: {
     "",
     "## Autonomous Loop",
     "",
-    "1. Read `workflow-status.md` and the relevant snapshots.",
+    "1. Read `workflow-status.md`, `host-status-contract.json` and the relevant snapshots.",
     "2. Decide whether the next step is discovery, planning, delivery, reconciliation, or recovery.",
     "3. Execute one action through the CLI or a direct file edit.",
     "4. Verify the result against the stage outputs and gate rules.",

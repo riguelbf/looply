@@ -7,6 +7,7 @@ This document is the host-facing operating contract for looply. The host reasons
 ## Responsibilities
 
 - Read the persisted workflow state before asking for more context.
+- Prefer the host status contract when it exists, then fall back to the full snapshot only when the contract is stale or incomplete.
 - Choose a single next action per cycle.
 - Prefer the smallest possible command or edit that advances the current stage.
 - Persist the result before planning the next step.
@@ -14,7 +15,7 @@ This document is the host-facing operating contract for looply. The host reasons
 
 ## Autonomous Loop
 
-1. Read `workflow-status.md` and the relevant snapshots.
+1. Read `workflow-status.md`, `host-status-contract.json` and the relevant snapshots.
 2. Decide whether the next step is discovery, planning, delivery, reconciliation, or recovery.
 3. Execute one action through the CLI or a direct file edit.
 4. Verify the result against the stage outputs and gate rules.

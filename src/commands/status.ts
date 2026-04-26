@@ -5,6 +5,7 @@ import { loadArtifactCatalog } from "../lib/artifact-catalog.js";
 import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
 import { runWithPerfSession, withPerfSpan } from "../lib/perf/session.js";
 import { buildProjectSnapshot, writeProjectSnapshot } from "../lib/project-snapshot.js";
+import { buildHostStatusContract, writeHostStatusContract } from "../lib/status-contract.js";
 import { resolveLooplySourceRoot } from "../lib/source-root.js";
 import { showOutro } from "../ui/feedback.js";
 
@@ -22,7 +23,7 @@ export function registerStatusCommand(program: Command): void {
       const targetRoot = path.resolve(options.dir ?? process.cwd());
       const historyLimit = toPositiveNumber(options.limit, 3);
       const featureLimit = toPositiveNumber(options.features, 5);
-      const { snapshot, catalog, snapshotFile } = await runWithPerfSession({
+      const { snapshot, catalog, snapshotFile, statusContractFile } = await runWithPerfSession({
         command: "status",
         mode: resolvePerfMode(options.profile),
         targetRoot,
@@ -37,7 +38,9 @@ export function registerStatusCommand(program: Command): void {
           withPerfSpan("status.load-artifact-catalog", async () => loadArtifactCatalog(resolveLooplySourceRoot()))
         ]);
         const snapshotFile = await withPerfSpan("status.write-project-snapshot", async () => writeProjectSnapshot(targetRoot));
-        return { snapshot, catalog, snapshotFile };
+        const statusContract = buildHostStatusContract(snapshot, snapshotFile);
+        const statusContractFile = await withPerfSpan("status.write-host-status-contract", async () => writeHostStatusContract(targetRoot, statusContract));
+        return { snapshot, catalog, snapshotFile, statusContractFile };
       });
 
       if (options.json) {
@@ -353,6 +356,8 @@ export function registerStatusCommand(program: Command): void {
       console.log("");
       console.log(chalk.bold(text.snapshot));
       console.log(chalk.dim(snapshotFile));
+      console.log(chalk.bold(text.statusContract));
+      console.log(chalk.dim(statusContractFile));
 
       showOutro(text.statusCompleted);
     });
@@ -660,6 +665,7 @@ function getStatusText(locale: StatusLocale) {
       impacts: "impacts",
       recommendedActions: "Ações Recomendadas",
       snapshot: "Snapshot",
+      statusContract: "Status Contract",
       statusCompleted: "Snapshot de status concluído",
       none: "none",
       unknown: "unknown",
@@ -784,6 +790,7 @@ function getStatusText(locale: StatusLocale) {
     impacts: "impacts",
     recommendedActions: "Recommended Actions",
     snapshot: "Snapshot",
+    statusContract: "Status Contract",
     statusCompleted: "Status snapshot completed",
     none: "none",
     unknown: "unknown",

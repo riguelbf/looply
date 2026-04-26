@@ -232,6 +232,7 @@ export class FileHostPublisher implements HostPublisher {
         projectContextReference: relativePathForDisplay(path.dirname(hostContractFile), projectContextMarkdownFile),
         sessionContextReference: relativePathForDisplay(path.dirname(hostContractFile), sessionContextMarkdownFile),
         projectSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "project-snapshot.json")),
+        statusContractReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "host-status-contract.json")),
         contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
         codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
         commandIndexReference: input.host === "codex"
@@ -415,6 +416,7 @@ export class FileHostPublisher implements HostPublisher {
         projectContextReference: relativePathForDisplay(path.dirname(hostContractFile), projectContextMarkdownFile),
         sessionContextReference: relativePathForDisplay(path.dirname(hostContractFile), sessionContextMarkdownFile),
         projectSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "project-snapshot.json")),
+        statusContractReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "host-status-contract.json")),
         contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
         codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
         commandIndexReference: input.host === "codex"
