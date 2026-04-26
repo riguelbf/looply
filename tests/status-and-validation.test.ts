@@ -327,6 +327,22 @@ describe("status and validation", () => {
         "",
         "story-01-retry-automatico",
         "",
+        "## Next Agent",
+        "",
+        "backend",
+        "",
+        "## Next Task",
+        "",
+        "implement-api",
+        "",
+        "## Next Command",
+        "",
+        "looply run-task pix-webhook-retry review-code",
+        "",
+        "## Next Handoff",
+        "",
+        "backend -> reviewer after implementation-summary",
+        "",
         "## Completed Outputs",
         "",
         "- tech-spec",
@@ -364,6 +380,8 @@ describe("status and validation", () => {
     assert.match(output, /codex-main/);
     assert.match(output, /Snapshot/);
     assert.match(output, /project-snapshot\.json/);
+    assert.match(output, /Autonomia/);
+    assert.match(output, /looply autonomy pix-webhook-retry/);
   });
 });
 

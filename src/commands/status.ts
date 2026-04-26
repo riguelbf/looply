@@ -280,6 +280,10 @@ export function registerStatusCommand(program: Command): void {
           console.log(`  ${text.task}: ${chalk.cyan(feature.nextTask || resolveCurrentTask(stageEntries, feature.currentStage) || text.unknown)}`);
           console.log(`  ${text.command}:`);
           console.log(`    ${chalk.cyan(feature.recommendedRecoveryCommand || feature.nextCommand || text.unknown)}`);
+          if (shouldSuggestAutonomy(snapshot, feature)) {
+            console.log(`  ${text.autonomy}:`);
+            console.log(`    ${chalk.cyan(`looply autonomy ${feature.feature}`)}`);
+          }
           console.log("");
           console.log(chalk.bold(text.handoffContext));
           console.log(`  ${text.relevantModules}: ${chalk.cyan(feature.relevantModules.join(", ") || text.none)}`);
@@ -511,6 +515,15 @@ function buildRecommendedActions(
     );
   }
 
+  const autonomyFeature = snapshot.features.find((feature) => shouldSuggestAutonomy(snapshot, feature));
+  if (autonomyFeature) {
+    actions.unshift(
+      isPt
+        ? `Para um ciclo host-driven, rode \`looply autonomy ${autonomyFeature.feature}\` e use o snapshot persistido como memória externa.`
+        : `For a host-driven cycle, run \`looply autonomy ${autonomyFeature.feature}\` and use the persisted snapshot as external memory.`
+    );
+  }
+
   return actions.length > 0
     ? actions
     : [isPt ? "Nenhuma ação imediata necessária. Use `looply status --json` para o estado operacional completo." : "No immediate action required. Use `looply status --json` for full operational state."];
@@ -526,6 +539,13 @@ function resolveEmptyStateCommand(snapshot: Awaited<ReturnType<typeof buildProje
   }
 
   return "looply inspect workflow story-to-production";
+}
+
+function shouldSuggestAutonomy(
+  snapshot: Awaited<ReturnType<typeof buildProjectSnapshot>>,
+  feature: Awaited<ReturnType<typeof buildProjectSnapshot>>["features"][number]
+): boolean {
+  return snapshot.project.interactionMode === "autonomous" || feature.nextCommand !== "" || feature.recommendedRecoveryCommand !== "";
 }
 
 function resolveStatusLocale(value: string): StatusLocale {
@@ -618,6 +638,7 @@ function getStatusText(locale: StatusLocale) {
       agent: "Agente",
       task: "Task",
       command: "Comando",
+      autonomy: "Autonomia",
       afterApproval: "Se aprovado depois desta etapa",
       generate: "gerar",
       consolidateStageOutputs: "consolidar outputs desta etapa",
@@ -741,6 +762,7 @@ function getStatusText(locale: StatusLocale) {
     agent: "Agent",
     task: "Task",
     command: "Command",
+    autonomy: "Autonomy",
     afterApproval: "If approved after this stage",
     generate: "generate",
     consolidateStageOutputs: "consolidate outputs from this stage",
