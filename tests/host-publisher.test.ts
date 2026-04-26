@@ -58,4 +58,28 @@ describe("host publisher", () => {
     assert.ok(Array.isArray(exampleHints.commands));
     assert.ok(exampleHints.commands.some((command: { alias: string }) => command.alias === "looply:idea-to-prd"));
   });
+
+  it("publishes codex skills with host status contract references", async () => {
+    const sourceRoot = path.resolve(".");
+    const targetRoot = await fs.mkdtemp(path.join(os.tmpdir(), "looply-codex-publisher-"));
+    temporaryRoots.push(targetRoot);
+
+    const publisher = resolveHostPublisher("codex");
+    await publisher.install({
+      host: "codex",
+      scope: "project",
+      pack: "software-delivery-suite",
+      locale: "pt-BR",
+      projectMode: "existing-project",
+      interactionMode: "balanced",
+      sourceRoot,
+      currentWorkingDirectory: targetRoot
+    });
+
+    const looplySkill = await fs.readFile(path.join(targetRoot, ".agents", "skills", "looply", "SKILL.md"), "utf8");
+    const workflowStatusSkill = await fs.readFile(path.join(targetRoot, ".agents", "skills", "looply-workflow-status", "SKILL.md"), "utf8");
+
+    assert.match(looplySkill, /host-status-contract\.json/);
+    assert.match(workflowStatusSkill, /host-status-contract\.json/);
+  });
 });

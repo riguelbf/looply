@@ -7,6 +7,7 @@ Use this skill as the main entrypoint for Looply inside Codex.
 
 Primary references:
 - Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
+- Host status contract: ../../../.looply/state/host-status-contract.json
 - Command index: ../../../LOOPLY_COMMANDS.md
 - Project contract: ../../../AGENTS.md
 
@@ -24,11 +25,12 @@ Behavior:
 5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.
 6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.
 7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.
-8. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
-9. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
-10. Prefer explicit next-step guidance over generic explanations.
-11. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
-12. Respect project mode existing-project and interaction mode balanced.
+8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
+9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
+10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
+11. Prefer explicit next-step guidance over generic explanations.
+12. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
+13. Respect project mode existing-project and interaction mode balanced.
 
 Available workflows:
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`

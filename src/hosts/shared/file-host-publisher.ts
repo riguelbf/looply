@@ -1449,6 +1449,7 @@ looply perf trace summary --dir . --json
           interactionMode: input.interactionMode,
           iclMode: input.iclMode,
           playbookReference: relativePathForDisplay(skillRoot, input.workflowPlaybookFile),
+          statusContractReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "host-status-contract.json")),
           packReference: relativePathForDisplay(skillRoot, packRoot),
           customReference: relativePathForDisplay(skillRoot, customRoot),
           hintsReference: relativePathForDisplay(skillRoot, input.executionHintsFile),
@@ -1502,6 +1503,7 @@ looply perf trace summary --dir . --json
         playbookReference: relativePathForDisplay(skillRoot, input.workflowPlaybookFile),
         commandsIndexReference: relativePathForDisplay(skillRoot, commandsIndexFile),
         hostContractReference: relativePathForDisplay(skillRoot, input.hostContractFile),
+        statusContractReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "host-status-contract.json")),
         commands: input.commands
       }),
       "utf8"

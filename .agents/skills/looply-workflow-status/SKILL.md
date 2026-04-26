@@ -9,6 +9,7 @@ Quick usage:
 - `$looply-workflow-status <feature-name> [session-label] "[notes...]"`
 Primary references:
 - Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
+- Host status contract: ../../../.looply/state/host-status-contract.json
 - Managed pack: ../../../.looply/managed/packs/engineering-base
 - Workflow state template: ../../../.looply/managed/packs/engineering-base/templates/workflow-status-template.md
 - Custom overrides: ../../../.looply/custom
@@ -23,7 +24,7 @@ Usage:
 Example:
 - $looply-workflow-status pix-webhook-retry
 Execution rules:
-1. Start by reading the workflow playbook and the feature state file if it already exists.
+1. Start by reading the workflow playbook, the host status contract if it exists, and the feature state file if it already exists.
 2. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.
 3. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.
 4. Respect blocking gates and do not skip required artifacts.

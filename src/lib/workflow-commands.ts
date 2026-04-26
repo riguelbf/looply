@@ -318,6 +318,7 @@ export function renderCodexSkillDocument(input: {
   interactionMode: "guided" | "balanced" | "autonomous";
   iclMode: "on" | "reduced" | "off";
   playbookReference: string;
+  statusContractReference: string;
   packReference: string;
   customReference: string;
   hintsReference: string;
@@ -356,6 +357,7 @@ export function renderCodexSkillDocument(input: {
     "",
     "Primary references:",
     `- Workflow playbook: ${input.playbookReference}`,
+    `- Host status contract: ${input.statusContractReference}`,
     `- Managed pack: ${input.packReference}`,
     `- Workflow state template: ${input.stateTemplateReference}`,
     `- Custom overrides: ${input.customReference}`,
@@ -380,7 +382,7 @@ export function renderCodexSkillDocument(input: {
     }),
     "",
     "Execution rules:",
-    "1. Start by reading the workflow playbook and the feature state file if it already exists.",
+    "1. Start by reading the workflow playbook, the host status contract if it exists, and the feature state file if it already exists.",
     "2. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.",
     "3. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.",
     "4. Respect blocking gates and do not skip required artifacts.",
@@ -429,6 +431,7 @@ export function renderCodexLauncherSkillDocument(input: {
   playbookReference: string;
   commandsIndexReference: string;
   hostContractReference: string;
+  statusContractReference: string;
   commands: WorkflowCommandDefinition[];
 }): string {
   const lines = [
@@ -443,6 +446,7 @@ export function renderCodexLauncherSkillDocument(input: {
     `- Workflow playbook: ${input.playbookReference}`,
     `- Command index: ${input.commandsIndexReference}`,
     `- Host contract: ${input.hostContractReference}`,
+    `- Host status contract: ${input.statusContractReference}`,
     "- Project contract: ../../../AGENTS.md",
     "",
     "When to use:",
