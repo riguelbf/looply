@@ -33,7 +33,7 @@ Este playbook cobre review, fechamento de gates e readiness para release.
 
 - [Reviewer](/reference/generated/agents/reviewer)
 - [review-code](/reference/generated/tasks/review-code)
-- [publish-service](/reference/generated/tasks/publish-service)
+- [prepare-service-release](/reference/generated/tasks/prepare-service-release)
 - [review-report-template](/reference/generated/templates/review-report-template)
 - [release-plan-template](/reference/generated/templates/release-plan-template)
 - [definition-of-done](/reference/generated/checklists/definition-of-done)
