@@ -25,6 +25,7 @@ const workflows = await loadArtifactsFromPackRoots(packRoots, "workflows/*.md");
 const knowledge = await loadArtifactsFromPackRoots(packRoots, "knowledge/**/*.md");
 const templates = await loadArtifactsFromPackRoots(packRoots, "templates/*.md");
 const checklists = await loadArtifactsFromPackRoots(packRoots, "checklists/*.md");
+const rules = await loadArtifactsFromPackRoots(packRoots, "rules/*.md");
 const slashCommands = workflows
   .filter((artifact) => typeof artifact.frontmatter.command?.name === "string")
   .map((artifact) => buildSlashCommandEntry(artifact));
@@ -37,6 +38,7 @@ await writeGenerated("slash-commands.md", renderSlashCommandsIndex(slashCommands
 await writeGenerated("knowledge.md", renderArtifactsIndex("Knowledge", "knowledge", knowledge));
 await writeGenerated("templates.md", renderArtifactsIndex("Templates", "templates", templates));
 await writeGenerated("checklists.md", renderArtifactsIndex("Checklists", "checklists", checklists));
+await writeGenerated("rules.md", renderArtifactsIndex("Rules", "rules", rules));
 await writeGenerated("integrations.md", renderIntegrationsReference());
 
 for (const file of commandFiles) {
@@ -70,6 +72,10 @@ for (const artifact of templates) {
 
 for (const artifact of checklists) {
   await writeGenerated(path.join("checklists", `${artifact.name}.md`), renderSimpleArtifactDetail("Checklists", "checklists", artifact));
+}
+
+for (const artifact of rules) {
+  await writeGenerated(path.join("rules", `${artifact.name}.md`), renderRuleDetail(artifact));
 }
 
 async function resetGeneratedRoot() {
@@ -359,6 +365,37 @@ function renderSimpleArtifactDetail(title, folder, artifact) {
     `- \`${toRepoRelative(artifact.file)}\``,
     "",
     `[Voltar para ${folder}](../${folder})`
+  ].join("\n");
+}
+
+function renderRuleDetail(artifact) {
+  return [
+    `# ${artifact.name}`,
+    "",
+    artifact.summary || "Sem summary declarada.",
+    "",
+    "## Metadados",
+    "",
+    `- category: \`${String(artifact.frontmatter.category ?? "n/a")}\``,
+    `- priority: \`${String(artifact.frontmatter.priority ?? "n/a")}\``,
+    "",
+    "## Aplica-se a",
+    "",
+    ...renderList(artifact.frontmatter.applies_to),
+    "",
+    "## Tags",
+    "",
+    ...renderList(artifact.frontmatter.tags),
+    "",
+    "## Conteudo do artefato",
+    "",
+    artifact.body,
+    "",
+    "## Arquivo",
+    "",
+    `- \`${toRepoRelative(artifact.file)}\``,
+    "",
+    "[Voltar para rules](../rules)"
   ].join("\n");
 }
 

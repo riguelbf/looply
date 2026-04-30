@@ -1,4 +1,4 @@
-import { cancel, confirm, isCancel, multiselect, select } from "@clack/prompts";
+import { cancel, confirm, isCancel, multiselect, select, text } from "@clack/prompts";
 import chalk from "chalk";
 import { resolveHostPublishers } from "../hosts/index.js";
 import { detectSupportedShell, installShellCompletion } from "./cli-completion/install.js";
@@ -14,6 +14,7 @@ import type {
 } from "./host-publisher.js";
 import { supportedHosts } from "./host-publisher.js";
 import { listAvailablePacks } from "./packs.js";
+import { ruleCategories, ruleCategoryLabels, type RuleCategory, type RuleFile } from "./rule-documents.js";
 import { createSpinner, showOutro } from "../ui/feedback.js";
 
 export interface InstallFlowInput {
@@ -25,6 +26,7 @@ export interface InstallFlowInput {
   localeOption?: string;
   projectModeOption?: string;
   interactionModeOption?: string;
+  rules?: RuleFile[];
   yes?: boolean;
   enableShellAutocomplete?: boolean;
 }
@@ -40,6 +42,11 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
   const interactionMode = await withPerfSpan("install-flow.resolve-interaction-mode", async () => resolveInteractionModeOption(input.interactionModeOption, input.yes));
 
   if (!hosts || !scope || !pack || !locale || !projectMode || !interactionMode) {
+    return false;
+  }
+
+  const rules = await resolveRulesOptions(input.rules, input.yes);
+  if (rules === undefined) {
     return false;
   }
 
@@ -88,7 +95,8 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
       projectMode,
       interactionMode,
       sourceRoot: input.sourceRoot,
-      currentWorkingDirectory: input.currentWorkingDirectory
+      currentWorkingDirectory: input.currentWorkingDirectory,
+      rules: rules.map((r) => ({ category: r.category, content: r.content }))
     }));
 
     loading.stop(
@@ -322,6 +330,96 @@ async function resolveInteractionModeOption(currentInteractionMode?: string, yes
   }
 
   return answer as InteractionMode;
+}
+
+async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: boolean): Promise<RuleFile[] | undefined> {
+  if (currentRules && currentRules.length > 0) {
+    return currentRules;
+  }
+
+  if (yes) {
+    return [];
+  }
+
+  const shouldConfigure = await confirm({
+    message: "Would you like to configure project rules for agents?",
+    initialValue: true
+  });
+
+  if (isCancel(shouldConfigure)) {
+    cancel("Installation cancelled");
+    return undefined;
+  }
+
+  if (!shouldConfigure) {
+    return [];
+  }
+
+  const selectedCategories = await multiselect({
+    message: "Which rule categories apply to this project?",
+    required: false,
+    options: ruleCategories.map((cat) => ({
+      value: cat,
+      label: ruleCategoryLabels[cat].label,
+      hint: ruleCategoryLabels[cat].hint
+    }))
+  });
+
+  if (isCancel(selectedCategories)) {
+    cancel("Installation cancelled");
+    return undefined;
+  }
+
+  if (!selectedCategories || selectedCategories.length === 0) {
+    return [];
+  }
+
+  const rules: RuleFile[] = [];
+
+  for (const cat of selectedCategories as RuleCategory[]) {
+    const content = await text({
+      message: `Define rules for ${ruleCategoryLabels[cat].label}:`,
+      placeholder: `Enter the rules that agents should follow for ${ruleCategoryLabels[cat].hint.toLowerCase()}. Use bullet points and imperative language (Use, Avoid, Prefer, Never).`
+    });
+
+    if (isCancel(content)) {
+      cancel("Installation cancelled");
+      return undefined;
+    }
+
+    if (content.trim()) {
+      rules.push({ category: cat, content: buildRuleContent(cat, content) });
+    }
+  }
+
+  return rules;
+}
+
+function buildRuleContent(category: RuleCategory, text: string): string {
+  const label = ruleCategoryLabels[category].label;
+  return [
+    "---",
+    `schema: looply/rule@v1`,
+    `name: ${category}`,
+    `category: ${category}`,
+    `summary: ${label} rules for this project`,
+    "priority: high",
+    "applies_to:",
+    "  - all",
+    "---",
+    "",
+    `# ${label}`,
+    "",
+    "## Rules",
+    "",
+    text,
+    "",
+    "## Notes",
+    "",
+    "- Update this file when project conventions change.",
+    "- Agents read these rules before producing outputs.",
+    "- Rules are procedural: treat them as constraints, not as optional hints."
+  ].join("\n");
 }
 
 async function resolveConfirmation(

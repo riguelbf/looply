@@ -144,10 +144,11 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "3. Project context: `.looply/custom/project-context.md`",
     "4. Architecture context: `.looply/custom/architecture-context.md`",
     "5. Relevant integration context files under `.looply/custom/integrations/`",
+    "6. Project rules under `.looply/custom/rules/`",
     input.projectMode === "existing-project"
-      ? "6. Real local codebase under the primary context root"
-      : "6. User instructions and managed artifacts until code exists",
-    "7. Session context: `.looply/custom/session-context.md`",
+      ? "7. Real local codebase under the primary context root"
+      : "7. User instructions and managed artifacts until code exists",
+    "8. Session context: `.looply/custom/session-context.md`",
     "",
     "## Validation Rules",
     "",
@@ -164,6 +165,7 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "- `.looply/state/harness-report.md` (advisory — read before starting a workflow; blocking errors must be resolved first)",
     "- `.looply/custom/session-context.md`",
     "- `.looply/custom/integrations/integrations-index.md`",
+    "- `.looply/custom/rules/rules-index.md`",
     "- `.looply/custom/features/<feature-name>/workflow-status.md`",
     "- `.looply/custom/features/<feature-name>/feature-context.md`"
   ].join("\n");

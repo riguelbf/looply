@@ -60,6 +60,10 @@ import {
   resolveIntegrationsIndexFile,
   writeIntegrationDocuments
 } from "../../lib/integration-documents.js";
+import {
+  resolveRulesIndexFile,
+  writeRuleDocuments
+} from "../../lib/rule-documents.js";
 
 interface FileHostPublisherOptions {
   hostName: SupportedHost;
@@ -121,6 +125,7 @@ export class FileHostPublisher implements HostPublisher {
     const projectContextMarkdownFile = resolveProjectContextMarkdownFile(targetRoot);
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
+    const rulesIndexFile = resolveRulesIndexFile(targetRoot);
     const hostContractFile = path.join(targetRoot, "HOST_CONTRACT.md");
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
     const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
@@ -166,6 +171,7 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, projectContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
+      this.toRelativeTargetPath(targetRoot, rulesIndexFile),
       this.toRelativeTargetPath(targetRoot, hostContractFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
@@ -251,6 +257,17 @@ export class FileHostPublisher implements HostPublisher {
         : "artifact-first-with-explicit-assumptions"
     });
     mergeableFiles.push(...integrationFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)));
+    const ruleFiles = await writeRuleDocuments({
+      targetRoot,
+      projectMode: input.projectMode,
+      outputLocale: input.locale,
+      interactionMode: input.interactionMode,
+      inferencePolicy: input.projectMode === "existing-project"
+        ? "codebase-first-with-artifact-acceleration"
+        : "artifact-first-with-explicit-assumptions",
+      rules: (input.rules ?? []).map((r) => ({ category: r.category as import("../../lib/rule-documents.js").RuleCategory, content: r.content }))
+    });
+    mergeableFiles.push(...ruleFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)));
     await fs.writeFile(
       entrypointFile,
       this.renderEntrypoint({
@@ -308,6 +325,7 @@ export class FileHostPublisher implements HostPublisher {
     const projectContextMarkdownFile = resolveProjectContextMarkdownFile(targetRoot);
     const sessionContextMarkdownFile = resolveSessionContextMarkdownFile(targetRoot);
     const integrationsIndexFile = resolveIntegrationsIndexFile(targetRoot);
+    const rulesIndexFile = resolveRulesIndexFile(targetRoot);
     const hostContractFile = path.join(targetRoot, "HOST_CONTRACT.md");
     const entrypointFile = path.join(targetRoot, this.entrypointFilename);
     const claudeHookFiles = await this.writeClaudePerfHookFiles(targetRoot, input.host);
@@ -353,6 +371,7 @@ export class FileHostPublisher implements HostPublisher {
       this.toRelativeTargetPath(targetRoot, projectContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, sessionContextMarkdownFile),
       this.toRelativeTargetPath(targetRoot, integrationsIndexFile),
+      this.toRelativeTargetPath(targetRoot, rulesIndexFile),
       this.toRelativeTargetPath(targetRoot, hostContractFile),
       ...workflowCommands.additionalFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)),
       ...workflowCommands.files.map((file) => this.toRelativeTargetPath(targetRoot, file)),
@@ -435,6 +454,16 @@ export class FileHostPublisher implements HostPublisher {
         : "artifact-first-with-explicit-assumptions"
     });
     mergeableFiles.push(...integrationFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)));
+    const ruleFiles = await writeRuleDocuments({
+      targetRoot,
+      projectMode,
+      outputLocale: locale,
+      interactionMode,
+      inferencePolicy: projectMode === "existing-project"
+        ? "codebase-first-with-artifact-acceleration"
+        : "artifact-first-with-explicit-assumptions"
+    });
+    mergeableFiles.push(...ruleFiles.map((file) => this.toRelativeTargetPath(targetRoot, file)));
     await fs.writeFile(
       entrypointFile,
       this.renderEntrypoint({
@@ -861,6 +890,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/state/interaction-policy.json`,
       `- ./.looply/custom/project-context.md`,
       `- ./.looply/custom/integrations/integrations-index.md`,
+      `- ./.looply/custom/rules/rules-index.md`,
       `- ./.looply/custom/session-context.md`,
       `- ./.looply/custom/session-links.json`,
       `- ./HOST_CONTRACT.md`,

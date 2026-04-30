@@ -10,7 +10,8 @@ export type CatalogArtifactType =
   | "knowledge"
   | "checklist"
   | "template"
-  | "example";
+  | "example"
+  | "rule";
 
 export interface CatalogArtifact {
   type: CatalogArtifactType;
@@ -83,6 +84,10 @@ export function inferArtifactType(relativeFile: string): CatalogArtifactType | n
 
   if (relativeFile.includes("/examples/")) {
     return "example";
+  }
+
+  if (relativeFile.includes("/rules/")) {
+    return "rule";
   }
 
   if (relativeFile.includes("/templates/")) {

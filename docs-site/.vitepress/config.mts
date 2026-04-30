@@ -95,6 +95,7 @@ export default defineConfig({
             { text: "Knowledge", link: "/reference/generated/knowledge" },
             { text: "Templates", link: "/reference/generated/templates" },
             { text: "Checklists", link: "/reference/generated/checklists" },
+            { text: "Rules", link: "/reference/generated/rules" },
             { text: "Integracoes", link: "/reference/generated/integrations" }
           ]
         }

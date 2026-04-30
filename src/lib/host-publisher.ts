@@ -17,6 +17,8 @@ export interface InstallInput {
   interactionMode: InteractionMode;
   sourceRoot: string;
   currentWorkingDirectory: string;
+  /** Project-specific rules collected during installation */
+  rules?: { category: string; content: string }[];
 }
 
 export interface InstallResult {
