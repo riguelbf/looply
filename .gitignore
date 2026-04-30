@@ -2,7 +2,6 @@ obj/
 .vs/
 .idea/
 .vscode/
-src/Llaios.Web/App_Data/selections.json
 node_modules/
 dist/
 .DS_Store
@@ -10,7 +9,6 @@ docs-site/.vitepress/cache/
 docs-site/.vitepress/dist/
 docs-site/.vitepress/docs-server.json
 .looply/
-.llaios/
 .claude/commands/
 AGENTS.md
 CLAUDE.md

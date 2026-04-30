@@ -24,7 +24,6 @@ export default defineConfig({
         ignored: [
           "**/.git/**",
           "**/.looply/**",
-          "**/.llaios/**",
           "**/dist/**",
           "**/node_modules/**"
         ]

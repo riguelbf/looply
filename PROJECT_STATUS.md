@@ -63,7 +63,6 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - roadmap de `v2` e `v3` publicado em `docs/releases/`
 - primeira camada de `Codex skills` adicionada ao publish do `looply`
 - validacao manual de uma feature ponta a ponta na `v1`
-- rename completo de `llaios` para `looply`
 - CLI principal publicada como `looply`
 - paths operacionais migrados para `.looply`
 - pack `engineering-base` instalado e publicado para hosts
