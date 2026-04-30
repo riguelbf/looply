@@ -65,7 +65,8 @@ export default defineConfig({
             { text: "Primeira Feature", link: "/guides/first-feature" },
             { text: "Troubleshooting", link: "/guides/troubleshooting" },
             { text: "Fluxo de Workflows", link: "/guides/workflows" },
-            { text: "Integracoes", link: "/guides/integrations" }
+            { text: "Integracoes", link: "/guides/integrations" },
+            { text: "Tools", link: "/guides/tools" }
           ]
         }
       ],
@@ -104,6 +105,7 @@ export default defineConfig({
           items: [
             { text: "Indice", link: "/specs/" },
             { text: "Platform Model", link: "/specs/platform-model" },
+            { text: "Platform Contracts", link: "/specs/platform-contracts" },
             { text: "Publishing Model", link: "/specs/publishing-model" },
             { text: "Integration Model", link: "/specs/integration-model" }
           ]
