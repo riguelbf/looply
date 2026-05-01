@@ -16,6 +16,19 @@ Artefato que descreve fases, stages, gates e handoffs. No `engineering-base`, os
 
 Capacidade operacional especializada. Exemplo: `pm-analyst`, `architect`, `backend`, `reviewer`, `delivery-orchestrator`.
 
+### context_slots
+
+Cada agente declara no frontmatter quais contextos precisa receber para ser mais assertivo. O publisher do looply resolve slots `inline` durante `sync`/`install`; slots `reference` ficam para o host resolver em runtime.
+
+| source | compose | descricao |
+|---|---|---|
+| `self.constraints` | `inline` | Restricoes do agente injetadas diretamente no skill |
+| `self.knowledge_sources` | `inline` | Conteudo dos knowledge files lido e inlinado |
+| `self.escalation_rules` | `inline` | Regras de escalacao visiveis no prompt |
+| `rules` | `inline` | Project rules filtradas por categoria |
+| `stage.inputs` | `reference` | Artefatos do stage anterior (host le em runtime) |
+| `feature` | `reference` | Contexto da feature ativa (host resolve) |
+
 ## Task
 
 Instrucoes de trabalho para um agent. O looply nao executa a task; ele publica o contrato para o host.

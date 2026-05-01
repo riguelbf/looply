@@ -14,7 +14,7 @@ Contratos formais do modelo de dados do looply. Definem o schema YAML obrigatori
 
 ## Agent (`looply/agent@v1`)
 
-Define uma capacidade operacional especializada.
+Define uma capacidade operacional especializada. Agentes podem declarar `context_slots` para pre-composicao de prompt.
 
 ```yaml
 schema: looply/agent@v1
@@ -32,7 +32,36 @@ supported_tasks: [create-tech-spec]
 knowledge_sources: [../knowledge/architecture-principles.md]
 constraints: [Do not invent business rules]
 escalation_rules: [Escalate structural ambiguity to pm-analyst]
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter: [architecture-constraints]
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ```
+
+### context_slots
+
+| Campo | Descricao |
+|---|---|
+| `name` | Identificador do slot |
+| `source` | Origem: `self.constraints`, `self.knowledge_sources`, `self.escalation_rules`, `rules`, `stage.inputs`, `feature` |
+| `compose` | `inline` (looply resolve no sync e inlina no skill) ou `reference` (host resolve em runtime) |
+| `filter` | Lista opcional de categorias para filtrar `rules` |
 
 ## Task (`looply/task@v1`)
 

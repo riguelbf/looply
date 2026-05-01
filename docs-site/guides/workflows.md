@@ -110,3 +110,12 @@ Use `looply status` para confirmar:
 - [Workflows](/reference/generated/workflows)
 - [Slash Commands](/reference/generated/slash-commands)
 - [Catalogo do Engineering Base](/guides/catalog)
+
+## Composed Agent Context
+
+Durante `sync` e `install`, o looply pre-compoe contexto estatico no skill para reduzir o overhead de leitura do host. Cada agente declara `context_slots` no frontmatter:
+
+- **Inline**: constraints, knowledge sources, escalation rules e project rules sao lidos e injetados diretamente no SKILL.md sob a secao `Composed Agent Context`
+- **Reference**: outputs de stages anteriores e feature context sao listados como referencias que o host resolve em runtime
+
+O host ainda precisa ler os artefatos dinamicos (story, prd, tech-spec), mas nao precisa fazer 6+ leituras para descobrir constraints, knowledge e rules -- isso ja chega composto no prompt.
