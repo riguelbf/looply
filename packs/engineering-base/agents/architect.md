@@ -27,6 +27,27 @@ constraints:
   - Apply YAGNI — do not design for hypothetical future requirements; add structural complexity only when the current scope pushes for it
 escalation_rules:
   - Escalate unresolved business ambiguity to pm-analyst
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - architecture-constraints
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: architect

@@ -20,6 +20,8 @@ import {
   renderCodexCommandIndex,
   renderClaudeWorkflowCommand,
   renderCodexWorkflowCommand,
+  composeContextForWorkflows,
+  type ComposedSection,
   type WorkflowCommandDefinition,
   type WorkflowCommandReference
 } from "../../lib/workflow-commands.js";
@@ -979,6 +981,8 @@ export class FileHostPublisher implements HostPublisher {
       interactionMode: input.interactionMode
     });
 
+    const composedContext = await composeContextForWorkflows(input.sourceRoot, catalog, commands);
+
     if (commands.length === 0) {
       return {
         files: [],
@@ -1110,7 +1114,8 @@ export class FileHostPublisher implements HostPublisher {
         workflowPlaybookFile: input.workflowPlaybookFile,
         executionHintsFile: input.executionHintsFile,
         exampleHintsFile: exampleDocuments.hintsFile,
-        selectedByAlias: exampleDocuments.selectedByAlias
+        selectedByAlias: exampleDocuments.selectedByAlias,
+        composedContext
       });
       additionalFiles.push(...skillFiles);
 
@@ -1448,6 +1453,7 @@ looply perf trace summary --dir . --json
     executionHintsFile: string;
     exampleHintsFile: string;
     selectedByAlias: Map<string, import("../../lib/example-selection.js").SelectedExample[]>;
+    composedContext?: Map<string, ComposedSection[]>;
   }): Promise<string[]> {
     const skillsRoot = this.resolveCodexSkillsRoot(input.targetRoot, input.scope);
     const packRoot = path.join(input.targetRoot, ".looply", "managed", "packs", input.pack);
@@ -1493,7 +1499,8 @@ looply perf trace summary --dir . --json
               skillRoot,
               path.join(input.targetRoot, ".looply", "managed", "packs", example.pack, example.file)
             )
-          )
+          ),
+          composedSections: input.composedContext?.get(skill.workflowName)
         }),
         "utf8"
       );

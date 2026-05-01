@@ -26,6 +26,27 @@ escalation_rules:
   - Escalate structural cloud design gaps to cloud-architect
   - Escalate platform control gaps to platform-engineer
   - Escalate production incident coordination needs to sre
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - security-policies
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: cloud-governance

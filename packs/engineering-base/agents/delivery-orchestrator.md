@@ -30,6 +30,24 @@ escalation_rules:
   - Escalate structural ambiguity to architect
   - Escalate implementation blockers to backend
   - Escalate release risk to reviewer
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - project-conventions
+    compose: inline
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: delivery-orchestrator

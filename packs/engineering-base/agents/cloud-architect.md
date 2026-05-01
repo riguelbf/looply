@@ -28,6 +28,27 @@ escalation_rules:
   - Escalate platform ownership issues to platform-engineer
   - Escalate governance and compliance gaps to cloud-governance
   - Escalate cost trade-offs to finops
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - architecture-constraints
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: cloud-architect

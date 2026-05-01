@@ -25,6 +25,28 @@ constraints:
   - Apply YAGNI — no speculative options, wrappers or abstractions without a real call-site in the current scope
 escalation_rules:
   - Escalate structural gaps to architect
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - coding-standards
+      - architecture-constraints
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: backend

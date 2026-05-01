@@ -1,4 +1,5 @@
 import path from "node:path";
+import fs from "fs-extra";
 import type { CatalogArtifact } from "./artifact-catalog.js";
 
 export interface WorkflowCommandArgument {
@@ -37,6 +38,24 @@ export interface CodexSkillDefinition {
   argumentHint: string;
   alias: string;
   arguments: WorkflowCommandArgument[];
+}
+
+export interface ContextSlot {
+  name: string;
+  source: string;
+  compose: "inline" | "reference";
+  filter?: string[];
+}
+
+export interface ComposedSection {
+  slotName: string;
+  content: string;
+  compose: "inline" | "reference";
+}
+
+export interface ComposedContext {
+  workflowName: string;
+  sections: ComposedSection[];
 }
 
 export function listWorkflowCommands(input: {
@@ -311,6 +330,141 @@ export function listCodexSkills(input: {
   }));
 }
 
+export async function composeContextForWorkflows(
+  sourceRoot: string,
+  catalog: CatalogArtifact[],
+  commands: WorkflowCommandDefinition[]
+): Promise<Map<string, ComposedSection[]>> {
+  const contextMap = new Map<string, ComposedSection[]>();
+  const workflowArtifacts = catalog.filter((a) => a.type === "workflow");
+  const agentArtifacts = catalog.filter((a) => a.type === "agent");
+  const ruleArtifacts = catalog.filter((a) => a.type === "rule");
+
+  for (const command of commands) {
+    const workflow = workflowArtifacts.find((w) => w.name === command.workflowName);
+    if (!workflow) continue;
+
+    const sections: ComposedSection[] = [];
+    const stages = Array.isArray(workflow.frontmatter.stages)
+      ? (workflow.frontmatter.stages as Array<Record<string, unknown>>)
+      : [];
+
+    for (const stage of stages) {
+      const agentName = String(stage.agent ?? "");
+      const agent = agentArtifacts.find((a) => a.name === agentName);
+      if (!agent) continue;
+
+      const slots = Array.isArray(agent.frontmatter.context_slots)
+        ? (agent.frontmatter.context_slots as ContextSlot[])
+        : [];
+      if (slots.length === 0) continue;
+
+      for (const slot of slots) {
+        const content = await resolveContextSlot(sourceRoot, slot, agent, ruleArtifacts);
+        if (content) {
+          sections.push({
+            slotName: `${String(stage.name ?? "")}: ${slot.name}`,
+            content,
+            compose: slot.compose
+          });
+        }
+      }
+    }
+
+    if (sections.length > 0) {
+      contextMap.set(command.workflowName, sections);
+    }
+  }
+
+  return contextMap;
+}
+
+async function resolveContextSlot(
+  sourceRoot: string,
+  slot: ContextSlot,
+  agent: CatalogArtifact,
+  ruleArtifacts: CatalogArtifact[]
+): Promise<string | null> {
+  switch (slot.source) {
+    case "self.constraints": {
+      return renderSlotSection(slot.name, agent.frontmatter.constraints);
+    }
+    case "self.escalation_rules": {
+      return renderSlotSection(slot.name, agent.frontmatter.escalation_rules);
+    }
+    case "self.knowledge_sources": {
+      const sources = Array.isArray(agent.frontmatter.knowledge_sources)
+        ? (agent.frontmatter.knowledge_sources as string[])
+        : [];
+      if (sources.length === 0) return null;
+      const packRoot = path.join(sourceRoot, "packs", agent.pack);
+      const bodies: string[] = [];
+      for (const sourcePath of sources) {
+        const resolved = path.resolve(packRoot, sourcePath);
+        if (await fs.pathExists(resolved)) {
+          const content = await fs.readFile(resolved, "utf8");
+          const body = extractMarkdownBody(content);
+          if (body) bodies.push(`### ${path.basename(sourcePath, ".md")}\n\n${body}`);
+        }
+      }
+      if (bodies.length === 0) return null;
+      return renderedSlotHeading(slot.name) + "\n\n" + bodies.join("\n\n");
+    }
+    case "rules": {
+      const filter = slot.filter ?? [];
+      const relevantRules = ruleArtifacts.filter((r) =>
+        filter.includes(r.name)
+      );
+      if (relevantRules.length === 0) return null;
+      const bodies: string[] = [];
+      for (const rule of relevantRules) {
+        if (!rule.file) continue;
+        const resolved = path.join(sourceRoot, rule.file);
+        if (await fs.pathExists(resolved)) {
+          const content = await fs.readFile(resolved, "utf8");
+          const body = extractMarkdownBody(content);
+          if (body) bodies.push(`### ${rule.name}\n\n${body}`);
+        }
+      }
+      if (bodies.length === 0) return null;
+      return renderedSlotHeading(slot.name) + "\n\n" + bodies.join("\n\n");
+    }
+    case "stage.inputs": {
+      return null; // reference slots are not resolved at build time
+    }
+    case "feature": {
+      return null; // reference slots are not resolved at build time
+    }
+    default:
+      return null;
+  }
+}
+
+function extractMarkdownBody(content: string): string {
+  const parts = content.split("---");
+  if (parts.length >= 3) {
+    return parts.slice(2).join("---").trim();
+  }
+  return content.trim();
+}
+
+function renderSlotSection(slotName: string, items: unknown): string | null {
+  const lines = Array.isArray(items) ? (items as string[]) : [];
+  if (lines.length === 0) return null;
+  return renderedSlotHeading(slotName) + "\n\n" + lines.map((line) => `- ${line}`).join("\n");
+}
+
+function renderedSlotHeading(name: string): string {
+  return `## ${capitalizeSlotName(name)}`;
+}
+
+function capitalizeSlotName(name: string): string {
+  return name
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export function renderCodexSkillDocument(input: {
   skill: CodexSkillDefinition;
   outputLocale: "en" | "pt-BR";
@@ -328,6 +482,7 @@ export function renderCodexSkillDocument(input: {
   sessionContextReference: string;
   exampleHintsReference: string;
   exampleReferences: string[];
+  composedSections?: ComposedSection[];
 }): string {
   const { skill } = input;
   const commandForExample: WorkflowCommandDefinition = {
@@ -397,6 +552,31 @@ export function renderCodexSkillDocument(input: {
     "11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
     "12. Do not use emojis."
   ];
+
+  if (input.composedSections && input.composedSections.length > 0) {
+    const inlineSections = input.composedSections.filter((s) => s.compose === "inline");
+    const referenceSections = input.composedSections.filter((s) => s.compose === "reference");
+
+    if (inlineSections.length > 0 || referenceSections.length > 0) {
+      lines.push("", "---", "", "## Composed Agent Context");
+      lines.push("");
+      lines.push("The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.");
+      lines.push("");
+    }
+
+    for (const section of inlineSections) {
+      lines.push(section.content);
+    }
+
+    if (referenceSections.length > 0) {
+      lines.push("", "### Reference Context (resolve at runtime)");
+      lines.push("");
+      lines.push("The following artifacts should be read at runtime from the feature directory:");
+      for (const section of referenceSections) {
+        lines.push(`- ${section.slotName}: \`.looply/custom/features/$1/\``);
+      }
+    }
+  }
 
   if (skill.arguments.length > 0) {
     lines.push("", "Arguments:");

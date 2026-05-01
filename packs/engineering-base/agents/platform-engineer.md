@@ -28,6 +28,28 @@ escalation_rules:
   - Escalate workload-specific architecture to cloud-architect
   - Escalate governance policy conflicts to cloud-governance
   - Escalate reliability concerns to sre
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - architecture-constraints
+      - coding-standards
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: platform-engineer

@@ -25,6 +25,27 @@ escalation_rules:
   - Escalate architecture-driven cost issues to cloud-architect
   - Escalate shared platform cost drivers to platform-engineer
   - Escalate business trade-offs to pm-analyst
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - architecture-constraints
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: finops

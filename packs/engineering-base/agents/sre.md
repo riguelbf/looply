@@ -26,6 +26,28 @@ escalation_rules:
   - Escalate design issues to architect
   - Escalate implementation issues to backend
   - Escalate release sequencing issues to devops
+context_slots:
+  - name: constraints
+    source: self.constraints
+    compose: inline
+  - name: knowledge
+    source: self.knowledge_sources
+    compose: inline
+  - name: escalation
+    source: self.escalation_rules
+    compose: inline
+  - name: project_rules
+    source: rules
+    filter:
+      - architecture-constraints
+      - security-policies
+    compose: inline
+  - name: previous_outputs
+    source: stage.inputs
+    compose: reference
+  - name: feature_context
+    source: feature
+    compose: reference
 ---
 
 # Agent: sre
