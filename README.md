@@ -65,13 +65,25 @@ O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md).
 - execucao nativa de tasks sem host
 - SaaS ou painel web de operacao
 
-## Instalacao para desenvolvimento
+## Instalacao
 
-Requisitos:
+Requisitos: Node.js 22+
 
-- Node.js 22+
-- npm
-- `codex` e/ou `claude` instalados se voce quiser publicar para esses hosts
+```bash
+npm install -g @looply-cli/looply
+```
+
+Depois disso, o comando `looply` fica disponivel no shell.
+
+### Via npx (sem instalar)
+
+```bash
+npx @looply-cli/looply --help
+```
+
+### Instalacao para desenvolvimento
+
+Requisitos adicionais: `codex` e/ou `claude` instalados se voce quiser publicar para esses hosts
 
 Clone o projeto e prepare a CLI:
 
@@ -82,8 +94,6 @@ npm install
 npm run build
 npm link
 ```
-
-Depois disso, o comando `looply` fica disponivel no shell.
 
 Se preferir sem `npm link`, voce pode usar:
 
