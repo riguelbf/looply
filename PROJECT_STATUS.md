@@ -12,29 +12,29 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 ## Snapshot
 
 - Project: `looply`
-- Stage: `v2 hardening + local desktop expansion`
-- Primary focus: plataforma de artefatos para engenharia com IA assistida, com operacao CLI-first e companion desktop local
+- Stage: `v2 hardening + public launch`
+- Primary focus: plataforma de artefatos para engenharia com IA assistida, publicada como pacote npm `@looply-cli/looply`
 - Hosts: `Claude Code`, `Codex`
-- Main pack: `engineering-base`
+- Main pack: `software-delivery-suite` (agrega `engineering-base` + `product-base`)
 
 ## In Progress
 
-- fechar o primeiro slice de `cli-autocomplete` a partir da arvore real do Commander
-- publicar o contrato de host e o primeiro motor de autonomia host-driven
+- preparar lancamento publico do pacote `@looply-cli/looply`
 - evoluir `multi-language-code-context` para ser consumido por `status` e pelo desktop
-- consolidar `ICL example guidance` como default dos workflows relevantes
-- amadurecer o companion desktop local com overview, features, integrations e actions seguras
-- alinhar `refresh-context`, `refresh-code-context` e `project-snapshot` com o estado real do repositorio
 
 ## Next Up
 
 - concluir a primeira entrega de autocomplete em `bash` e `zsh`
 - decidir se `code-context` fica separado de `refresh-context` ou vira uma etapa integrada
 - expandir o desktop para detalhes de workflow, feature control e retomada
-- finalizar a historia de integracoes externas com contextos e touchpoints mais claros
 
 ## Recently Completed
 
+- **npm publish** — pacote `@looply-cli/looply` publicado no registry com CI/CD (GitHub Actions) que builda e publica a cada push na `main`
+- **README profissional** — reestruturado com badges (npm, build, docs, license, node), tabelas de comandos/workflows, secao de abordagem e link para docs
+- **opcao `all` no install** — select de packs agora permite instalar todos os packs disponiveis
+- **regras padrao multi-pack** — questionario de rules com opcao "Standard (looply defaults)" que carrega regras de todos os packs selecionados
+- **instalacao simplificada** — `npm install -g @looply-cli/looply` e `npx @looply-cli/looply` documentados
 - `status` agora consolida snapshot do projeto, features, sessions, hosts e estado de ICL
 - `HOST_CONTRACT.md` e o motor `autonomy` passaram a existir como protocolo host-driven
 - `refresh-context` e `refresh-code-context` agora publicam snapshots consumiveis para contexto e code-context
