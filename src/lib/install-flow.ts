@@ -1,5 +1,7 @@
+import path from "node:path";
 import { cancel, confirm, isCancel, multiselect, select, text } from "@clack/prompts";
 import chalk from "chalk";
+import fs from "fs-extra";
 import { resolveHostPublishers } from "../hosts/index.js";
 import { detectSupportedShell, installShellCompletion } from "./cli-completion/install.js";
 import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
@@ -45,14 +47,16 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
     return false;
   }
 
-  const rules = await resolveRulesOptions(input.rules, input.yes);
+  const resolvedPacks = pack === "all" ? availablePacks : [pack];
+
+  const rules = await resolveRulesOptions(input.rules, input.yes, input.sourceRoot, resolvedPacks);
   if (rules === undefined) {
     return false;
   }
 
   setPerfMetadata("install.hostCount", hosts.length);
   setPerfMetadata("install.scope", scope);
-  setPerfMetadata("install.pack", pack);
+  setPerfMetadata("install.pack", resolvedPacks.join(","));
   setPerfMetadata("install.locale", locale);
   setPerfMetadata("install.projectMode", projectMode);
   setPerfMetadata("install.interactionMode", interactionMode);
@@ -61,10 +65,11 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
   }
 
   const publishers = resolveHostPublishers(hosts);
+  const firstPack = resolvedPacks[0];
   const preflightOk = await withPerfSpan("install-flow.preflight-checks", async () => runPreflightChecks({
     publishers,
     scope,
-    pack,
+    pack: firstPack,
     sourceRoot: input.sourceRoot,
     currentWorkingDirectory: input.currentWorkingDirectory
   }));
@@ -77,7 +82,7 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
 
   const shouldProceed = input.yes
     ? true
-    : await resolveConfirmation(hosts, scope, pack, locale, projectMode, interactionMode);
+    : await resolveConfirmation(hosts, scope, resolvedPacks.join(", "), locale, projectMode, interactionMode);
   if (!shouldProceed) {
     cancel("Installation cancelled");
     return false;
@@ -86,23 +91,25 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
   const installResults = [];
 
   for (const publisher of publishers) {
-    const loading = createSpinner(`Installing ${publisher.hostName}`);
-    const result = await withPerfSpan(`install-flow.publish.${publisher.hostName}`, async () => publisher.install({
-      host: publisher.hostName,
-      scope,
-      pack,
-      locale,
-      projectMode,
-      interactionMode,
-      sourceRoot: input.sourceRoot,
-      currentWorkingDirectory: input.currentWorkingDirectory,
-      rules: rules.map((r) => ({ category: r.category, content: r.content }))
-    }));
+    for (const installPack of resolvedPacks) {
+      const loading = createSpinner(`Installing ${publisher.hostName}/${installPack}`);
+      const result = await withPerfSpan(`install-flow.publish.${publisher.hostName}.${installPack}`, async () => publisher.install({
+        host: publisher.hostName,
+        scope,
+        pack: installPack,
+        locale,
+        projectMode,
+        interactionMode,
+        sourceRoot: input.sourceRoot,
+        currentWorkingDirectory: input.currentWorkingDirectory,
+        rules: rules.map((r) => ({ category: r.category, content: r.content }))
+      }));
 
-    loading.stop(
-      `Installed ${chalk.cyan(result.pack)} for ${chalk.cyan(result.host)} in ${chalk.cyan(result.scope)} scope`
-    );
-    installResults.push(result);
+      loading.stop(
+        `Installed ${chalk.cyan(result.pack)} for ${chalk.cyan(result.host)} in ${chalk.cyan(result.scope)} scope`
+      );
+      installResults.push(result);
+    }
   }
 
   const shellCompletionResult = await withPerfSpan("install-flow.enable-shell-autocomplete", async () => maybeEnableShellCompletion({
@@ -228,11 +235,14 @@ async function resolvePackOption(currentPack: string | undefined, availablePacks
 
   const options =
     availablePacks.length > 0
-      ? availablePacks.map((pack) => ({
-          value: pack,
-          label: pack,
-          hint: pack === "software-delivery-suite" ? "Recommended starting pack" : pack === "engineering-base" ? "Engineering-only baseline" : undefined
-        }))
+      ? [
+          { value: "all", label: "All packs", hint: "Install every available pack" },
+          ...availablePacks.map((pack) => ({
+            value: pack,
+            label: pack,
+            hint: pack === "software-delivery-suite" ? "Recommended starting pack" : pack === "engineering-base" ? "Engineering-only baseline" : undefined
+          }))
+        ]
       : [{ value: "software-delivery-suite", label: "software-delivery-suite", hint: "Fallback pack" }];
 
   const answer = await select({
@@ -332,7 +342,7 @@ async function resolveInteractionModeOption(currentInteractionMode?: string, yes
   return answer as InteractionMode;
 }
 
-async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: boolean): Promise<RuleFile[] | undefined> {
+async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: boolean, sourceRoot?: string, packNames?: string[]): Promise<RuleFile[] | undefined> {
   if (currentRules && currentRules.length > 0) {
     return currentRules;
   }
@@ -353,6 +363,23 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
 
   if (!shouldConfigure) {
     return [];
+  }
+
+  const rulesMode = await select({
+    message: "Which rule set should be used?",
+    options: [
+      { value: "standard", label: "Standard (looply defaults)", hint: "Pre-built rules from the selected packs" },
+      { value: "custom", label: "Custom", hint: "Define your own rules per category" }
+    ]
+  });
+
+  if (isCancel(rulesMode)) {
+    cancel("Installation cancelled");
+    return undefined;
+  }
+
+  if (rulesMode === "standard") {
+    return loadStandardRules(sourceRoot ?? process.cwd(), packNames ?? []);
   }
 
   const selectedCategories = await multiselect({
@@ -389,6 +416,33 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
 
     if (content.trim()) {
       rules.push({ category: cat, content: buildRuleContent(cat, content) });
+    }
+  }
+
+  return rules;
+}
+
+async function loadStandardRules(sourceRoot: string, packNames: string[]): Promise<RuleFile[]> {
+  const rules: RuleFile[] = [];
+  const seenCategories = new Set<string>();
+
+  for (const packName of packNames) {
+    const packRulesRoot = path.join(sourceRoot, "packs", packName, "rules");
+    if (!(await fs.pathExists(packRulesRoot))) {
+      continue;
+    }
+
+    for (const cat of ruleCategories) {
+      if (seenCategories.has(cat)) {
+        continue;
+      }
+
+      const ruleFile = path.join(packRulesRoot, `${cat}.md`);
+      if (await fs.pathExists(ruleFile)) {
+        const content = await fs.readFile(ruleFile, "utf8");
+        rules.push({ category: cat, content });
+        seenCategories.add(cat);
+      }
     }
   }
 

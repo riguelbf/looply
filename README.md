@@ -8,6 +8,8 @@
 
 Plataforma de artefatos para engenharia com IA assistida. O `looply` organiza `agents`, `tasks`, `workflows`, `knowledge`, `templates`, `checklists` e contexto operacional em Markdown, publica isso para hosts como `Codex` e `Claude Code`, e ajuda o time a sair de discovery ate delivery com um fluxo consistente.
 
+> 📖 **Documentacao**: [riguelbf.github.io/looply](https://riguelbf.github.io/looply)
+
 ## Onde paramos
 
 O estado versionado do projeto fica em [PROJECT_STATUS.md](./PROJECT_STATUS.md). Esse arquivo deve registrar o slice atual, o que acabou de ser concluido e o proximo passo.
