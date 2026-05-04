@@ -935,6 +935,9 @@ export class FileHostPublisher implements HostPublisher {
           ]
         : []),
       "",
+      "Knowledge graph policy:",
+      "17. When assessing change impact, module dependencies or database schema, read `.looply/state/knowledge-graph.json` before inspecting individual files. Use `looply refresh-code-context` if the graph is missing or stale.",
+      "",
       "Execution order for feature work:",
       "1. Open the workflow playbook first.",
       "2. Check `.looply/state/context-index.md` to understand context priority and validity rules.",
