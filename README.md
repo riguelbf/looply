@@ -20,7 +20,7 @@
 
 ## Recent Updates
 
-- **Skill Creator** — novo slash command interativo `/looply:skill-creator` que guia a criacao de novas skills looply. Faz perguntas, valida nome contra regex, gera SKILL.md cross-host, agents yamls, command help file e atualiza indices automaticamente.
+- **Skill Creator** — new interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names against regex, generates cross-host SKILL.md, agent yamls, command help files and updates indices automatically.
 - **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
 - **Update notifier** — checks for newer `@looply-cli/looply` versions on npm on every command and suggests `npm install -g` to upgrade. 24h cache, never blocks execution.
 - **DB schema extraction (Layer 1)** — extracts tables, columns and foreign keys from `prisma/schema.prisma`, Drizzle, TypeORM decorators and SQL migrations. Static, no connection, no credentials.
