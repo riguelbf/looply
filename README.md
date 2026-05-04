@@ -20,11 +20,11 @@
 
 ## Recent Updates
 
-- **Knowledge Graph** — grafo de conhecimento persistente que conecta modulos, classes, funcoes e tabelas de banco. Resolve dependencias entre modulos, extrai schema de Prisma/Drizzle/TypeORM/migrations SQL (zero conexao), e usa graph traversal para mapear features a entidades impactadas. Consulte com `looply refresh-code-context`.
-- **Update notifier** — a cada comando, verifica se ha versao nova do `@looply-cli/looply` no npm e sugere `npm install -g` para atualizar. Cache de 24h, nunca bloqueia.
-- **DB schema extraction (Camada 1)** — extrai tabelas, colunas e foreign keys de `prisma/schema.prisma`, Drizzle, TypeORM decorators e SQL migrations. Estatico, sem conexao, sem credencial.
-- **Cross-module dependency resolver** — `dependsOnModules` agora populado com dependencias reais entre modulos, resolvendo imports relativos de TypeScript, JavaScript, Python e .NET.
-- **Install flow + story-to-production skill** — instalacao pergunta se quer gerar code intelligence ao final. Skill `story-to-production` agora referencia o knowledge-graph nas regras de execucao.
+- **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
+- **Update notifier** — checks for newer `@looply-cli/looply` versions on npm on every command and suggests `npm install -g` to upgrade. 24h cache, never blocks execution.
+- **DB schema extraction (Layer 1)** — extracts tables, columns and foreign keys from `prisma/schema.prisma`, Drizzle, TypeORM decorators and SQL migrations. Static, no connection, no credentials.
+- **Cross-module dependency resolver** — `dependsOnModules` now populated with real module dependencies by resolving relative imports across TypeScript, JavaScript, Python and .NET.
+- **Install flow + story-to-production skill** — installation prompts to generate code intelligence on completion. `story-to-production` skill now references the knowledge graph in execution rules.
 
 ---
 
