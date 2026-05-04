@@ -11,7 +11,8 @@ export function registerRefreshCodeContextCommand(program: Command): void {
   addProfileOption(program
     .command("refresh-code-context")
     .description("Refresh multi-language code-context discovery for the current repository")
-    .option("--dir <dir>", "Target directory for code-context refresh (defaults to current directory)"))
+    .option("--dir <dir>", "Target directory for code-context refresh (defaults to current directory)")
+    .option("--skip-graph", "Skip knowledge graph generation"))
     .action(async (options) => {
       showIntro("looply refresh-code-context");
       const targetRoot = path.resolve(options.dir ?? process.cwd());
@@ -21,7 +22,7 @@ export function registerRefreshCodeContextCommand(program: Command): void {
         command: "refresh-code-context",
         mode: resolvePerfMode(options.profile),
         targetRoot
-      }, async () => refreshCodeContext(targetRoot));
+      }, async () => refreshCodeContext(targetRoot, { skipGraph: options.skipGraph ?? false }));
       const document = await withPerfSpan("refresh-code-context.read-document", async () => readCodeContext(targetRoot));
 
       loading.stop(`Code context refreshed for ${chalk.cyan(result.targetRoot)}`);
@@ -56,6 +57,9 @@ export function registerRefreshCodeContextCommand(program: Command): void {
       console.log("");
       console.log(chalk.bold("Updated Files"));
       console.log(`- ${result.codeContextFile}`);
+      if (result.knowledgeGraphFile) {
+        console.log(`- ${result.knowledgeGraphFile}`);
+      }
 
       showOutro("Code context refreshed");
     });

@@ -15,6 +15,7 @@ export function buildHostContractDocument(input: {
   statusContractReference: string;
   contextSnapshotReference: string;
   codeContextReference: string;
+  knowledgeGraphReference?: string;
   commandIndexReference?: string;
 }): string {
   const hostName = input.host === "claude" ? "Claude Code" : "Codex";
@@ -39,6 +40,7 @@ export function buildHostContractDocument(input: {
     `- Host status contract: \`${input.statusContractReference}\``,
     `- Context snapshot: \`${input.contextSnapshotReference}\``,
     `- Code-context snapshot: \`${input.codeContextReference}\``,
+    input.knowledgeGraphReference ? `- Knowledge graph: \`${input.knowledgeGraphReference}\`` : null,
     commandIndexLine,
     "",
     "## Responsibilities",

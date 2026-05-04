@@ -30,6 +30,8 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Recently Completed
 
+- **knowledge-graph** — grafo de conhecimento persistente que conecta modulos, simbolos e tabelas de banco. Resolve `dependsOnModules` via cross-module resolver, extrai schema de Prisma/Drizzle/TypeORM/migrations SQL (Camada 1, zero credencial), e substitui token-matching por graph traversal no `deriveFeatureCodeImpact`. Gerado automaticamente pelo `refresh-code-context`, consultavel via `GraphQuery` API (`neighborhood`, `path`, `dependentsOf`). Persistido em `.looply/state/knowledge-graph.json`.
+
 - **npm publish** — pacote `@looply-cli/looply` publicado no registry com CI/CD (GitHub Actions) que builda e publica a cada push na `main`
 - **README profissional** — reestruturado com badges (npm, build, docs, license, node), tabelas de comandos/workflows, secao de abordagem e link para docs
 - **opcao `all` no install** — select de packs agora permite instalar todos os packs disponiveis

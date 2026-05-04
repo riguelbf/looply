@@ -58,6 +58,7 @@ npx @looply-cli/looply --help
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Project rules** | Six categories (`coding-standards`, `testing-requirements`, `security-policies`, etc.) — standard defaults or custom |
 | **ICL guidance** | In-context example layer that calibrates agent output style and quality |
+| **Code intelligence** | Multi-language code-context discovery + Knowledge Graph with module dependency resolution and database schema extraction |
 | **Autocomplete** | Bash, Zsh, PowerShell — generated from the real CLI tree |
 | **Desktop companion** | Local Electron app for browsing project snapshots, features, and sessions |
 | **Docs** | Built-in VitePress portal — `looply docs open` or automated GitHub Pages deploy |
@@ -112,6 +113,7 @@ looply docs open
 | `status` | Consolidated project snapshot |
 | `sync` | Sync published state with source |
 | `refresh-context` | Update project context and code-context |
+| `refresh-code-context` | Refresh code-context snapshot and knowledge graph (`--skip-graph` to skip graph) |
 | `check-updates` | Check for newer pack versions |
 | `upgrade` | Upgrade packs |
 | `autonomy` | Derive the next host-driven cycle for a feature |

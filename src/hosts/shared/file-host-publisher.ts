@@ -45,7 +45,7 @@ import type { InstallManifest, UninstallResult } from "../../lib/publishing-mode
 import { readInteractionPolicyFile, resolveInteractionPolicyFile, writeInteractionPolicyFile } from "../../lib/interaction-policy.js";
 import { readLocaleFile, resolveLocaleFile, writeLocaleFile } from "../../lib/locale.js";
 import { readProjectContextFile, resolveProjectContextFile, writeProjectContextFile } from "../../lib/project-context.js";
-import { resolveCodeContextFile } from "../../lib/code-context/storage.js";
+import { resolveCodeContextFile, resolveKnowledgeGraphFile } from "../../lib/code-context/storage.js";
 import { resolveContextSnapshotFile } from "../../lib/context-snapshot.js";
 import { resolvePackClosure } from "../../lib/packs.js";
 import { resolveGlobalCodexSkillsRoot, resolveTargetRoot } from "../../lib/runtime-paths.js";
@@ -243,6 +243,7 @@ export class FileHostPublisher implements HostPublisher {
         statusContractReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "host-status-contract.json")),
         contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
         codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
+        knowledgeGraphReference: relativePathForDisplay(path.dirname(hostContractFile), resolveKnowledgeGraphFile(targetRoot)),
         commandIndexReference: input.host === "codex"
           ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
           : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
@@ -440,6 +441,7 @@ export class FileHostPublisher implements HostPublisher {
         statusContractReference: relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".looply", "state", "host-status-contract.json")),
         contextSnapshotReference: relativePathForDisplay(path.dirname(hostContractFile), resolveContextSnapshotFile(targetRoot)),
         codeContextReference: relativePathForDisplay(path.dirname(hostContractFile), resolveCodeContextFile(targetRoot)),
+        knowledgeGraphReference: relativePathForDisplay(path.dirname(hostContractFile), resolveKnowledgeGraphFile(targetRoot)),
         commandIndexReference: input.host === "codex"
           ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
           : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
@@ -889,6 +891,7 @@ export class FileHostPublisher implements HostPublisher {
       `- ./.looply/state/project-context.json`,
       `- ./.looply/state/context-index.md`,
       `- ./.looply/state/code-context.json`,
+      `- ./.looply/state/knowledge-graph.json`,
       `- ./.looply/state/interaction-policy.json`,
       `- ./.looply/custom/project-context.md`,
       `- ./.looply/custom/integrations/integrations-index.md`,

@@ -1,12 +1,12 @@
 ---
-name: looply-workflow-status
-description: Use to inspect the persisted state of a feature workflow and decide the next recommended step.
+name: looply-prd-to-stories
+description: Use when a PRD already exists and needs to be broken into delivery stories. Do not use for raw idea discovery or implementation.
 ---
-Use this skill when the user explicitly invokes `$looply-workflow-status`, asks to run `/looply:workflow-status`, or clearly requests the `workflow-status` workflow.
-Workflow phase: `status`.
-Primary orchestrator: `delivery-orchestrator`.
+Use this skill when the user explicitly invokes `$looply-prd-to-stories`, asks to run `/looply:prd-to-stories`, or clearly requests the `prd-to-stories` workflow.
+Workflow phase: `planning`.
+Primary orchestrator: `pm-analyst`.
 Quick usage:
-- `$looply-workflow-status <feature-name> [session-label] "[notes...]"`
+- `$looply-prd-to-stories <feature-name> [prd-reference] "[notes...]"`
 Primary references:
 - Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
 - Host status contract: ../../../.looply/state/host-status-contract.json
@@ -19,11 +19,11 @@ Primary references:
 - Project context: ../../../.looply/custom/project-context.md
 - Session context: ../../../.looply/custom/session-context.md
 Usage:
-- Explicit mention: `$looply-workflow-status`
-- Workflow alias to honor: `/looply:workflow-status` and `$looply-workflow-status` depending on host
-- Syntax in Codex: `$looply-workflow-status <feature-name> [session-label] [notes...]`
+- Explicit mention: `$looply-prd-to-stories`
+- Workflow alias to honor: `/looply:prd-to-stories` and `$looply-prd-to-stories` depending on host
+- Syntax in Codex: `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
 Example:
-- $looply-workflow-status pix-webhook-retry
+- $looply-prd-to-stories pix-webhook-retry prd-pix-webhook-retry
 Curated example guidance:
 - ICL mode: `on`
 - Use examples only for style, structure and quality calibration.
@@ -47,44 +47,42 @@ Execution rules:
 The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.
 ## Constraints
 
-- Do not implement feature code directly
-- Do not skip blocking gates
-- Do not rewrite specialist outputs without explicit reason
+- Do not define technical architecture
+- Do not approve implementation tradeoffs
 ## Escalation
 
-- Escalate product ambiguity to pm-analyst
-- Escalate structural ambiguity to architect
-- Escalate implementation blockers to backend
-- Escalate release risk to reviewer
+- Escalate technical tradeoffs to architect
+- Escalate delivery sequencing to engineering-base
 ## Project Rules
 
-### project-conventions
+### business-rules
 
-# Project Conventions
+# Business Rules
 
 ## Purpose
 
-Define project-level conventions for collaboration that agents must follow when interacting with version control, pull requests and releases.
+Define domain-specific constraints, validation rules and business invariants that agents must respect when designing or implementing features.
 
 ## Rules
 
-- Follow the project's established branching strategy.
-- Write clear, descriptive commit messages.
-- PRs must include a summary of changes and link to the relevant story.
-- Do not commit generated files or build artifacts.
-- Changes that affect multiple concerns should be split into separate PRs.
+- Document business rules explicitly before implementing.
+- Validate business constraints in the domain layer, not in controllers.
+- Business rules must be testable and independently verifiable.
+- Do not invent business rules -- derive them from PRDs, stories or stakeholder input.
+- Escalate ambiguity in business rules to the product owner.
 
 ## Examples
 
-- Good commit: `feat: add retry logic to payment processing`
-- Bad commit: `fix stuff`
+- "A user can only have one active subscription at a time."
+- "Order total must be recalculated when line items change."
+- "Discount codes expire 30 days after issuance."
 
 ## Enforcement
 
-- Branch protection rules enforce review requirements.
-- CI checks run on every PR.
-- Commit message convention enforced via hooks or CI.
+- Domain layer validation enforces invariants.
+- Business rule tests in the test suite.
+- PRD and story acceptance criteria must reference applicable business rules.
 Arguments:
-- feature-name: short identifier of the feature being resumed (required)
-- session-label: optional label used to distinguish parallel sessions for the same project or feature (optional)
-- notes: optional notes about blockers, context switches or newly discovered artifacts (optional)
+- feature-name: short identifier for the feature being planned (required)
+- prd-reference: optional path or reference to the PRD artifact (optional)
+- notes: optional planning notes, sequencing or constraints (optional)

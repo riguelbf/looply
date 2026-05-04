@@ -3,7 +3,10 @@ import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "../perf/sessio
 import { discoverCodeContext } from "./discovery.js";
 import { analyzeWorkspace } from "./providers/index.js";
 import { CODE_CONTEXT_VERSION, type CodeContextDocument } from "./schema.js";
-import { writeCodeContext } from "./storage.js";
+import { writeCodeContext, writeKnowledgeGraph } from "./storage.js";
+import { resolveModuleDependencies } from "./resolve-deps.js";
+import { buildKnowledgeGraph, mergeNodes } from "./graph-builder.js";
+import { extractDatabaseSchema } from "./providers/database.js";
 
 export interface RefreshCodeContextResult {
   targetRoot: string;
@@ -13,9 +16,17 @@ export interface RefreshCodeContextResult {
   codeContextFile: string;
   providerCount: number;
   workspaceRootCount: number;
+  knowledgeGraphFile?: string;
 }
 
-export async function refreshCodeContext(targetRoot: string): Promise<RefreshCodeContextResult> {
+export interface RefreshCodeContextOptions {
+  skipGraph?: boolean;
+}
+
+export async function refreshCodeContext(
+  targetRoot: string,
+  options: RefreshCodeContextOptions = {}
+): Promise<RefreshCodeContextResult> {
   const projectContext = await withPerfSpan("code-context.load-project-context", async () => readProjectContextFile(targetRoot));
   const projectMode = projectContext?.mode ?? "existing-project";
   const primaryContextRoot = projectContext?.primaryContextRoot ?? targetRoot;
@@ -70,12 +81,37 @@ export async function refreshCodeContext(targetRoot: string): Promise<RefreshCod
 
   const codeContextFile = await withPerfSpan("code-context.write-document", async () => writeCodeContext(targetRoot, document));
 
+  let knowledgeGraphFile: string | undefined;
+
+  if (!options.skipGraph) {
+    try {
+      const resolvedModules = resolveModuleDependencies(document, primaryContextRoot);
+      document.modules = resolvedModules;
+
+      const graph = buildKnowledgeGraph(document, primaryContextRoot);
+
+      const dbResult = await extractDatabaseSchema(primaryContextRoot);
+      if (dbResult.nodes.length > 0) {
+        mergeNodes(graph, dbResult.nodes, dbResult.edges);
+      }
+
+      setPerfMetadata("knowledge-graph.nodeCount", graph.nodes.length);
+      setPerfMetadata("knowledge-graph.edgeCount", graph.edges.length);
+      setPerfMetadata("knowledge-graph.dbNodeCount", dbResult.nodes.length);
+
+      knowledgeGraphFile = await writeKnowledgeGraph(targetRoot, graph);
+    } catch (error) {
+      setPerfMetadata("knowledge-graph.error", String(error));
+    }
+  }
+
   return {
     targetRoot,
     primaryContextRoot,
     projectMode,
     inferencePolicy,
     codeContextFile,
+    knowledgeGraphFile,
     providerCount: discovery.providers.filter((provider) => provider.detectedRootCount > 0).length,
     workspaceRootCount: discovery.workspaceRoots.length
   };

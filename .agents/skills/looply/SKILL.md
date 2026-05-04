@@ -7,8 +7,9 @@ Use this skill as the main entrypoint for Looply inside Codex.
 
 Primary references:
 - Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
-- Host status contract: ../../../.looply/state/host-status-contract.json
 - Command index: ../../../LOOPLY_COMMANDS.md
+- Host contract: ../../../HOST_CONTRACT.md
+- Host status contract: ../../../.looply/state/host-status-contract.json
 - Project contract: ../../../AGENTS.md
 
 When to use:
@@ -28,17 +29,22 @@ Behavior:
 8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
 9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
 10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
-11. Prefer explicit next-step guidance over generic explanations.
-12. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
-13. Respect project mode existing-project and interaction mode balanced.
+11. When curated examples are referenced by a workflow command, treat them as style guidance only.
+12. Prefer explicit next-step guidance over generic explanations.
+13. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
+14. Respect project mode existing-project and interaction mode balanced.
 
 Available workflows:
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`
   Define cloud topology, governance controls and cost posture for a workload change
+- `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`
+  Start discovery and consolidate an idea into an approved PRD
 - `$looply-next <feature-name> [session-label] [notes...]`
   Show the next recommended step for the current feature workflow
 - `$looply-platform-foundation-evolution <initiative-name> [constraints...]`
   Evolve shared platform foundation with guardrails, governance and cost review
+- `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
+  Break an approved PRD into delivery-ready stories
 - `$looply-resume <feature-name> [session-label] [notes...]`
   Resume the current feature workflow from the persisted state
 - `$looply-story-to-production <feature-name> <story-reference> [constraints...]`

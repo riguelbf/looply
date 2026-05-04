@@ -61,3 +61,40 @@ Contexto de integracoes externas em Markdown. Cada integracao (ex: Stripe, AWS) 
 
 looply diferencia contexto de projeto, feature, sessao e integracao. Em `existing-project`, a politica correta e `codebase-first-with-artifact-acceleration`.
 
+## Knowledge Graph
+
+Grafo de conhecimento persistente que conecta entidades de codigo (modulos, arquivos, classes, funcoes), banco de dados (tabelas, colunas, foreign keys) e features. Gerado automaticamente pelo `refresh-code-context` e armazenado em `.looply/state/knowledge-graph.json`.
+
+### Nos
+
+| Kind | Descricao | Provider |
+|------|-----------|----------|
+| `module` | Agrupamento logico de arquivos (ex: `src/lib`) | typescript, python, etc. |
+| `file` | Arquivo fonte | todos |
+| `class` | Classe ou tipo | typescript, python, dotnet-csharp, java |
+| `function` | Funcao ou metodo | typescript, javascript, python, shell |
+| `table` | Tabela de banco de dados | prisma, drizzle, typeorm, sql |
+| `column` | Coluna de tabela | prisma, drizzle, typeorm, sql |
+
+### Arestas
+
+| Type | Significado |
+|------|-------------|
+| `imports` | Modulo/arquivo importa outro |
+| `contains` | Modulo contem arquivo, classe contem metodo |
+| `belongs_to` | Entidade pertence a um modulo |
+| `has_column` | Tabela possui coluna |
+| `references_col` | FK referencia PK de outra tabela |
+| `maps_to` | Classe/model mapeia para tabela |
+| `impacts` | Story impacta entidade de codigo/banco |
+
+### Database Schema Extraction
+
+Extrai schema de banco sem conexao (Camada 1 - analise estatica):
+- **Prisma**: `prisma/schema.prisma` — models, fields, `@relation`
+- **Drizzle**: `pgTable`/`mysqlTable` — tabelas, colunas, `.references()`
+- **TypeORM**: `@Entity()` decorators — entidades, colunas, relacoes
+- **SQL migrations**: `**/migrations/**/*.sql` — `CREATE TABLE`, FK constraints
+
+Zero credenciais sao lidas ou persistidas.
+

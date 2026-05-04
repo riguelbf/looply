@@ -1,8 +1,22 @@
-# looply Host Contract
+# looply Host Contract for Claude Code
 
 ## Purpose
 
 This document is the host-facing operating contract for looply. The host reasons, the CLI executes, and the workflow state is the memory.
+
+## Primary References
+
+- Host entrypoint: `./CLAUDE.md`
+- Workflow playbook: `.looply/state/workflow-playbook.claude.md`
+- Host contract: `./HOST_CONTRACT.md`
+- Context index: `.looply/state/context-index.md`
+- Project context: `.looply/custom/project-context.md`
+- Session context: `.looply/custom/session-context.md`
+- Project snapshot: `.looply/state/project-snapshot.json`
+- Host status contract: `.looply/state/host-status-contract.json`
+- Context snapshot: `.looply/state/context-snapshot.json`
+- Code-context snapshot: `.looply/state/code-context.json`
+- Command index: `.claude/commands`
 
 ## Responsibilities
 
@@ -26,7 +40,6 @@ For a single autonomous cycle, the host may use `looply autonomy <feature>` to d
 ## Execution Policy
 
 - Balanced and guided modes must ask for confirmation before high-risk or destructive actions.
-- Autonomous mode can proceed without repeated confirmations for low-risk actions.
 - Never skip a blocking gate.
 - Never reprocess the full repository if the snapshots already contain enough state.
 - Never hide the next action from the persisted workflow state.
@@ -45,3 +58,10 @@ For a single autonomous cycle, the host may use `looply autonomy <feature>` to d
 - The next action requires human approval.
 - The workflow outputs are complete.
 - The required context is stale and the real codebase must be inspected first.
+
+## Mode Notes
+
+- Project mode: `existing-project`
+- Interaction mode: `balanced`
+- Output locale: `pt-BR`
+- Target host: `Claude Code`
