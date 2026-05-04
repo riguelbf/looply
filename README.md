@@ -18,6 +18,16 @@
 
 ---
 
+## Recent Updates
+
+- **Knowledge Graph** — grafo de conhecimento persistente que conecta modulos, classes, funcoes e tabelas de banco. Resolve dependencias entre modulos, extrai schema de Prisma/Drizzle/TypeORM/migrations SQL (zero conexao), e usa graph traversal para mapear features a entidades impactadas. Consulte com `looply refresh-code-context`.
+- **Update notifier** — a cada comando, verifica se ha versao nova do `@looply-cli/looply` no npm e sugere `npm install -g` para atualizar. Cache de 24h, nunca bloqueia.
+- **DB schema extraction (Camada 1)** — extrai tabelas, colunas e foreign keys de `prisma/schema.prisma`, Drizzle, TypeORM decorators e SQL migrations. Estatico, sem conexao, sem credencial.
+- **Cross-module dependency resolver** — `dependsOnModules` agora populado com dependencias reais entre modulos, resolvendo imports relativos de TypeScript, JavaScript, Python e .NET.
+- **Install flow + story-to-production skill** — instalacao pergunta se quer gerar code intelligence ao final. Skill `story-to-production` agora referencia o knowledge-graph nas regras de execucao.
+
+---
+
 > 📌 **Current status**: see [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the up-to-date product snapshot, in-progress work, and next steps.
 
 ## Why Looply
