@@ -30,6 +30,8 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Recently Completed
 
+- **skill-creator** — slash command interativo `/looply:skill-creator <skill-name>` para criacao guiada de novas skills looply. Fluxo de 8 perguntas (nome, descricao, triggers, fase, orquestrador, hosts, politica, workflow), validacao regex, preview antes de escrever, geracao completa de SKILL.md cross-host + agents yamls + command help file + atualizacao de LOOPLY_COMMANDS.md, AGENTS.md e indices. Meta-skill auto-contida em `.agents/skills/looply-skill-creator/SKILL.md`.
+
 - **knowledge-graph** — grafo de conhecimento persistente que conecta modulos, simbolos e tabelas de banco. Resolve `dependsOnModules` via cross-module resolver, extrai schema de Prisma/Drizzle/TypeORM/migrations SQL (Camada 1, zero credencial), e substitui token-matching por graph traversal no `deriveFeatureCodeImpact`. Gerado automaticamente pelo `refresh-code-context`, consultavel via `GraphQuery` API (`neighborhood`, `path`, `dependentsOf`). Persistido em `.looply/state/knowledge-graph.json`.
 
 - **npm publish** — pacote `@looply-cli/looply` publicado no registry com CI/CD (GitHub Actions) que builda e publica a cada push na `main`

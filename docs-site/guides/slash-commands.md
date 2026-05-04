@@ -44,6 +44,23 @@ Exemplo:
 /looply:workflow-status pix-webhook-retry
 ```
 
+### `/looply:skill-creator`
+
+Cria novas skills looply de forma interativa. Guia o usuario por perguntas sobre nome, descricao, triggers, fase, hosts e gera automaticamente todos os artefatos necessarios.
+
+Exemplo:
+
+```text
+/looply:skill-creator my-new-skill
+```
+
+Artefatos gerados:
+- `.agents/skills/<name>/SKILL.md` — arquivo principal com frontmatter e corpo estruturado
+- `.agents/skills/<name>/agents/openai.yaml` — metadata de interface para Codex
+- `.agents/skills/<name>/agents/claude.yaml` — metadata para Claude (opcional, se cross-host)
+- `.looply/state/commands/codex/looply:<name>.md` — help file do comando
+- `LOOPLY_COMMANDS.md` atualizado com novo alias
+
 ## Aliases de retomada
 
 - `/looply:resume`
@@ -78,6 +95,7 @@ Voce pode pedir ajuda assim:
 - ja existe PRD aprovado: use `prd-to-stories`
 - ja existe story selecionada: use `story-to-production`
 - precisa retomar ou entender proximo passo: use `workflow-status`, `resume` ou `next`
+- quer criar uma nova skill looply: use `skill-creator`
 
 ## Referencia detalhada
 

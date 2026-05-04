@@ -1,0 +1,7 @@
+interface:
+  display_name: "$looply-skill-creator"
+  short_description: "Cria novas skills looply de forma interativa. Gera SKILL.md, yamls de host, command help file e atualiza indices automaticamente."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-skill-creator <skill-name>"
+policy:
+  allow_implicit_invocation: false

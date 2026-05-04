@@ -42,6 +42,7 @@ Execution rules:
 10. When curated examples are referenced, use them only for style, structure and quality calibration.
 11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.
 12. Do not use emojis.
+13. When context monitoring is enabled in `.looply/state/interaction-policy.json`, on resume load the `## Session Compaction` section from `workflow-status.md` instead of full context. Reset `estimatedTokens` and update `sessionLabel`.
 ---
 ## Composed Agent Context
 The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.

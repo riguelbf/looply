@@ -56,6 +56,7 @@ features:
 - [`/looply:prd-to-stories`](/reference/generated/slash-commands/looply:prd-to-stories)
 - [`/looply:story-to-production`](/reference/generated/slash-commands/looply:story-to-production)
 - [`/looply:workflow-status`](/reference/generated/slash-commands/looply:workflow-status)
+- [`/looply:skill-creator`](/guides/slash-commands#looplyskill-creator) — cria novas skills looply de forma interativa
 - aliases de retomada: [`/looply:resume`](/reference/generated/slash-commands/looply:workflow-status) e [`/looply:next`](/reference/generated/slash-commands/looply:workflow-status)
 
 ### Artefatos de Suporte

@@ -20,6 +20,7 @@
 
 ## Recent Updates
 
+- **Skill Creator** — novo slash command interativo `/looply:skill-creator` que guia a criacao de novas skills looply. Faz perguntas, valida nome contra regex, gera SKILL.md cross-host, agents yamls, command help file e atualiza indices automaticamente.
 - **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
 - **Update notifier** — checks for newer `@looply-cli/looply` versions on npm on every command and suggests `npm install -g` to upgrade. 24h cache, never blocks execution.
 - **DB schema extraction (Layer 1)** — extracts tables, columns and foreign keys from `prisma/schema.prisma`, Drizzle, TypeORM decorators and SQL migrations. Static, no connection, no credentials.
@@ -66,6 +67,7 @@ npx @looply-cli/looply --help
 | **Multi-host** | Publishes the same artifact set to Codex, Claude Code, and the local desktop companion |
 | **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
+| **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
 | **Project rules** | Six categories (`coding-standards`, `testing-requirements`, `security-policies`, etc.) — standard defaults or custom |
 | **ICL guidance** | In-context example layer that calibrates agent output style and quality |
 | **Code intelligence** | Multi-language code-context discovery + Knowledge Graph with module dependency resolution and database schema extraction |
@@ -148,6 +150,7 @@ looply docs open
 | `workflow-status` | Inspect state and recommend the next step |
 | `cloud-workload-design` | Cloud topology, async-first, queueing, and governance decisions |
 | `platform-foundation-evolution` | Shared foundation, guardrails, pipelines, identity, and observability |
+| `skill-creator` | Interactive creation of new looply skills. Generates SKILL.md, yamls, help files and updates indices |
 
 ## Approach
 
