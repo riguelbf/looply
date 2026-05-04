@@ -1499,6 +1499,7 @@ looply perf trace summary --dir . --json
           contextIndexReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "context-index.md")),
           projectContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "project-context.md")),
           sessionContextReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "custom", "session-context.md")),
+          knowledgeGraphReference: relativePathForDisplay(skillRoot, path.join(input.targetRoot, ".looply", "state", "knowledge-graph.json")),
           exampleHintsReference: relativePathForDisplay(skillRoot, input.exampleHintsFile),
           exampleReferences: (input.selectedByAlias.get(skill.alias) ?? []).map((example) =>
             relativePathForDisplay(

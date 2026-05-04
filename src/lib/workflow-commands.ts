@@ -482,6 +482,7 @@ export function renderCodexSkillDocument(input: {
   sessionContextReference: string;
   exampleHintsReference: string;
   exampleReferences: string[];
+  knowledgeGraphReference?: string;
   composedSections?: ComposedSection[];
 }): string {
   const { skill } = input;
@@ -521,6 +522,7 @@ export function renderCodexSkillDocument(input: {
     `- Context index: ${input.contextIndexReference}`,
     `- Project context: ${input.projectContextReference}`,
     `- Session context: ${input.sessionContextReference}`,
+    input.knowledgeGraphReference ? `- Knowledge graph: ${input.knowledgeGraphReference} (use para impacto, dependencias entre modulos e schema de banco)` : null,
     "",
     "Usage:",
     `- Explicit mention: \`$${skill.name}\``,
@@ -550,7 +552,10 @@ export function renderCodexSkillDocument(input: {
     `9. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`,
     "10. When curated examples are referenced, use them only for style, structure and quality calibration.",
     "11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
-    "12. Do not use emojis."
+    "12. Do not use emojis.",
+    skill.workflowName === "story-to-production"
+      ? "13. Before implementing, check `.looply/state/knowledge-graph.json` for module dependencies, database tables and entities impacted by the story. Run `looply refresh-code-context` if the graph is missing or stale."
+      : null
   ];
 
   if (input.composedSections && input.composedSections.length > 0) {

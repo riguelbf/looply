@@ -18,6 +18,7 @@ Primary references:
 - Context index: ../../../.looply/state/context-index.md
 - Project context: ../../../.looply/custom/project-context.md
 - Session context: ../../../.looply/custom/session-context.md
+- Knowledge graph: ../../../.looply/state/knowledge-graph.json (use para impacto, dependencias entre modulos e schema de banco)
 Usage:
 - Explicit mention: `$looply-story-to-production`
 - Workflow alias to honor: `/looply:story-to-production` and `$looply-story-to-production` depending on host
@@ -42,6 +43,7 @@ Execution rules:
 10. When curated examples are referenced, use them only for style, structure and quality calibration.
 11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.
 12. Do not use emojis.
+13. Before implementing, check `.looply/state/knowledge-graph.json` for module dependencies, database tables and entities impacted by the story. Run `looply refresh-code-context` if the graph is missing or stale.
 ---
 ## Composed Agent Context
 The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.
