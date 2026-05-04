@@ -1,4 +1,7 @@
 import { Command } from "commander";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import fs from "fs-extra";
 import { registerCheckUpdatesCommand } from "./commands/check-updates.js";
 import { registerAutonomyCommand } from "./commands/autonomy.js";
 import { registerCompletionCommand } from "./commands/completion.js";
@@ -27,13 +30,24 @@ import { registerUpgradeCommand } from "./commands/upgrade.js";
 import { registerValidateCommand } from "./commands/validate.js";
 import { renderLogo, renderTagline } from "./ui/brand.js";
 
+function resolveVersion(): string {
+  try {
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+    const pkgPath = path.resolve(currentDir, "..", "..", "package.json");
+    const pkg = fs.readJsonSync(pkgPath);
+    return (pkg as { version?: string }).version ?? "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+}
+
 export function buildProgram(): Command {
   const program = new Command();
 
   program
     .name("looply")
     .description(`${renderLogo()}\n${renderTagline()}`)
-    .version("0.1.0")
+    .version(resolveVersion())
     .showHelpAfterError("(use --help for command details)")
     .showSuggestionAfterError();
 

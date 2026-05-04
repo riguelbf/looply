@@ -6,6 +6,7 @@ import { resolveHostPublishers } from "../hosts/index.js";
 import { detectSupportedShell, installShellCompletion } from "./cli-completion/install.js";
 import { isContextPerfMode, setPerfMetadata, withPerfSpan } from "./perf/session.js";
 import { detectProjectMode } from "./project-context.js";
+import { refreshCodeContext } from "./code-context/manager.js";
 import type {
   HostPublisher,
   InstallScope,
@@ -117,6 +118,14 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
     yes: input.yes
   }));
 
+  const codeContextFile = await withPerfSpan("install-flow.maybe-refresh-code-context", async () =>
+    maybeRefreshCodeContext({
+      projectMode,
+      targetRoot: input.currentWorkingDirectory,
+      yes: input.yes
+    })
+  );
+
   showOutro(
     installResults
       .map((result) => `${result.host}: ${result.entrypointFile}`)
@@ -130,6 +139,9 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
             `shell completion: ${shellCompletionResult.completionFile}`,
             `shell rc file: ${shellCompletionResult.rcFile}${shellCompletionResult.changedRcFile ? " (updated)" : " (already configured)"}`
           ]
+        : [])
+      .concat(codeContextFile
+        ? [`code context: ${codeContextFile.codeContextFile}`, `knowledge graph: ${codeContextFile.knowledgeGraphFile}`]
         : [])
       .join("\n")
   );
@@ -163,6 +175,39 @@ async function maybeEnableShellCompletion(input: {
   const result = await installShellCompletion(shell);
   loading.stop(`Enabled ${chalk.cyan(shell)} shell autocomplete`);
   return result;
+}
+
+async function maybeRefreshCodeContext(input: {
+  projectMode: ProjectMode;
+  targetRoot: string;
+  yes?: boolean;
+}): Promise<{ codeContextFile: string; knowledgeGraphFile?: string } | null> {
+  if (input.projectMode !== "existing-project") {
+    return null;
+  }
+
+  const shouldRefresh = input.yes
+    ? false
+    : await confirm({
+        message: "Generate code intelligence and knowledge graph for this project?",
+        initialValue: true
+      });
+
+  if (isCancel(shouldRefresh) || !shouldRefresh) {
+    return null;
+  }
+
+  const loading = createSpinner("Analyzing project codebase and extracting knowledge graph...");
+  try {
+    const result = await refreshCodeContext(input.targetRoot);
+    loading.stop(
+      `Knowledge graph generated: ${chalk.cyan(String(result.knowledgeGraphFile ?? "skipped"))}`
+    );
+    return { codeContextFile: result.codeContextFile, knowledgeGraphFile: result.knowledgeGraphFile };
+  } catch (error) {
+    loading.stop(`Code context refresh failed: ${chalk.yellow(String(error))}`);
+    return null;
+  }
 }
 
 async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<SupportedHost[] | undefined> {
