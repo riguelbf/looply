@@ -20,14 +20,28 @@
 
 ## Recent Updates
 
-- **Skill Search** — new mandatory discovery skill `$looply-skill-search`. Forces skill-aware routing before any code action: classifies user intent against all 9 looply workflows, prioritizes structured delivery over ad-hoc edits, and falls back to direct code only when no workflow matches. Enabled with `allow_implicit_invocation: true`.
-- **OpenCode host support** -- new native host publisher for OpenCode. Publishes `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills, and command index. All 9 workflow aliases (`$looply-*`) available as native skills via the `looply` skill discovery entrypoint. Install with `--host opencode`.
-- **Skill Creator** — new interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names against regex, generates cross-host SKILL.md, agent yamls, command help files and updates indices automatically.
-- **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
-- **Update notifier** — checks for newer `@looply-cli/looply` versions on npm on every command and suggests `npm install -g` to upgrade. 24h cache, never blocks execution.
-- **DB schema extraction (Layer 1)** — extracts tables, columns and foreign keys from `prisma/schema.prisma`, Drizzle, TypeORM decorators and SQL migrations. Static, no connection, no credentials.
-- **Cross-module dependency resolver** — `dependsOnModules` now populated with real module dependencies by resolving relative imports across TypeScript, JavaScript, Python and .NET.
-- **Install flow + story-to-production skill** — installation prompts to generate code intelligence on completion. `story-to-production` skill now references the knowledge graph in execution rules.
+### v1.4 — Discovery & Host Expansion
+
+| Update | Description |
+|--------|-------------|
+| **Skill Search** | Mandatory discovery gate — classifies user intent against all 9 looply workflows and enforces skill-first routing before any code action. `allow_implicit_invocation: true`. |
+| **OpenCode Host** | Native publisher for OpenCode: `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills, and command index. Install with `--host opencode`. |
+| **Skill Creator** | Interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names, and generates cross-host SKILL.md, yamls, help files and indices. |
+
+### v1.3 — Code Intelligence
+
+| Update | Description |
+|--------|-------------|
+| **Knowledge Graph** | Persistent graph connecting modules, classes, functions and database tables. Traverses cross-module dependencies, extracts DB schema from Prisma/Drizzle/TypeORM/SQL (zero connection). `looply refresh-code-context`. |
+| **DB Schema (Layer 1)** | Extracts tables, columns and foreign keys from `prisma/schema.prisma`, Drizzle, TypeORM decorators and SQL migrations. Static, no credentials. |
+| **Cross-module Resolver** | `dependsOnModules` populated with real module dependencies by resolving relative imports across TypeScript, JavaScript, Python and .NET. |
+
+### v1.2 — Quality of Life
+
+| Update | Description |
+|--------|-------------|
+| **Update Notifier** | Checks npm for newer `@looply-cli/looply` on every command. 24h cache, non-blocking. |
+| **Install Flow** | Prompts to generate code intelligence on completion. `story-to-production` skill references the knowledge graph in execution rules. |
 
 ---
 
