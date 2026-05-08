@@ -1,0 +1,7 @@
+interface:
+  display_name: "$looply-skill-search"
+  short_description: "Discover available looply skills and workflows. Forces skill-aware discovery before any code action."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-skill-search"
+policy:
+  allow_implicit_invocation: true
