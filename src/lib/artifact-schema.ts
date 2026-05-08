@@ -117,7 +117,7 @@ export const exampleSchema = artifactSchema.extend({
   kind: exampleKindSchema,
   quality: exampleQualitySchema.default("strong"),
   applies_to: exampleApplicabilitySchema,
-  host_support: z.array(z.enum(["codex", "claude"])).default([]),
+  host_support: z.array(z.enum(["codex", "claude", "opencode"])).default([]),
   project_modes: z.array(z.enum(["existing-project", "greenfield"])).default([]),
   interaction_modes: z.array(z.enum(["guided", "balanced", "autonomous"])).default([]),
   locale: z.enum(["en", "pt-BR"]).optional(),

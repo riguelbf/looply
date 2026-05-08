@@ -697,7 +697,7 @@ export function renderCodexLauncherSkillMetadata(): string {
 }
 
 export function renderHelpCommandDocument(input: {
-  host: "codex" | "claude";
+  host: "codex" | "claude" | "opencode";
   pack: string;
   outputLocale: "en" | "pt-BR";
   projectMode: "existing-project" | "greenfield";
@@ -968,7 +968,7 @@ function renderExpectedOutput(command: WorkflowCommandDefinition): string {
   }
 }
 
-function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "claude" | "codex"): string {
+function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "claude" | "codex" | "opencode"): string {
   switch (command.name) {
     case "idea-to-prd":
       return `- Host: ${renderHostLabel(host)}. After approval, run \`${formatNamedCommandForHost(host, "prd-to-stories")}\`.`;
@@ -992,7 +992,7 @@ function renderSuggestedNextStep(command: WorkflowCommandDefinition, host: "clau
 }
 
 function renderExampleGuidanceLines(input: {
-  host: "claude" | "codex";
+  host: "claude" | "codex" | "opencode";
   mode: "on" | "reduced" | "off";
   exampleReferences: string[];
 }): string[] {
@@ -1022,7 +1022,7 @@ function renderExampleGuidanceLines(input: {
   return lines;
 }
 
-function renderExampleInvocation(command: WorkflowCommandDefinition, host: "claude" | "codex"): string {
+function renderExampleInvocation(command: WorkflowCommandDefinition, host: "claude" | "codex" | "opencode"): string {
   switch (command.name) {
     case "idea-to-prd":
       return formatNamedCommandForHost(
@@ -1050,7 +1050,7 @@ function renderExampleInvocation(command: WorkflowCommandDefinition, host: "clau
 }
 
 function formatCommandForHost(
-  host: "claude" | "codex",
+  host: "claude" | "codex" | "opencode",
   command: WorkflowCommandDefinition,
   args = ""
 ): string {
@@ -1058,12 +1058,14 @@ function formatCommandForHost(
   return [prefix, args].filter((part) => part.trim() !== "").join(" ").trim();
 }
 
-function formatNamedCommandForHost(host: "claude" | "codex", commandName: string, args = ""): string {
+function formatNamedCommandForHost(host: "claude" | "codex" | "opencode", commandName: string, args = ""): string {
   const alias = `looply:${commandName}`;
   const prefix = host === "claude" ? `/${alias}` : `$${alias.replaceAll(":", "-")}`;
   return [prefix, args].filter((part) => part.trim() !== "").join(" ").trim();
 }
 
-function renderHostLabel(host: "claude" | "codex"): string {
-  return host === "claude" ? "Claude Code" : "Codex";
+function renderHostLabel(host: "claude" | "codex" | "opencode"): string {
+  if (host === "claude") return "Claude Code";
+  if (host === "opencode") return "OpenCode";
+  return "Codex";
 }

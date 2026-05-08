@@ -103,20 +103,20 @@ looply sessions link backend-afternoon pix-webhook-retry --workflow story-to-pro
 1. rode:
 
 ```bash
-looply doctor --host codex,claude --scope project
+looply doctor --host codex,claude,opencode --scope project
 ```
 
 2. se a instalacao estiver incompleta:
 
 ```bash
-looply reinstall --host codex,claude --scope project --yes
+looply reinstall --host codex,claude,opencode --scope project --yes
 ```
 
 3. se houver mudancas do pack:
 
 ```bash
-looply check-updates --host codex,claude --scope project
-looply upgrade --host codex,claude --scope project --yes
+looply check-updates --host codex,claude,opencode --scope project
+looply upgrade --host codex,claude,opencode --scope project --yes
 ```
 
 ## O host esta perguntando demais
@@ -136,7 +136,7 @@ looply upgrade --host codex,claude --scope project --yes
 Reinstale ou reinstale com:
 
 ```bash
-looply reinstall --host codex,claude --scope project --interaction-mode autonomous --yes
+looply reinstall --host codex,claude,opencode --scope project --interaction-mode autonomous --yes
 ```
 
 Tambem confira [Comportamento dos Hosts](/guides/host-behavior).
@@ -164,7 +164,7 @@ Tambem confira [Comportamento dos Hosts](/guides/host-behavior).
 2. se precisar reduzir autonomia:
 
 ```bash
-looply reinstall --host codex,claude --scope project --interaction-mode balanced --yes
+looply reinstall --host codex,claude,opencode --scope project --interaction-mode balanced --yes
 ```
 
 3. valide o estado atual:
@@ -185,13 +185,13 @@ looply reinstall --host codex,claude --scope project --interaction-mode balanced
 1. verifique mudancas:
 
 ```bash
-looply check-updates --host codex,claude --scope project
+looply check-updates --host codex,claude,opencode --scope project
 ```
 
 2. aplique:
 
 ```bash
-looply upgrade --host codex,claude --scope project --yes
+looply upgrade --host codex,claude,opencode --scope project --yes
 ```
 
 3. consulte historico:
@@ -199,6 +199,7 @@ looply upgrade --host codex,claude --scope project --yes
 ```bash
 looply history --host codex
 looply history --host claude
+looply history --host opencode
 ```
 
 ## A documentacao abre, mas parece antiga

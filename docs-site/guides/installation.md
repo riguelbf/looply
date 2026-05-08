@@ -9,7 +9,7 @@ A instalacao publica o pack no projeto ou no escopo global e prepara o host para
 
 ## Flags importantes
 
-- `--host codex,claude`
+- `--host codex,claude,opencode`
 - `--scope project|global`
 - `--pack software-delivery-suite`
 - `--locale pt-BR|en`

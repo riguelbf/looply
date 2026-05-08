@@ -3,7 +3,7 @@
 O `looply` e uma plataforma de artefatos Markdown para engenharia assistida por IA. O produto se organiza em tres camadas:
 
 - `packs` e artefatos como fonte de verdade operacional
-- `hosts` para publicar o modelo em ambientes como Codex e Claude
+- `hosts` para publicar o modelo em ambientes como Codex, Claude e OpenCode
 - `CLI` para instalar, sincronizar, validar, inspecionar e manter a plataforma
 
 ## O que existe hoje

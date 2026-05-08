@@ -169,7 +169,7 @@ function resolveNextCommand(
   feature: ProjectSnapshotDocument["features"][number] | null
 ): string {
   if (!snapshot.project.installed) {
-    return "looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project";
+    return "looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project";
   }
 
   if (!snapshot.context.snapshot) {

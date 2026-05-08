@@ -14,7 +14,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - Project: `looply`
 - Stage: `v2 hardening + public launch`
 - Primary focus: plataforma de artefatos para engenharia com IA assistida, publicada como pacote npm `@looply-cli/looply`
-- Hosts: `Claude Code`, `Codex`
+- Hosts: `Claude Code`, `Codex`, `OpenCode`
 - Main pack: `software-delivery-suite` (agrega `engineering-base` + `product-base`)
 
 ## In Progress
@@ -29,6 +29,8 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - expandir o desktop para detalhes de workflow, feature control e retomada
 
 ## Recently Completed
+
+- **OpenCode host support** — novo host publisher nativo para OpenCode. Gera `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills e command index. Todos os 9 workflow aliases disponiveis como skills nativos via skill de descoberta `looply`. Instale com `--host opencode`.
 
 - **skill-creator** — slash command interativo `/looply:skill-creator <skill-name>` para criacao guiada de novas skills looply. Fluxo de 8 perguntas (nome, descricao, triggers, fase, orquestrador, hosts, politica, workflow), validacao regex, preview antes de escrever, geracao completa de SKILL.md cross-host + agents yamls + command help file + atualizacao de LOOPLY_COMMANDS.md, AGENTS.md e indices. Meta-skill auto-contida em `.agents/skills/looply-skill-creator/SKILL.md`.
 
@@ -94,6 +96,7 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 - `Hosts`
   - Claude com slash commands publicados
   - Codex com entrypoints, playbooks e convencoes publicadas
+  - OpenCode com entrypoint `OPENCODE.md`, skills nativos e command index
 - `Docs`
   - portal local em `docs-site`
 

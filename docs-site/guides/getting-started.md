@@ -15,14 +15,14 @@ npm run build
 ## 3. Instale o pack base
 
 ```bash
-node ./bin/run.js install --host codex,claude --scope project --pack software-delivery-suite --locale pt-BR --project-mode existing-project --interaction-mode autonomous --yes
+node ./bin/run.js install --host codex,claude,opencode --scope project --pack software-delivery-suite --locale pt-BR --project-mode existing-project --interaction-mode autonomous --yes
 ```
 
 ## 4. Valide a instalacao
 
 ```bash
 node ./bin/run.js validate
-node ./bin/run.js doctor --host codex,claude --scope project
+node ./bin/run.js doctor --host codex,claude,opencode --scope project
 ```
 
 ## 5. Inicie o primeiro workflow

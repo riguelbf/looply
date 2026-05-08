@@ -7,9 +7,9 @@ Este guia mostra o caminho minimo para testar uma feature ponta a ponta no loopl
 No repositorio alvo:
 
 ```bash
-looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project --interaction-mode autonomous --locale pt-BR --yes
+looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project --interaction-mode autonomous --locale pt-BR --yes
 looply validate
-looply doctor --host codex,claude --scope project
+looply doctor --host codex,claude,opencode --scope project
 ```
 
 ## 2. Iniciar discovery
@@ -92,7 +92,7 @@ Se a sessao foi interrompida:
 - use `workflow-status` sempre que houver duvida sobre onde o trabalho parou
 - se precisar refinar um ponto anterior, use `looply replay` em vez de perder o historico
 - se quiser chamar um agente ou task fora da ordem sugerida, use `looply run-agent` ou `looply run-task`
-- instale para `codex,claude` se o time alterna entre hosts
+- instale para `codex,claude,opencode` se o time alterna entre hosts
 
 ## Referencia complementar
 

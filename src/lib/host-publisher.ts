@@ -1,9 +1,9 @@
 export type InstallScope = "project" | "global";
-export type SupportedHost = "codex" | "claude";
+export type SupportedHost = "codex" | "claude" | "opencode";
 export type OutputLocale = "en" | "pt-BR";
 export type ProjectMode = "existing-project" | "greenfield";
 export type InteractionMode = "guided" | "balanced" | "autonomous";
-export const supportedHosts: SupportedHost[] = ["codex", "claude"];
+export const supportedHosts: SupportedHost[] = ["codex", "claude", "opencode"];
 export const supportedLocales: OutputLocale[] = ["en", "pt-BR"];
 export const supportedProjectModes: ProjectMode[] = ["existing-project", "greenfield"];
 export const supportedInteractionModes: InteractionMode[] = ["guided", "balanced", "autonomous"];

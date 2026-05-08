@@ -101,7 +101,7 @@ describe("status and validation", () => {
 
     assert.match(output, /LOOPLY STATUS/);
     assert.match(output, /No install manifest found|Nenhum install manifest encontrado/);
-    assert.match(output, /looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project/);
+    assert.match(output, /looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project/);
     assert.match(output, /No context snapshot found|Nenhum context snapshot encontrado/);
   });
 

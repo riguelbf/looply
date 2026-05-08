@@ -20,6 +20,7 @@
 
 ## Recent Updates
 
+- **OpenCode host support** -- new native host publisher for OpenCode. Publishes `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills, and command index. All 9 workflow aliases (`$looply-*`) available as native skills via the `looply` skill discovery entrypoint. Install with `--host opencode`.
 - **Skill Creator** — new interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names against regex, generates cross-host SKILL.md, agent yamls, command help files and updates indices automatically.
 - **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
 - **Update notifier** — checks for newer `@looply-cli/looply` versions on npm on every command and suggests `npm install -g` to upgrade. 24h cache, never blocks execution.
@@ -40,7 +41,7 @@ Looply solves this by shipping a curated, versioned set of **packs** — Markdow
 ## How It Works
 
 1. **Install** a pack into your project: `looply install`
-2. **Publish** the pack to your AI hosts (Codex, Claude Code)
+2. **Publish** the pack to your AI hosts (Codex, Claude Code, OpenCode)
 3. **Work** through structured workflows (`idea-to-prd` → `prd-to-stories` → `story-to-production`)
 4. **Intervene** when needed (`replay`, `run-task`, `run-agent`, `reconcile`)
 5. **Repeat** — packs are versioned, shared, and improved over time
@@ -64,7 +65,7 @@ npx @looply-cli/looply --help
 | Area | Description |
 |---|---|
 | **Packs** | `engineering-base`, `product-base`, `software-delivery-suite` — modular, composable via `includes` |
-| **Multi-host** | Publishes the same artifact set to Codex, Claude Code, and the local desktop companion |
+| **Multi-host** | Publishes the same artifact set to Codex, Claude Code, and OpenCode |
 | **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
@@ -83,7 +84,7 @@ looply install
 
 # Explicit parameters (non-interactive)
 looply install \
-  --host codex,claude \
+  --host codex,claude,opencode \
   --scope project \
   --pack all \
   --locale pt-BR \
@@ -104,7 +105,7 @@ looply reconcile minha-feature
 
 # Validate and diagnose
 looply validate
-looply doctor --host codex,claude --scope project
+looply doctor --host codex,claude,opencode --scope project
 
 # Manage ICL guidance
 looply icl set reduced

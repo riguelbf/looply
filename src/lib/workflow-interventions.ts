@@ -406,8 +406,11 @@ function normalizeInterventionType(value: unknown): FeatureInterventionType {
   return "reconcile";
 }
 
-function normalizeHost(value: string): "codex" | "claude" {
-  return value.trim().toLowerCase() === "claude" ? "claude" : "codex";
+function normalizeHost(value: string): "codex" | "claude" | "opencode" {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "claude") return "claude";
+  if (normalized === "opencode") return "opencode";
+  return "codex";
 }
 
 function normalizeKey(value: string): string {

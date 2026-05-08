@@ -445,16 +445,16 @@ function buildRecommendedActions(
   if (!snapshot.project.installed) {
     actions.push(
       isPt
-        ? "Inicialize o estado do looply neste projeto com `looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project`."
-        : "Initialize project-scoped looply state with `looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project`."
+        ? "Inicialize o estado do looply neste projeto com `looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project`."
+        : "Initialize project-scoped looply state with `looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project`."
     );
   }
 
   if (snapshot.project.installed && snapshot.hosts.length === 0) {
     actions.push(
       isPt
-        ? "Regenere as superfícies de host com `looply sync --host codex,claude --scope project` para manter aliases, skills e execution hints atualizados."
-        : "Regenerate host surfaces with `looply sync --host codex,claude --scope project` so command aliases, skills and execution hints stay current."
+        ? "Regenere as superfícies de host com `looply sync --host codex,claude,opencode --scope project` para manter aliases, skills e execution hints atualizados."
+        : "Regenerate host surfaces with `looply sync --host codex,claude,opencode --scope project` so command aliases, skills and execution hints stay current."
     );
   }
 
@@ -536,7 +536,7 @@ function buildRecommendedActions(
 
 function resolveEmptyStateCommand(snapshot: Awaited<ReturnType<typeof buildProjectSnapshot>>): string {
   if (!snapshot.project.installed) {
-    return "looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project";
+    return "looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project";
   }
 
   if (!snapshot.context.snapshot) {

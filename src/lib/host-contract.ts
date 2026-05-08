@@ -18,11 +18,11 @@ export function buildHostContractDocument(input: {
   knowledgeGraphReference?: string;
   commandIndexReference?: string;
 }): string {
-  const hostName = input.host === "claude" ? "Claude Code" : "Codex";
+  const hostDisplayName = input.host === "claude" ? "Claude Code" : input.host === "opencode" ? "OpenCode" : "Codex";
   const commandIndexLine = input.commandIndexReference ? `- Command index: \`${input.commandIndexReference}\`` : null;
 
   return [
-    `# looply Host Contract for ${hostName}`,
+    `# looply Host Contract for ${hostDisplayName}`,
     "",
     "## Purpose",
     "",
@@ -91,7 +91,7 @@ export function buildHostContractDocument(input: {
     `- Project mode: \`${input.projectMode}\``,
     `- Interaction mode: \`${input.interactionMode}\``,
     `- Output locale: \`${input.outputLocale}\``,
-    `- Target host: \`${hostName}\``
+    `- Target host: \`${hostDisplayName}\``
   ]
     .filter((line) => line !== null)
     .join("\n");

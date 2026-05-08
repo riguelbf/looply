@@ -120,7 +120,7 @@ function selectNextCommand(
 ): { command: string; label: string; reason: string } {
   if (!snapshot.project.installed) {
     return {
-      command: "looply install --host codex,claude --scope project --pack software-delivery-suite --project-mode existing-project",
+      command: "looply install --host codex,claude,opencode --scope project --pack software-delivery-suite --project-mode existing-project",
       label: "Initialize the project installation",
       reason: "The project is not installed yet, so the autonomous cycle should bootstrap the looply surfaces first."
     };

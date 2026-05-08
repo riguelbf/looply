@@ -246,7 +246,9 @@ export class FileHostPublisher implements HostPublisher {
         knowledgeGraphReference: relativePathForDisplay(path.dirname(hostContractFile), resolveKnowledgeGraphFile(targetRoot)),
         commandIndexReference: input.host === "codex"
           ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
-          : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
+          : input.host === "opencode"
+            ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "OPENCODE_COMMANDS.md"))
+            : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
       }),
       "utf8"
     );
@@ -444,7 +446,9 @@ export class FileHostPublisher implements HostPublisher {
         knowledgeGraphReference: relativePathForDisplay(path.dirname(hostContractFile), resolveKnowledgeGraphFile(targetRoot)),
         commandIndexReference: input.host === "codex"
           ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "LOOPLY_COMMANDS.md"))
-          : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
+          : input.host === "opencode"
+            ? relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, "OPENCODE_COMMANDS.md"))
+            : relativePathForDisplay(path.dirname(hostContractFile), path.join(targetRoot, ".claude", "commands"))
       }),
       "utf8"
     );
@@ -901,7 +905,8 @@ export class FileHostPublisher implements HostPublisher {
       `- ./HOST_CONTRACT.md`,
       ...(input.host === "claude" ? ["- ./.claude/LOOPLY_HOOKS.md"] : []),
       ...(input.host === "codex" ? ["- ./LOOPLY_COMMANDS.md"] : []),
-      ...(input.host === "codex" ? ["- ./.agents/skills/"] : []),
+      ...(input.host === "opencode" ? ["- ./OPENCODE_COMMANDS.md"] : []),
+      ...(input.host === "codex" || input.host === "opencode" ? ["- ./.agents/skills/"] : []),
       "",
       `Default output locale: \`${input.outputLocale}\``,
       `Project mode: \`${input.projectMode}\``,
@@ -932,6 +937,29 @@ export class FileHostPublisher implements HostPublisher {
             "14. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
             `15. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
             "16. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
+          ]
+        : []),
+      ...(input.host === "opencode"
+        ? [
+            "",
+            "Alias policy for OpenCode:",
+            "1. Use the `looply` skill as the main discovery and routing entrypoint.",
+            "2. Treat `$looply-*` strings as looply workflow aliases.",
+            "3. Open `OPENCODE_COMMANDS.md` when you need the command index and `./.looply/state/commands/opencode/` for command-specific help.",
+            "4. Prefer the generated skills in `./.agents/skills/` for explicit skill invocation.",
+            "5. Before acting as a specialist, inspect the current agent `knowledge_sources`, especially specialist `best-practices` files.",
+            "6. If the current task declares templates or checklists, use them as the default artifact contract and quality bar.",
+            "7. When a workflow command references curated examples, use them only for style and quality calibration.",
+            "8. If the user writes `$looply-... help`, explain the alias instead of executing it.",
+            `9. Generate user-facing outputs in \`${input.outputLocale}\` unless the user explicitly asks for another language.`,
+            `10. In \`${input.projectMode}\`, treat the local project root as the default context for feature work unless the user points to another folder.`,
+            input.projectMode === "existing-project"
+              ? "11. For existing projects, use the real local codebase as the primary source of truth. Use context markdown files only as accelerators when they are filled and current."
+              : "11. For greenfield projects, use managed artifacts and explicit assumptions as the primary source until a codebase exists.",
+            "12. If project or feature context files are empty, draft, stale or inconsistent, inspect the real codebase before making meaningful decisions.",
+            "13. When a feature mentions a known external integration, inspect `.looply/custom/integrations/integrations-index.md` and the corresponding integration context file before making design decisions.",
+            `14. Follow \`${input.interactionMode}\` interaction mode to avoid unnecessary repeated clarifications.`,
+            "15. When multiple sessions are active, use `.looply/custom/session-links.json` together with `session-label` to bind each session to the correct feature."
           ]
         : []),
       "",
@@ -1091,8 +1119,9 @@ export class FileHostPublisher implements HostPublisher {
     writtenFiles.push(helpFile);
 
     const additionalFiles: string[] = [exampleDocuments.indexFile, exampleDocuments.hintsFile];
-    if (input.host === "codex") {
-      const codexIndexFile = path.join(input.targetRoot, "LOOPLY_COMMANDS.md");
+    if (input.host === "codex" || input.host === "opencode") {
+      const indexFileName = input.host === "opencode" ? "OPENCODE_COMMANDS.md" : "LOOPLY_COMMANDS.md";
+      const codexIndexFile = path.join(input.targetRoot, indexFileName);
       const codexIndexContent = renderCodexCommandIndex({
         pack: input.pack,
         outputLocale: input.outputLocale,
@@ -1109,7 +1138,7 @@ export class FileHostPublisher implements HostPublisher {
 
       const skillFiles = await this.writeCodexSkills({
         targetRoot: input.targetRoot,
-        scope: path.basename(input.targetRoot) === ".codex" ? "global" : "project",
+        scope: path.basename(input.targetRoot) === ".codex" || path.basename(input.targetRoot) === ".opencode" ? "global" : "project",
         outputLocale: input.outputLocale,
         projectMode: input.projectMode,
         interactionMode: input.interactionMode,
@@ -1127,7 +1156,7 @@ export class FileHostPublisher implements HostPublisher {
 
       const launcherSkillFiles = await this.writeCodexLauncherSkill({
         targetRoot: input.targetRoot,
-        scope: path.basename(input.targetRoot) === ".codex" ? "global" : "project",
+        scope: path.basename(input.targetRoot) === ".codex" || path.basename(input.targetRoot) === ".opencode" ? "global" : "project",
         outputLocale: input.outputLocale,
         projectMode: input.projectMode,
         interactionMode: input.interactionMode,
@@ -1155,10 +1184,11 @@ export class FileHostPublisher implements HostPublisher {
         : path.join(targetRoot, ".claude", "commands");
     }
 
-    const isGlobalRoot = path.basename(targetRoot) === ".codex";
+    const isGlobalRoot = path.basename(targetRoot) === ".codex" || path.basename(targetRoot) === ".opencode";
+    const commandHostDir = host === "opencode" ? "opencode" : "codex";
     return isGlobalRoot
       ? path.join(targetRoot, "looply", "commands")
-      : path.join(targetRoot, ".looply", "state", "commands", "codex");
+      : path.join(targetRoot, ".looply", "state", "commands", commandHostDir);
   }
 
   private resolveCodexSkillsRoot(targetRoot: string, scope: "project" | "global"): string {

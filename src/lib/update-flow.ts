@@ -120,7 +120,8 @@ async function resolveHostOptions(currentHost?: string): Promise<SupportedHost[]
     required: true,
     options: [
       { value: "codex", label: "Codex" },
-      { value: "claude", label: "Claude Code" }
+      { value: "claude", label: "Claude Code" },
+      { value: "opencode", label: "OpenCode" }
     ],
     initialValues: ["codex"]
   });

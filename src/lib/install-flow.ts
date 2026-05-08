@@ -219,7 +219,7 @@ async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<
   }
 
   if (yes) {
-    return ["codex", "claude"];
+    return ["codex", "claude", "opencode"];
   }
 
   const answer = await multiselect({
@@ -227,7 +227,8 @@ async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<
     required: true,
     options: [
       { value: "codex", label: "Codex", hint: "Publishes an AGENTS.md entrypoint" },
-      { value: "claude", label: "Claude Code", hint: "Publishes a CLAUDE.md entrypoint" }
+      { value: "claude", label: "Claude Code", hint: "Publishes a CLAUDE.md entrypoint" },
+      { value: "opencode", label: "OpenCode", hint: "Publishes an OPENCODE.md entrypoint" }
     ],
     initialValues: ["codex"]
   });

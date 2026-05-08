@@ -6,11 +6,13 @@ export function resolveProjectRoot(currentWorkingDirectory: string): string {
   return currentWorkingDirectory;
 }
 
-export function resolveGlobalHostRoot(host: "codex" | "claude"): string {
+export function resolveGlobalHostRoot(host: "codex" | "claude" | "opencode"): string {
   const homeDirectory = os.homedir();
   return host === "codex"
     ? path.join(homeDirectory, ".codex")
-    : path.join(homeDirectory, ".claude");
+    : host === "claude"
+      ? path.join(homeDirectory, ".claude")
+      : path.join(homeDirectory, ".opencode");
 }
 
 export function resolveGlobalCodexSkillsRoot(): string {
@@ -20,7 +22,7 @@ export function resolveGlobalCodexSkillsRoot(): string {
 export function resolveTargetRoot(
   scope: InstallScope,
   currentWorkingDirectory: string,
-  host: "codex" | "claude"
+  host: "codex" | "claude" | "opencode"
 ): string {
   return scope === "project"
     ? resolveProjectRoot(currentWorkingDirectory)
