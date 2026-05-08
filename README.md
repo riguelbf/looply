@@ -20,6 +20,7 @@
 
 ## Recent Updates
 
+- **Skill Search** — new mandatory discovery skill `$looply-skill-search`. Forces skill-aware routing before any code action: classifies user intent against all 9 looply workflows, prioritizes structured delivery over ad-hoc edits, and falls back to direct code only when no workflow matches. Enabled with `allow_implicit_invocation: true`.
 - **OpenCode host support** -- new native host publisher for OpenCode. Publishes `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills, and command index. All 9 workflow aliases (`$looply-*`) available as native skills via the `looply` skill discovery entrypoint. Install with `--host opencode`.
 - **Skill Creator** — new interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names against regex, generates cross-host SKILL.md, agent yamls, command help files and updates indices automatically.
 - **Knowledge Graph** — persistent knowledge graph connecting modules, classes, functions and database tables. Resolves cross-module dependencies, extracts schema from Prisma/Drizzle/TypeORM/SQL migrations (zero connection), and uses graph traversal to map features to impacted entities. Run `looply refresh-code-context`.
@@ -69,6 +70,7 @@ npx @looply-cli/looply --help
 | **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
+| **Skill Search** | Mandatory discovery skill that classifies user intent, maps to workflows, and enforces skill-first routing before code actions |
 | **Project rules** | Six categories (`coding-standards`, `testing-requirements`, `security-policies`, etc.) — standard defaults or custom |
 | **ICL guidance** | In-context example layer that calibrates agent output style and quality |
 | **Code intelligence** | Multi-language code-context discovery + Knowledge Graph with module dependency resolution and database schema extraction |
@@ -152,6 +154,7 @@ looply docs open
 | `cloud-workload-design` | Cloud topology, async-first, queueing, and governance decisions |
 | `platform-foundation-evolution` | Shared foundation, guardrails, pipelines, identity, and observability |
 | `skill-creator` | Interactive creation of new looply skills. Generates SKILL.md, yamls, help files and updates indices |
+| `skill-search` | Mandatory discovery layer. Maps user intent to workflows and enforces skill-first routing |
 
 ## Approach
 

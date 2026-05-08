@@ -30,6 +30,8 @@ Este arquivo existe para registrar onde o projeto parou, o que ja foi concluido 
 
 ## Recently Completed
 
+- **skill-search** — nova skill de discovery obrigatoria `$looply-skill-search`. Forca roteamento skill-aware antes de qualquer acao de codigo: classifica intencao do usuario contra todos os 9 workflows looply, prioriza entrega estruturada sobre edicoes ad-hoc, e so cai para acao direta quando nenhum workflow combina. Ativada com `allow_implicit_invocation: true`. Gerada automaticamente pelo publisher durante `install`.
+
 - **OpenCode host support** — novo host publisher nativo para OpenCode. Gera `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills e command index. Todos os 9 workflow aliases disponiveis como skills nativos via skill de descoberta `looply`. Instale com `--host opencode`.
 
 - **skill-creator** — slash command interativo `/looply:skill-creator <skill-name>` para criacao guiada de novas skills looply. Fluxo de 8 perguntas (nome, descricao, triggers, fase, orquestrador, hosts, politica, workflow), validacao regex, preview antes de escrever, geracao completa de SKILL.md cross-host + agents yamls + command help file + atualizacao de LOOPLY_COMMANDS.md, AGENTS.md e indices. Meta-skill auto-contida em `.agents/skills/looply-skill-creator/SKILL.md`.
