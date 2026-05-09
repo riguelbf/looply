@@ -115,7 +115,7 @@ Delivery da story ate release.
 
 <div class="lp-flow">
 
-<span class="lp-flow-step"><b>Agentes</b> `architect` → `backend` → `reviewer`</span>
+<span class="lp-flow-step"><b>Agentes</b> `architect` `backend` `reviewer`</span>
 <span class="lp-flow-arrow">→</span>
 <span class="lp-flow-step"><b>Entrada</b> story do backlog</span>
 <span class="lp-flow-arrow">→</span>
