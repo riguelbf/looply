@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "looply"
   text: "Plataforma de artefatos para engenharia assistida por IA"
-  tagline: "looply publica packs de agents, workflows, tasks, templates e conhecimento para hosts de IA como Codex, Claude Code e OpenCode. Um contrato unico de artefatos que cada host consome no seu formato nativo."
+  tagline: "Packs de agents, workflows, tasks e conhecimento que seus hosts de IA consomem no formato nativo. Codex, Claude Code, OpenCode."
   actions:
     - theme: brand
       text: Instalar
@@ -16,112 +16,128 @@ hero:
 features:
   - icon: 📦
     title: Packs de artefatos
-    details: Agents, tasks, workflows, templates, checklists e knowledge — versionados e curados. O pack `engineering-base` cobre discovery, planning e delivery.
+    details: Agents, tasks, workflows, templates, checklists e knowledge versionados. O pack engineering-base cobre discovery, planning e delivery.
   - icon: 🔧
     title: CLI de operacao
-    details: Comandos para install, sync, validate, doctor, status, upgrade e diagnose. O CLI publica artefatos, gerencia contexto e mantem a plataforma atualizada.
+    details: install, sync, validate, doctor, status, upgrade. Publica artefatos, gerencia contexto e mantem a plataforma atualizada.
   - icon: 🔗
-    title: Publicacao multi-host
-    details: Um mesmo pack traduzido para o formato nativo de Codex, Claude Code e OpenCode. Skills, comandos, playbooks e arquivos de estado gerados automaticamente.
+    title: Multi-host
+    details: Um pack traduzido para Codex, Claude Code e OpenCode. Skills, comandos e playbooks gerados no formato nativo de cada host.
 ---
 
-<div class="lp-section">
+<div class="lp-body">
 
-## O que o looply faz
+<section class="lp-section">
 
-O looply e uma camada de artefatos entre seu codebase e seus agentes de IA. Ele organiza conhecimento de engenharia em **packs** — modulos Markdown versionados que contem tudo que um agente de IA precisa para operar com contexto real do projeto.
+## <span class="lp-num">01</span> O que o looply faz
 
-<div class="lp-cols">
+<div class="lp-grid-2">
 
-<div>
+<div class="lp-card">
 
 ### Publica artefatos
 
-Cada pack do looply contem:
+Cada pack contem agents, workflows, tasks, knowledge, templates e checklists. O looply publica o contrato — cada host traduz para seu formato nativo e executa.
 
-- **Agents** — capacidades especializadas (`pm-analyst`, `architect`, `backend`, `reviewer`, `delivery-orchestrator`)
-- **Workflows** — sequencias de fases, stages, gates e handoffs entre agentes
-- **Tasks** — instrucoes de trabalho que o host executa
+- **Agents** — `pm-analyst`, `architect`, `backend`, `reviewer`, `delivery-orchestrator`
+- **Workflows** — fases, stages, gates e handoffs entre agentes
+- **Tasks** — instrucoes de trabalho para cada etapa
 - **Knowledge** — principios, convencoes e contexto de engenharia
-- **Templates** — estruturas de saida para PRDs, tech specs e stories
+- **Templates** — estruturas para PRDs, tech specs e stories
 - **Checklists** — gates de qualidade por fase
 
 </div>
 
-<div>
+<div class="lp-card">
 
 ### Extrai contexto
 
-O looply analisa o codebase e extrai:
+O looply analisa o codebase e constroi uma camada de contexto que todo agente recebe em cada sessao.
 
-- **Knowledge Graph** — classes, funcoes, modulos, tabelas de banco, foreign keys
-- **Schema de banco** — Prisma, Drizzle, TypeORM e SQL migrations (analise estatica, sem conexao)
-- **Regras do projeto** — convencoes, politicas de seguranca, gates
-- **Contexto de integracoes** — APIs externas, servicos, autenticacao
-
-Esse contexto e servido aos agentes em toda sessao. Nenhum agente opera no escuro.
+- **Knowledge Graph** — classes, funcoes, modulos, tabelas e foreign keys
+- **Schema de banco** — Prisma, Drizzle, TypeORM, SQL migrations (estatico, sem conexao)
+- **Regras do projeto** — convencoes, seguranca, gates de qualidade
+- **Integracoes** — APIs externas, servicos, autenticacao
 
 </div>
 
 </div>
 
-</div>
+</section>
 
-<div class="lp-section lp-alt">
+<section class="lp-section lp-alt">
 
-## Workflows disponiveis
+## <span class="lp-num">02</span> Workflows
 
-<div class="lp-cols">
+<div class="lp-grid-2">
 
-<div>
+<div class="lp-card">
 
 ### `idea-to-prd`
 
-Discovery de ideia bruta ate PRD aprovado.
+Discovery de ideia ate PRD aprovado.
 
-- Agente: `pm-analyst`
-- Entrada: problema ou ideia informal
-- Saida: PRD com escopo, criterios de sucesso, restricoes
-- Gates: investigacao, validacao, consolidacao, aprovacao
+<div class="lp-flow">
+
+<span class="lp-flow-step"><b>Agente</b> `pm-analyst`</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Entrada</b> ideia ou problema</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Saida</b> PRD com escopo e criterios</span>
 
 </div>
 
-<div>
+</div>
+
+<div class="lp-card">
 
 ### `prd-to-stories`
 
-Quebra do PRD em backlog acionavel.
+Quebra do PRD em backlog.
 
-- Agente: `delivery-orchestrator` + `pm-analyst`
-- Entrada: PRD aprovado
-- Saida: stories com criterios de aceitacao, prioridade e vinculo com entidades do codigo
-- Gates: cobertura, granularidade, rastreabilidade
+<div class="lp-flow">
+
+<span class="lp-flow-step"><b>Agente</b> `delivery-orchestrator`</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Entrada</b> PRD aprovado</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Saida</b> stories com aceitacao e prioridade</span>
 
 </div>
 
-<div>
+</div>
+
+<div class="lp-card">
 
 ### `story-to-production`
 
-Delivery da story ate release plan.
+Delivery da story ate release.
 
-- Agentes: `architect` → `backend` → `reviewer`
-- Entrada: story do backlog
-- Saida: tech spec, implementacao, review, release plan
-- Gates: design review, code review, qualidade, readiness
+<div class="lp-flow">
+
+<span class="lp-flow-step"><b>Agentes</b> `architect` → `backend` → `reviewer`</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Entrada</b> story do backlog</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Saida</b> tech spec, implementacao, release plan</span>
 
 </div>
 
-<div>
+</div>
+
+<div class="lp-card">
 
 ### `workflow-status`
 
-Retomada e navegacao entre sessoes.
+Retomada entre sessoes.
 
-- Agente: `delivery-orchestrator`
-- Entrada: nome da feature + estado persistido
-- Saida: proximo passo recomendado, reconciliacao de sessao
-- Estado: `workflow-control.json` + `workflow-status.md`
+<div class="lp-flow">
+
+<span class="lp-flow-step"><b>Agente</b> `delivery-orchestrator`</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Entrada</b> feature + estado salvo</span>
+<span class="lp-flow-arrow">→</span>
+<span class="lp-flow-step"><b>Saida</b> proximo passo e reconciliacao</span>
 
 </div>
 
@@ -129,117 +145,132 @@ Retomada e navegacao entre sessoes.
 
 </div>
 
-<div class="lp-section">
+</section>
 
-## Agentes
+<section class="lp-section">
 
-Cada agente e uma capacidade especializada com contrato definido. O looply publica o agente como skill no formato do host.
+## <span class="lp-num">03</span> Agentes
 
-| Agente | Funcao | Workflow |
+<div class="lp-table-wrap">
+
+| Agente | Funcao | Workflows |
 |---|---|---|
-| `pm-analyst` | Discovery, investigacao e consolidacao de PRD | `idea-to-prd`, `prd-to-stories` |
-| `delivery-orchestrator` | Coordenacao de fases, gates, handoffs e retomada | Todos |
+| `pm-analyst` | Discovery e consolidacao de PRD | `idea-to-prd`, `prd-to-stories` |
+| `delivery-orchestrator` | Coordenacao de fases, gates e handoffs | Todos |
 | `architect` | Desenho tecnico, ADR e tech spec | `story-to-production` |
 | `backend` | Implementacao e ajustes no codebase | `story-to-production` |
-| `reviewer` | Review de codigo, qualidade e readiness | `story-to-production` |
-
-Cada agente declara no frontmatter seus `context_slots` — o que precisa receber do looply (`inline`) e o que o host resolve em runtime (`reference`).
+| `reviewer` | Review, qualidade e readiness | `story-to-production` |
 
 </div>
 
-<div class="lp-section lp-alt">
+Cada agente declara `context_slots` no frontmatter: o que o looply resolve (`inline`) e o que o host resolve em runtime (`reference`).
 
-## Comandos Slash
+</section>
 
-Aliases disponiveis nos hosts apos `install`:
+<section class="lp-section lp-alt">
+
+## <span class="lp-num">04</span> Comandos Slash
+
+<div class="lp-table-wrap">
 
 | Comando | Acao |
 |---|---|
-| `/looply:idea-to-prd <feature> [problema]` | Inicia discovery de feature |
+| `/looply:idea-to-prd <feature> [problema]` | Inicia discovery da feature |
 | `/looply:prd-to-stories <feature>` | Quebra PRD em stories |
 | `/looply:story-to-production <feature> <story>` | Entrega story ate release |
-| `/looply:workflow-status <feature>` | Mostra estado atual e proximo passo |
+| `/looply:workflow-status <feature>` | Estado atual e proximo passo |
 | `/looply:resume <feature>` | Retoma workflow do estado salvo |
-| `/looply:next <feature>` | Mostra proximo passo recomendado |
-| `/looply:skill-creator <nome>` | Cria nova skill looply interativamente |
-| `/looply:skill-search [query]` | Busca skills e workflows disponiveis |
+| `/looply:next <feature>` | Proximo passo recomendado |
+| `/looply:skill-creator <nome>` | Cria nova skill interativamente |
+| `/looply:skill-search [query]` | Busca skills e workflows |
 
 </div>
 
-<div class="lp-section">
+</section>
 
-## CLI
+<section class="lp-section">
 
-O CLI gerencia o ciclo de vida da plataforma no repositorio.
+## <span class="lp-num">05</span> CLI
 
-```bash
-npx @looply-cli/looply install   # instala packs, detecta hosts, publica artefatos
-looply sync                        # sincroniza packs e contexto com a ultima versao
-looply validate                    # valida artefatos contra platform contracts
-looply doctor                      # diagnostica problemas de configuracao
-looply status                      # mostra estado da plataforma e features ativas
-looply upgrade                     # atualiza CLI e packs
-```
+<div class="lp-grid-2">
 
-Comandos de contexto:
+<div>
+
+### Operacao
 
 ```bash
-looply refresh-context             # reextrai contexto do codebase
-looply refresh-code-context        # reextrai knowledge graph
-looply integrations list           # lista integracoes configuradas
-looply integrations add <nome>     # adiciona contexto de integracao
+npx @looply-cli/looply install
+looply sync
+looply validate
+looply doctor
+looply status
+looply upgrade
 ```
 
 </div>
 
-<div class="lp-section lp-alt">
-
-## Arquitetura
-
-O looply opera em tres camadas:
-
-<div class="lp-cols">
-
 <div>
 
-**Packs e artefatos.** Fonte de verdade operacional. Agents, tasks, workflows, templates, knowledge e checklists em Markdown versionado. Packs podem incluir outros packs (ex: `software-delivery-suite` inclui `product-base` e `engineering-base`).
+### Contexto
 
-</div>
-
-<div>
-
-**Publicacao.** Camada que materializa artefatos no formato nativo de cada host. Gera skills, comandos, hints de execucao e arquivos de superficie. Comandos: `install`, `sync`, `upgrade`, `doctor`.
-
-</div>
-
-<div>
-
-**CLI.** Interface de operacao. Instala, sincroniza, valida, inspeciona e mantem a plataforma. Detecta hosts ativos, extrai contexto do codebase e publica artefatos calibrados.
+```bash
+looply refresh-context
+looply refresh-code-context
+looply integrations list
+looply integrations add <nome>
+looply integrations configure <nome>
+```
 
 </div>
 
 </div>
 
-[Ler documentacao completa da arquitetura →](/overview/architecture)
+</section>
+
+<section class="lp-section lp-alt">
+
+## <span class="lp-num">06</span> Arquitetura
+
+<div class="lp-grid-3">
+
+<div class="lp-card">
+
+**Packs e artefatos**
+
+Fonte de verdade operacional. Markdown versionado com agents, tasks, workflows, templates e knowledge. Packs podem incluir outros packs.
 
 </div>
 
-<div class="lp-section">
+<div class="lp-card">
 
-## Instalacao
+**Publicacao**
+
+Materializa artefatos no formato nativo de cada host. Gera skills, comandos, hints e arquivos de superficie.
+
+</div>
+
+<div class="lp-card">
+
+**CLI**
+
+Interface de operacao. Instala, sincroniza, valida e mantem a plataforma. Detecta hosts e extrai contexto do codebase.
+
+</div>
+
+</div>
+
+</section>
+
+<section class="lp-section">
+
+## <span class="lp-num">07</span> Instalar
 
 ```bash
 npx @looply-cli/looply install
 ```
 
-O comando:
-1. Detecta hosts de IA ativos no repositorio (Codex, Claude Code, OpenCode)
-2. Extrai contexto do codebase (knowledge graph, schema de banco, regras)
-3. Publica packs, skills, comandos e playbooks no formato de cada host
-4. Gera arquivos de estado em `.looply/`
+O comando detecta hosts ativos, extrai contexto do codebase, publica packs e gera arquivos de estado em `.looply/`. Os aliases `/looply:*` ficam disponiveis imediatamente.
 
-Apos instalar, os aliases `/looply:*` ficam disponiveis nos hosts.
-
-[Guia completo de instalacao →](/guides/installation)
+</section>
 
 </div>
