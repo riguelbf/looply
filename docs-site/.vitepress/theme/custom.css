@@ -82,9 +82,9 @@
   filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.35));
 }
 
-/* ===== Landing Page Sections ===== */
+/* ===== Landing Page ===== */
 .lp-section {
-  padding: 5rem 1.5rem;
+  padding: 4rem 1.5rem;
   max-width: 860px;
   margin: 0 auto;
 }
@@ -93,258 +93,109 @@
   border-top: 1px solid rgba(37, 99, 235, 0.06);
 }
 
+.lp-section.lp-alt {
+  background: rgba(17, 24, 39, 0.28);
+}
+
 .lp-section h2 {
-  font-size: 1.65rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
   color: var(--vp-c-text-1);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   border-bottom: none;
   padding-bottom: 0;
 }
 
-/* ===== 01 · Problem ===== */
-.lp-before-after {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.lp-before,
-.lp-after {
-  padding: 1.75rem;
-  border-radius: 10px;
-  font-size: 0.92rem;
-  line-height: 1.75;
-  color: var(--vp-c-text-2);
-}
-
-.lp-before {
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.12);
-}
-
-.lp-after {
-  background: rgba(34, 211, 238, 0.05);
-  border: 1px solid rgba(34, 211, 238, 0.12);
-}
-
-.lp-before h3,
-.lp-after h3 {
+.lp-section h3 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--vp-c-text-1);
-}
-
-/* ===== 02 · Foundation ===== */
-.lp-foundation {
-  background: rgba(17, 24, 39, 0.3);
-}
-
-.lp-foundation-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.lp-foundation-item {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  padding-left: 1rem;
-  border-left: 2px solid rgba(124, 58, 237, 0.25);
-}
-
-.lp-foundation-item strong {
-  display: block;
-  color: var(--vp-c-text-1);
-  font-size: 0.93rem;
-  margin-bottom: 0.25rem;
-}
-
-/* ===== 03 · Language ===== */
-.lp-lang-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.lp-lang-item {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  padding: 1.5rem;
-  border-radius: 8px;
-  background: rgba(17, 24, 39, 0.4);
-  border: 1px solid rgba(37, 99, 235, 0.08);
-}
-
-.lp-lang-item strong {
-  display: block;
   color: var(--vp-c-brand-1);
-  font-size: 0.93rem;
+  margin-top: 0;
   margin-bottom: 0.35rem;
 }
 
-/* ===== 04 · Case ===== */
-.lp-case {
-  background: rgba(17, 24, 39, 0.3);
-}
-
-.lp-case-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.lp-case-grid > * {
+.lp-section h4 {
   font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  padding: 1.25rem 1.25rem 1.25rem 3.5rem;
-  position: relative;
-  border-radius: 8px;
-  background: rgba(17, 24, 39, 0.4);
-  border: 1px solid rgba(37, 99, 235, 0.08);
-}
-
-.lp-case-num {
-  position: absolute;
-  left: 1.25rem;
-  top: 1.25rem;
-  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--vp-c-text-3);
-  letter-spacing: 0.04em;
-}
-
-.lp-case-grid strong {
   color: var(--vp-c-text-1);
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
 }
 
-/* ===== 05 · Install ===== */
-.lp-install-step {
-  padding: 1.5rem;
-  border-radius: 8px;
-  background: rgba(17, 24, 39, 0.4);
-  border: 1px solid rgba(37, 99, 235, 0.08);
-  margin-bottom: 1rem;
+.lp-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 }
 
-.lp-install-step h3 {
-  font-size: 0.95rem;
-  color: var(--vp-c-text-1);
-  margin-bottom: 0.5rem;
-}
-
-.lp-install-step p {
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.7;
-}
-
-.lp-install-step pre {
-  margin: 0.75rem 0;
-  background: rgba(11, 15, 26, 0.6) !important;
-  border: 1px solid rgba(34, 211, 238, 0.15);
-  border-radius: 6px;
-}
-
-.lp-install-step code {
-  font-size: 0.85rem;
-  color: #22D3EE;
-}
-
-.lp-install-cta {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.lp-btn-primary {
-  display: inline-block;
-  padding: 0.7rem 1.5rem;
-  background: var(--vp-c-brand-1);
-  color: #fff;
-  font-weight: 500;
-  font-size: 0.9rem;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.lp-btn-primary:hover {
-  opacity: 0.9;
-  color: #fff;
-  text-decoration: none;
-}
-
-/* ===== 06 · Updates ===== */
-.lp-updates {
-  background: rgba(17, 24, 39, 0.3);
-}
-
-.lp-updates p,
-.lp-updates li {
+.lp-section p,
+.lp-section li {
   font-size: 0.9rem;
   line-height: 1.75;
   color: var(--vp-c-text-2);
 }
 
-.lp-updates ul {
+.lp-section ul {
   padding-left: 1.25rem;
+  margin: 0.5rem 0;
 }
 
-.lp-updates li {
-  margin-bottom: 0.35rem;
-}
-
-.lp-updates strong {
-  color: var(--vp-c-text-1);
-}
-
-/* ===== 07 · FAQ ===== */
-.lp-faq strong {
-  display: block;
-  color: var(--vp-c-text-1);
-  font-size: 0.93rem;
-  margin-top: 1.5rem;
+.lp-section li {
   margin-bottom: 0.25rem;
 }
 
-.lp-faq p {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-  margin-bottom: 0;
+.lp-section strong {
+  color: var(--vp-c-text-1);
 }
 
-.lp-faq pre {
-  margin: 0.5rem 0 1.5rem;
+.lp-section table {
+  width: 100%;
+  font-size: 0.88rem;
+}
+
+.lp-section table th {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(37, 99, 235, 0.14);
+}
+
+.lp-section table td {
+  padding: 0.5rem 0.75rem;
+  color: var(--vp-c-text-2);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.06);
+  vertical-align: top;
+}
+
+.lp-section table code {
+  font-size: 0.82rem;
+  color: #22D3EE;
+}
+
+.lp-section pre {
+  margin: 0.75rem 0;
   background: rgba(11, 15, 26, 0.6) !important;
-  border: 1px solid rgba(34, 211, 238, 0.15);
+  border: 1px solid rgba(34, 211, 238, 0.12);
   border-radius: 6px;
 }
 
-.lp-faq code {
+.lp-section code {
   font-size: 0.85rem;
   color: #22D3EE;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .lp-before-after,
-  .lp-foundation-grid,
-  .lp-lang-grid,
-  .lp-case-grid {
+  .lp-cols {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .lp-section {
-    padding: 3rem 1.25rem;
+    padding: 2.5rem 1.25rem;
   }
 
   .lp-section h2 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }
