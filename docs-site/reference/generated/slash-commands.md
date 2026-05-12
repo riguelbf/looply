@@ -30,6 +30,13 @@ Break an approved PRD into delivery-ready stories
 - workflow: `prd-to-stories`
 - hosts: `codex`, `claude`
 
+## [/looply:problem-evaluator](./slash-commands/looply:problem-evaluator)
+
+Diagnose app problems using looply artifacts with codebase deep-dive as fallback
+
+- workflow: `problem-evaluator`
+- hosts: `codex`, `claude`
+
 ## [/looply:story-to-production](./slash-commands/looply:story-to-production)
 
 Execute delivery for a single approved story until release planning

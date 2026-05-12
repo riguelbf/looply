@@ -20,11 +20,18 @@
 
 ## Recent Updates
 
+### v1.5 — Problem Diagnosis
+
+| Update | Description |
+|--------|-------------|
+| **Problem Evaluator** | New workflow for diagnosing app problems. Uses looply artifacts (stories, specs, code graph, knowledge graph) as primary source for root cause analysis. Falls back to autonomous codebase deep-dive when artifacts are insufficient. Produces structured diagnosis reports with evidence and actionable recommendations. |
+| **Problem Investigator Agent** | New specialized agent that triangulates evidence across looply artifacts and codebase inspection for root cause analysis. |
+
 ### v1.4 — Discovery & Host Expansion
 
 | Update | Description |
 |--------|-------------|
-| **Skill Search** | Mandatory discovery gate — classifies user intent against all 9 looply workflows and enforces skill-first routing before any code action. `allow_implicit_invocation: true`. |
+| **Skill Search** | Mandatory discovery gate — classifies user intent against all 10 looply workflows and enforces skill-first routing before any code action. `allow_implicit_invocation: true`. |
 | **OpenCode Host** | Native publisher for OpenCode: `OPENCODE.md` entrypoint, workflow playbook, execution hints, skills, and command index. Install with `--host opencode`. |
 | **Skill Creator** | Interactive slash command `/looply:skill-creator` that guides creation of looply skills. Asks questions, validates names, and generates cross-host SKILL.md, yamls, help files and indices. |
 
@@ -81,7 +88,7 @@ npx @looply-cli/looply --help
 |---|---|
 | **Packs** | `engineering-base`, `product-base`, `software-delivery-suite` — modular, composable via `includes` |
 | **Multi-host** | Publishes the same artifact set to Codex, Claude Code, and OpenCode |
-| **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
+| **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `problem-evaluator`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
 | **Skill Search** | Mandatory discovery skill that classifies user intent, maps to workflows, and enforces skill-first routing before code actions |
@@ -164,6 +171,7 @@ looply docs open
 | `idea-to-prd` | Transform an idea into a PRD with context and constraints |
 | `prd-to-stories` | Break a PRD into implementable stories |
 | `story-to-production` | Take a story from tech design through review to release |
+| `problem-evaluator` | Diagnose app problems using looply artifacts with codebase deep-dive as fallback |
 | `workflow-status` | Inspect state and recommend the next step |
 | `cloud-workload-design` | Cloud topology, async-first, queueing, and governance decisions |
 | `platform-foundation-evolution` | Shared foundation, guardrails, pipelines, identity, and observability |

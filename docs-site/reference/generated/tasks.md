@@ -14,6 +14,12 @@ Assess cloud posture, policy alignment and governance controls for a workload or
 
 - arquivo: `packs/engineering-base/tasks/assess-cloud-governance.md`
 
+## [assess-problem-context](./tasks/assess-problem-context)
+
+Collect and validate available looply artifacts for the problem scope
+
+- arquivo: `packs/engineering-base/tasks/assess-problem-context.md`
+
 ## [assess-service-operability](./tasks/assess-service-operability)
 
 Assess service operability and production readiness before release
@@ -25,6 +31,12 @@ Assess service operability and production readiness before release
 Decompose an approved PRD into delivery-ready stories
 
 - arquivo: `packs/product-base/tasks/break-prd-into-stories.md`
+
+## [consolidate-diagnosis](./tasks/consolidate-diagnosis)
+
+Consolidate findings into a structured diagnosis report with evidence and recommendations
+
+- arquivo: `packs/engineering-base/tasks/consolidate-diagnosis.md`
 
 ## [create-adr](./tasks/create-adr)
 
@@ -74,6 +86,12 @@ Describe how the frontend agent should implement the approved UI or client appli
 
 - arquivo: `packs/engineering-base/tasks/implement-frontend.md`
 
+## [investigate-codebase](./tasks/investigate-codebase)
+
+Deep dive into the codebase when looply artifacts are insufficient for root cause identification
+
+- arquivo: `packs/engineering-base/tasks/investigate-codebase.md`
+
 ## [orchestrate-delivery](./tasks/orchestrate-delivery)
 
 Coordinate the current workflow stage, gate status and next handoff
@@ -103,4 +121,10 @@ Review the implementation against architecture and quality expectations
 Review workload and platform cost posture, allocation and optimization opportunities
 
 - arquivo: `packs/engineering-base/tasks/review-workload-cost.md`
+
+## [triage-artifacts](./tasks/triage-artifacts)
+
+Analyze looply artifacts to narrow down root cause hypotheses
+
+- arquivo: `packs/engineering-base/tasks/triage-artifacts.md`
 

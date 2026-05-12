@@ -26,8 +26,9 @@ Behavior:
 5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.
 6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.
 7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.
-8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
-9. If the user wants to create a new looply skill or slash command, recommend `skill-creator`.
+8. If the user reports a bug or asks to diagnose a problem in the app, recommend `problem-evaluator`.
+9. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
+10. If the user wants to create a new looply skill or slash command, recommend `skill-creator`.
 10. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
 11. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
 12. When curated examples are referenced by a workflow command, treat them as style guidance only.
@@ -47,6 +48,8 @@ Available workflows:
   Evolve shared platform foundation with guardrails, governance and cost review
 - `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
   Break an approved PRD into delivery-ready stories
+- `$looply-problem-evaluator <feature-name> <scope-reference> [problem-description] [constraints...]`
+  Diagnose app problems using looply artifacts with codebase deep-dive as fallback
 - `$looply-resume <feature-name> [session-label] [notes...]`
   Resume the current feature workflow from the persisted state
 - `$looply-skill-creator <skill-name>`
@@ -62,8 +65,9 @@ Recommended sequence:
 3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`
 4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` when cloud topology, async-first or governance is the main problem
 5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` when shared platform baseline or guardrails are the main problem
-6. `$looply-workflow-status <feature-name> [notes...]`
-7. `$looply-skill-creator <skill-name>` to create new looply skills and slash commands
+6. `$looply-problem-evaluator <feature-name> <scope-reference> [problem-description] [constraints...]` when diagnosing problems or bugs in the app
+7. `$looply-workflow-status <feature-name> [notes...]`
+8. `$looply-skill-creator <skill-name>` to create new looply skills and slash commands
 
 Presentation rules:
 - Use clear Markdown section titles.

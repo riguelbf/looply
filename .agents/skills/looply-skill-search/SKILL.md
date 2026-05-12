@@ -33,6 +33,7 @@ The following skills are available and should be checked before any code action:
 | `looply-story-to-production` | Story delivery: design, implementation, review, release | delivery |
 | `looply-cloud-workload-design` | Cloud topology, governance, cost direction | planning |
 | `looply-platform-foundation-evolution` | Platform baselines, guardrails, pipelines | planning |
+| `looply-problem-evaluator` | Diagnose app problems with artifact-driven investigation and codebase fallback | diagnosis |
 | `looply-workflow-status` | Inspect or resume feature workflow state | status |
 | `looply-resume` | Resume a persisted feature workflow | status |
 | `looply-next` | Show the next recommended step | status |
@@ -48,6 +49,7 @@ The following skills are available and should be checked before any code action:
    - Story to implement → `looply-story-to-production`
    - Cloud design questions → `looply-cloud-workload-design`
    - Platform / infra questions → `looply-platform-foundation-evolution`
+   - App problem / bug diagnosis → `looply-problem-evaluator`
    - Unknown where work stopped → `looply-workflow-status` or `looply-resume`
    - Creating new looply skills → `looply-skill-creator`
    - Unknown intent → `looply` (root discovery)

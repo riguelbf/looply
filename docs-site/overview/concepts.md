@@ -10,7 +10,7 @@ Copia gerenciada de um pack instalada em `.looply/managed/packs/`. O looply sinc
 
 ## Workflow
 
-Artefato que descreve fases, stages, gates e handoffs. No `engineering-base`, os workflows seguem discovery, planning e delivery.
+Artefato que descreve fases, stages, gates e handoffs. No `engineering-base`, os workflows seguem discovery, planning, delivery e diagnosis.
 
 ## Agent
 

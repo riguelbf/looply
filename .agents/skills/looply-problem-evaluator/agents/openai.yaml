@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-problem-evaluator"
+  short_description: "Use para diagnosticar problemas no app usando artefatos looply (stories, specs, code graph, knowledge graph) como fonte primaria, com deep dive no codebase como fallback."
+  brand_color: "#DC2626"
+  default_prompt: "$looply-problem-evaluator <feature-name> <scope-reference> \"[problem-description]\" \"[constraints...]\""
+
+policy:
+  allow_implicit_invocation: false
