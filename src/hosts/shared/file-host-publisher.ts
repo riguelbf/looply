@@ -32,6 +32,7 @@ import type {
   HostPublisher,
   InstallInput,
   InstallResult,
+  InstallScope,
   PreflightInput,
   PreflightReport,
   SyncInput,
@@ -560,12 +561,12 @@ export class FileHostPublisher implements HostPublisher {
     const manifest = await this.readManifest(manifestFile);
 
     if (!manifest) {
-      throw new Error(`No install manifest found for ${input.host} in ${targetRoot}`);
+      return this.emptySyncPlan(input.host, input.scope, targetRoot);
     }
 
     const installEntry = manifest.installs.find((entry) => entry.host === input.host && entry.scope === input.scope);
     if (!installEntry) {
-      throw new Error(`No install entry found for ${input.host} in ${input.scope} scope`);
+      return this.emptySyncPlan(input.host, input.scope, targetRoot);
     }
 
     const packClosure = await resolvePackClosure(input.sourceRoot, installEntry.pack);
@@ -591,6 +592,19 @@ export class FileHostPublisher implements HostPublisher {
       addedFiles: diff.addedFiles,
       changedFiles: diff.changedFiles,
       removedFiles: diff.removedFiles
+    };
+  }
+
+  private emptySyncPlan(host: SupportedHost, scope: InstallScope, targetRoot: string): SyncPlan {
+    return {
+      host,
+      scope,
+      pack: "software-delivery-suite",
+      targetRoot,
+      hasUpdates: false,
+      addedFiles: [],
+      changedFiles: [],
+      removedFiles: []
     };
   }
 
