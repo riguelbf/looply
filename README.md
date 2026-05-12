@@ -20,12 +20,14 @@
 
 ## Recent Updates
 
-### v1.5 — Problem Diagnosis
+### v1.5 — Problem Diagnosis & Auto-Fresh
 
 | Update | Description |
 |--------|-------------|
-| **Problem Evaluator** | New workflow for diagnosing app problems. Uses looply artifacts (stories, specs, code graph, knowledge graph) as primary source for root cause analysis. Falls back to autonomous codebase deep-dive when artifacts are insufficient. Produces structured diagnosis reports with evidence and actionable recommendations. |
+| **Problem Evaluator** | New workflow for diagnosing app problems. Uses looply artifacts (stories, specs, code graph, knowledge graph) as primary source for root cause analysis. Falls back to autonomous codebase deep-dive when artifacts are insufficient. |
 | **Problem Investigator Agent** | New specialized agent that triangulates evidence across looply artifacts and codebase inspection for root cause analysis. |
+| **Auto-Fresh Code Context** | Code context and knowledge graph now auto-refresh before every workflow. SHA256-based stale detection ensures data is always current without manual `refresh-code-context`. `--check` flag added to CLI for programmatic verification. |
+| **File Hasher** | SHA256 file hash tracking in `.looply/state/file-hashes.json` for instant stale detection. Changed file detection without re-scanning the entire project. |
 
 ### v1.4 — Discovery & Host Expansion
 
@@ -149,7 +151,7 @@ looply docs open
 | `status` | Consolidated project snapshot |
 | `sync` | Sync published state with source |
 | `refresh-context` | Update project context and code-context |
-| `refresh-code-context` | Refresh code-context snapshot and knowledge graph (`--skip-graph` to skip graph) |
+| `refresh-code-context` | Refresh code-context snapshot and knowledge graph (`--skip-graph` to skip, `--check` to auto-refresh only if stale) |
 | `check-updates` | Check for newer pack versions |
 | `upgrade` | Upgrade packs |
 | `autonomy` | Derive the next host-driven cycle for a feature |
