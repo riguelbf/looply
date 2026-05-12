@@ -29,13 +29,14 @@ Behavior:
 8. If the user reports a bug or asks to diagnose a problem in the app, recommend `problem-evaluator`.
 9. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
 10. If the user wants to create a new looply skill or slash command, recommend `skill-creator`.
-10. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
-11. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
-12. When curated examples are referenced by a workflow command, treat them as style guidance only.
-13. Prefer explicit next-step guidance over generic explanations.
-14. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
-15. Respect project mode existing-project and interaction mode balanced.
-16. When context monitoring is enabled (`contextMonitoring.enabled` in `.looply/state/interaction-policy.json`), verify context health from `workflow-status.md` before routing to a specialist. If health is `red`, suggest `/looply:resume` in a fresh session instead.
+11. Before routing to any workflow, run `looply refresh-code-context --check` to auto-detect and auto-refresh stale code-context and knowledge-graph. This ensures all workflows consume current code intelligence without manual intervention.
+12. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
+13. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
+14. When curated examples are referenced by a workflow command, treat them as style guidance only.
+15. Prefer explicit next-step guidance over generic explanations.
+16. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
+17. Respect project mode existing-project and interaction mode balanced.
+18. When context monitoring is enabled (`contextMonitoring.enabled` in `.looply/state/interaction-policy.json`), verify context health from `workflow-status.md` before routing to a specialist. If health is `red`, suggest `/looply:resume` in a fresh session instead.
 
 Available workflows:
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`

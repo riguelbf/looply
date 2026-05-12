@@ -33,20 +33,21 @@ Curated example guidance:
 - No example was selected for this workflow.
 Execution rules:
 1. Start by reading the workflow playbook, the host status contract if it exists, and the feature state file if it already exists.
-2. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.
-3. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.
-4. Respect blocking gates and do not skip required artifacts.
-5. Use managed pack files as canonical process definition and write local state only under `.looply/custom`.
-6. Generate user-facing outputs in pt-BR unless the user explicitly asks for another language.
-7. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators.
-8. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.
-9. Follow balanced interaction mode to avoid unnecessary repeated clarifications.
-10. When curated examples are referenced, use them only for style, structure and quality calibration.
-11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.
-12. Do not use emojis.
-13. Before diagnosing, check `.looply/state/code-context.json` for module graphs and `.looply/state/knowledge-graph.json` for database schema and module dependencies. Run `looply refresh-code-context` if the code graph is missing or stale.
-14. O estagio `codebase-investigation` e condicional: execute-o apenas quando os artefatos looply (stories, specs, code-context, knowledge-graph) nao forem suficientes para identificar a causa raiz com confianca. Se o `artifact-triage` ja produziu uma causa raiz conclusiva, pule direto para `diagnosis-report`.
-15. When context monitoring is enabled in `.looply/state/interaction-policy.json`, after each stage estimate context consumption against the stage's `context_budget` hint from `execution-hints.codex.json`. Track in `workflow-status.md` (`## Session Context`). At `yellow` (70-85%), compact state. At `red` (>85%), require `/looply:resume` in a fresh session.
+2. Run `looply refresh-code-context --check` to auto-detect and auto-refresh stale code-context and knowledge-graph before starting diagnosis.
+3. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.
+4. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.
+5. Respect blocking gates and do not skip required artifacts.
+6. Use managed pack files as canonical process definition and write local state only under `.looply/custom`.
+7. Generate user-facing outputs in pt-BR unless the user explicitly asks for another language.
+8. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators.
+9. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.
+10. Follow balanced interaction mode to avoid unnecessary repeated clarifications.
+11. When curated examples are referenced, use them only for style, structure and quality calibration.
+12. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.
+13. Do not use emojis.
+14. Before diagnosing, check `.looply/state/code-context.json` for module graphs and `.looply/state/knowledge-graph.json` for database schema and module dependencies. Run `looply refresh-code-context` if the code graph is missing or stale.
+15. O estagio `codebase-investigation` e condicional: execute-o apenas quando os artefatos looply (stories, specs, code-context, knowledge-graph) nao forem suficientes para identificar a causa raiz com confianca. Se o `artifact-triage` ja produziu uma causa raiz conclusiva, pule direto para `diagnosis-report`.
+16. When context monitoring is enabled in `.looply/state/interaction-policy.json`, after each stage estimate context consumption against the stage's `context_budget` hint from `execution-hints.codex.json`. Track in `workflow-status.md` (`## Session Context`). At `yellow` (70-85%), compact state. At `red` (>85%), require `/looply:resume` in a fresh session.
 ---
 ## Composed Agent Context
 The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.

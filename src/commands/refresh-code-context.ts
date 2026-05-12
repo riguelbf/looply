@@ -3,6 +3,7 @@ import path from "node:path";
 import chalk from "chalk";
 import { refreshCodeContext } from "../lib/code-context/manager.js";
 import { readCodeContext } from "../lib/code-context/storage.js";
+import { ensureFreshCodeContext } from "../lib/code-context/stale-check.js";
 import { addProfileOption, resolvePerfMode } from "../lib/perf/config.js";
 import { runWithPerfSession, withPerfSpan } from "../lib/perf/session.js";
 import { createSpinner, showIntro, showOutro } from "../ui/feedback.js";
@@ -12,10 +13,31 @@ export function registerRefreshCodeContextCommand(program: Command): void {
     .command("refresh-code-context")
     .description("Refresh multi-language code-context discovery for the current repository")
     .option("--dir <dir>", "Target directory for code-context refresh (defaults to current directory)")
-    .option("--skip-graph", "Skip knowledge graph generation"))
+    .option("--skip-graph", "Skip knowledge graph generation")
+    .option("--check", "Check if code-context is stale without refreshing"))
     .action(async (options) => {
       showIntro("looply refresh-code-context");
       const targetRoot = path.resolve(options.dir ?? process.cwd());
+
+      if (options.check) {
+        const checkResult = await ensureFreshCodeContext(targetRoot);
+        if (checkResult.wasFresh) {
+          console.log(chalk.green("Code context is fresh."));
+          console.log(`  code-context.json: ${chalk.bold("exists")}`);
+          console.log(`  knowledge-graph.json: ${chalk.bold(checkResult.hadKnowledgeGraph ? "exists" : "missing")}`);
+          console.log(`  reason: ${chalk.cyan(checkResult.reason)}`);
+        } else if (checkResult.refreshed) {
+          console.log(chalk.yellow("Code context was stale and has been refreshed."));
+          console.log(`  reason: ${chalk.cyan(checkResult.reason)}`);
+          console.log(`  changed files: ${chalk.cyan(String(checkResult.changedFileCount))}`);
+          if (checkResult.result?.knowledgeGraphFile) {
+            console.log(`  knowledge-graph: ${chalk.cyan(checkResult.result.knowledgeGraphFile)}`);
+          }
+        }
+        showOutro("Stale check completed");
+        return;
+      }
+
       const loading = createSpinner(`Refreshing code context for ${targetRoot}`);
 
       const result = await runWithPerfSession({
