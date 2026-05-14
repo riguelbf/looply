@@ -3,6 +3,8 @@ import { globby } from "globby";
 import { readMarkdownArtifact } from "./markdown-artifact.js";
 import { mcpSchema, type McpFrontmatter } from "./artifact-schema.js";
 
+export type { McpFrontmatter };
+
 export function resolveMcpDir(sourceRoot: string): string {
   return path.join(sourceRoot, "packs", "engineering-base", "mcp");
 }
