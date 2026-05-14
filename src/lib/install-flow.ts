@@ -34,26 +34,38 @@ export interface InstallFlowInput {
   enableShellAutocomplete?: boolean;
 }
 
+class InstallCancelledError extends Error {
+  constructor() {
+    super("Installation cancelled by user");
+    this.name = "InstallCancelledError";
+  }
+}
+
 export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> {
+  try {
+    return await runInstallFlowUnchecked(input);
+  } catch (error) {
+    if (error instanceof InstallCancelledError) {
+      cancel("Installation cancelled");
+      return false;
+    }
+    throw error;
+  }
+}
+
+async function runInstallFlowUnchecked(input: InstallFlowInput): Promise<boolean> {
   const availablePacks = await withPerfSpan("install-flow.list-available-packs", async () => listAvailablePacks(input.sourceRoot));
 
-  const hosts = await withPerfSpan("install-flow.resolve-hosts", async () => resolveHostOptions(input.hostOption, input.yes));
-  const scope = await withPerfSpan("install-flow.resolve-scope", async () => resolveScopeOption(input.scopeOption, input.yes));
-  const pack = await withPerfSpan("install-flow.resolve-pack", async () => resolvePackOption(input.packOption, availablePacks, input.yes));
-  const locale = await withPerfSpan("install-flow.resolve-locale", async () => resolveLocaleOption(input.localeOption, input.yes));
-  const projectMode = await withPerfSpan("install-flow.resolve-project-mode", async () => resolveProjectModeOption(input.projectModeOption, input.currentWorkingDirectory, scope, input.yes));
-  const interactionMode = await withPerfSpan("install-flow.resolve-interaction-mode", async () => resolveInteractionModeOption(input.interactionModeOption, input.yes));
-
-  if (!hosts || !scope || !pack || !locale || !projectMode || !interactionMode) {
-    return false;
-  }
+  const hosts = await withPerfSpan("install-flow.resolve-hosts", async () => resolveHostOptionsOrThrow(input.hostOption, input.yes));
+  const scope = await withPerfSpan("install-flow.resolve-scope", async () => resolveScopeOptionOrThrow(input.scopeOption, input.yes));
+  const pack = await withPerfSpan("install-flow.resolve-pack", async () => resolvePackOptionOrThrow(input.packOption, availablePacks, input.yes));
+  const locale = await withPerfSpan("install-flow.resolve-locale", async () => resolveLocaleOptionOrThrow(input.localeOption, input.yes));
+  const projectMode = await withPerfSpan("install-flow.resolve-project-mode", async () => resolveProjectModeOptionOrThrow(input.projectModeOption, input.currentWorkingDirectory, scope, input.yes));
+  const interactionMode = await withPerfSpan("install-flow.resolve-interaction-mode", async () => resolveInteractionModeOptionOrThrow(input.interactionModeOption, input.yes));
 
   const resolvedPacks = pack === "all" ? availablePacks : [pack];
 
-  const rules = await resolveRulesOptions(input.rules, input.yes, input.sourceRoot, resolvedPacks);
-  if (rules === undefined) {
-    return false;
-  }
+  const rules = await resolveRulesOptionsOrThrow(input.rules, input.yes, input.sourceRoot, resolvedPacks);
 
   setPerfMetadata("install.hostCount", hosts.length);
   setPerfMetadata("install.scope", scope);
@@ -81,12 +93,9 @@ export async function runInstallFlow(input: InstallFlowInput): Promise<boolean> 
     return false;
   }
 
-  const shouldProceed = input.yes
-    ? true
-    : await resolveConfirmation(hosts, scope, resolvedPacks.join(", "), locale, projectMode, interactionMode);
-  if (!shouldProceed) {
-    cancel("Installation cancelled");
-    return false;
+  if (!input.yes) {
+    const confirmed = await resolveConfirmation(hosts, scope, resolvedPacks.join(", "), locale, projectMode, interactionMode);
+    if (!confirmed) throw new InstallCancelledError();
   }
 
   const installResults = [];
@@ -167,7 +176,11 @@ async function maybeEnableShellCompletion(input: {
           initialValue: true
         });
 
-  if (isCancel(shouldEnable) || !shouldEnable) {
+  if (isCancel(shouldEnable)) {
+    throw new InstallCancelledError();
+  }
+
+  if (!shouldEnable) {
     return null;
   }
 
@@ -193,7 +206,11 @@ async function maybeRefreshCodeContext(input: {
         initialValue: true
       });
 
-  if (isCancel(shouldRefresh) || !shouldRefresh) {
+  if (isCancel(shouldRefresh)) {
+    throw new InstallCancelledError();
+  }
+
+  if (!shouldRefresh) {
     return null;
   }
 
@@ -208,6 +225,53 @@ async function maybeRefreshCodeContext(input: {
     loading.stop(`Code context refresh failed: ${chalk.yellow(String(error))}`);
     return null;
   }
+}
+
+async function resolveHostOptionsOrThrow(currentHost?: string, yes?: boolean): Promise<SupportedHost[]> {
+  const result = await resolveHostOptions(currentHost, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolveScopeOptionOrThrow(currentScope?: string, yes?: boolean): Promise<InstallScope> {
+  const result = await resolveScopeOption(currentScope, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolvePackOptionOrThrow(currentPack: string | undefined, availablePacks: string[], yes?: boolean): Promise<string> {
+  const result = await resolvePackOption(currentPack, availablePacks, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolveLocaleOptionOrThrow(currentLocale?: string, yes?: boolean): Promise<OutputLocale> {
+  const result = await resolveLocaleOption(currentLocale, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolveProjectModeOptionOrThrow(
+  currentProjectMode: string | undefined,
+  currentWorkingDirectory: string,
+  scope: InstallScope | undefined,
+  yes?: boolean
+): Promise<ProjectMode> {
+  const result = await resolveProjectModeOption(currentProjectMode, currentWorkingDirectory, scope, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolveInteractionModeOptionOrThrow(currentInteractionMode?: string, yes?: boolean): Promise<InteractionMode> {
+  const result = await resolveInteractionModeOption(currentInteractionMode, yes);
+  if (!result) throw new InstallCancelledError();
+  return result;
+}
+
+async function resolveRulesOptionsOrThrow(currentRules: RuleFile[] | undefined, yes?: boolean, sourceRoot?: string, packNames?: string[]): Promise<RuleFile[]> {
+  const result = await resolveRulesOptions(currentRules, yes, sourceRoot, packNames);
+  if (result === undefined) throw new InstallCancelledError();
+  return result;
 }
 
 async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<SupportedHost[] | undefined> {
@@ -234,7 +298,6 @@ async function resolveHostOptions(currentHost?: string, yes?: boolean): Promise<
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -259,7 +322,6 @@ async function resolveScopeOption(currentScope?: string, yes?: boolean): Promise
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -297,7 +359,6 @@ async function resolvePackOption(currentPack: string | undefined, availablePacks
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -322,7 +383,6 @@ async function resolveLocaleOption(currentLocale?: string, yes?: boolean): Promi
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -354,7 +414,6 @@ async function resolveProjectModeOption(
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -381,7 +440,6 @@ async function resolveInteractionModeOption(currentInteractionMode?: string, yes
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -403,7 +461,6 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
   });
 
   if (isCancel(shouldConfigure)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -420,7 +477,6 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
   });
 
   if (isCancel(rulesMode)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -439,7 +495,6 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
   });
 
   if (isCancel(selectedCategories)) {
-    cancel("Installation cancelled");
     return undefined;
   }
 
@@ -456,7 +511,6 @@ async function resolveRulesOptions(currentRules: RuleFile[] | undefined, yes?: b
     });
 
     if (isCancel(content)) {
-      cancel("Installation cancelled");
       return undefined;
     }
 
@@ -537,7 +591,6 @@ async function resolveConfirmation(
   });
 
   if (isCancel(answer)) {
-    cancel("Installation cancelled");
     return false;
   }
 
