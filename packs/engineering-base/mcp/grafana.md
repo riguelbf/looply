@@ -4,7 +4,7 @@ name: grafana
 label: Grafana
 summary: MCP server for Grafana - dashboards, alerts and data source management
 description: Connects your AI agent to Grafana for creating dashboards, managing alerts, and querying data sources.
-package: "@modelcontextprotocol/server-grafana"
+package: "mcp-grafana-npx"
 env_vars:
   - name: GRAFANA_URL
     label: Grafana URL
@@ -22,7 +22,7 @@ config_template:
       "mcpServers": {
         "grafana": {
           "command": "npx",
-          "args": ["-y", "@modelcontextprotocol/server-grafana"],
+          "args": ["-y", "mcp-grafana-npx"],
           "env": {
             "GRAFANA_URL": "${GRAFANA_URL}",
             "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_SERVICE_ACCOUNT_TOKEN}"

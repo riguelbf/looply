@@ -2,13 +2,13 @@
 schema: looply/mcp@v1
 name: mysql
 label: MySQL
-summary: MCP server for MySQL - query and manage MySQL databases
-description: Connects your AI agent to MySQL databases for running queries, inspecting schemas and managing data.
-package: "@modelcontextprotocol/server-mysql"
+summary: MCP server for MySQL - query and inspect MySQL databases (read-only)
+description: Connects your AI agent to MySQL databases for running read-only queries and inspecting schemas.
+package: "mcp-server-mysql"
 env_vars:
   - name: MYSQL_HOST
     label: MySQL Host
-    prompt: "MySQL server hostname or IP address"
+    prompt: "MySQL server hostname or IP address (default: 127.0.0.1)"
     type: text
     required: true
   - name: MYSQL_PORT
@@ -18,32 +18,32 @@ env_vars:
     required: false
   - name: MYSQL_USER
     label: MySQL User
-    prompt: "MySQL username with read/write access"
+    prompt: "MySQL username with read access (default: root)"
     type: text
     required: true
-  - name: MYSQL_PASSWORD
+  - name: MYSQL_PASS
     label: MySQL Password
     prompt: "MySQL user password"
     type: password
     required: true
-  - name: MYSQL_DATABASE
+  - name: MYSQL_DB
     label: MySQL Database
-    prompt: "Database name to connect to"
+    prompt: "Database name to connect to (optional, enables multi-DB mode if not set)"
     type: text
-    required: true
+    required: false
 config_template:
   opencode: |
     {
       "mcpServers": {
         "mysql": {
           "command": "npx",
-          "args": ["-y", "@modelcontextprotocol/server-mysql"],
+          "args": ["-y", "mcp-server-mysql"],
           "env": {
             "MYSQL_HOST": "${MYSQL_HOST}",
             "MYSQL_PORT": "${MYSQL_PORT}",
             "MYSQL_USER": "${MYSQL_USER}",
-            "MYSQL_PASSWORD": "${MYSQL_PASSWORD}",
-            "MYSQL_DATABASE": "${MYSQL_DATABASE}"
+            "MYSQL_PASS": "${MYSQL_PASS}",
+            "MYSQL_DB": "${MYSQL_DB}"
           }
         }
       }

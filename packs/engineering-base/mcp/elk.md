@@ -1,17 +1,17 @@
 ---
 schema: looply/mcp@v1
 name: elk
-label: ELK (Elasticsearch + Kibana)
-summary: MCP server for Elasticsearch - search and analyze logs and metrics
-description: Connects your AI agent to Elasticsearch clusters for searching, analyzing logs and monitoring observability data.
-package: "@modelcontextprotocol/server-elasticsearch"
+label: ELK (Elasticsearch)
+summary: MCP server for Elasticsearch - search and analyze data
+description: Connects your AI agent to Elasticsearch for searching, listing indices, and analyzing data.
+package: "@elastic/mcp-server-elasticsearch"
 env_vars:
-  - name: ELASTICSEARCH_URL
+  - name: ES_URL
     label: Elasticsearch URL
     prompt: "Elasticsearch endpoint URL (e.g., https://elastic.example.com:9200)"
     type: text
     required: true
-  - name: ELASTICSEARCH_API_KEY
+  - name: ES_API_KEY
     label: Elasticsearch API Key
     prompt: "Base64-encoded API key for Elasticsearch authentication"
     type: password
@@ -22,10 +22,10 @@ config_template:
       "mcpServers": {
         "elk": {
           "command": "npx",
-          "args": ["-y", "@modelcontextprotocol/server-elasticsearch"],
+          "args": ["-y", "@elastic/mcp-server-elasticsearch"],
           "env": {
-            "ELASTICSEARCH_URL": "${ELASTICSEARCH_URL}",
-            "ELASTICSEARCH_API_KEY": "${ELASTICSEARCH_API_KEY}"
+            "ES_URL": "${ES_URL}",
+            "ES_API_KEY": "${ES_API_KEY}"
           }
         }
       }
