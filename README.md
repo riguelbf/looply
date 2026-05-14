@@ -20,6 +20,15 @@
 
 ## Recent Updates
 
+### v1.6 — MCP Activation
+
+| Update | Description |
+|--------|-------------|
+| **MCP Activation** | Activate MCP servers with a single command. Looply comes with 7 pre-built templates (GitHub, Kubernetes, Linear, MySQL, PostgreSQL, ELK, Grafana). Interactive questionnaire collects credentials, auto-installs the npm package, and generates cross-host configuration for OpenCode, Codex and Claude Code. |
+| **MCP CLI** | `looply mcp list` shows available MCPs with activation status. `looply mcp activate` guides you through an interactive setup. `looply mcp status` shows active MCPs per host. `looply mcp deactivate <name>` removes configuration and credentials. |
+| **Cross-Host MCP Config** | MCP configuration is generated simultaneously for all installed hosts (OpenCode primary). Non-destructive merge preserves manually configured MCPs. |
+| **Secure Credentials** | MCP credentials stored in `.looply/custom/mcp/` (gitignored) -- never in plain text in host config files. |
+
 ### v1.5 — Problem Diagnosis & Auto-Fresh
 
 | Update | Description |
@@ -93,6 +102,7 @@ npx @looply-cli/looply --help
 | **Workflows** | `idea-to-prd`, `prd-to-stories`, `story-to-production`, `problem-evaluator`, `cloud-workload-design`, `platform-foundation-evolution` — handoff between agents |
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
+| **MCP Activation** | Activate MCP servers (GitHub, K8s, Linear, MySQL, PG, ELK, Grafana) with interactive setup, auto-install and cross-host config |
 | **Skill Search** | Mandatory discovery skill that classifies user intent, maps to workflows, and enforces skill-first routing before code actions |
 | **Project rules** | Six categories (`coding-standards`, `testing-requirements`, `security-policies`, etc.) — standard defaults or custom |
 | **ICL guidance** | In-context example layer that calibrates agent output style and quality |
@@ -162,6 +172,7 @@ looply docs open
 | `list` | List available workflows, agents, or tasks |
 | `inspect` | Show details of a workflow or agent |
 | `integrations` | Expose known integration contexts |
+| `mcp` | Activate, list, status and deactivate MCP servers |
 | `icl` | Manage ICL example guidance |
 | `docs` | Generate, build, and serve documentation |
 | `completion` | Generate and install shell autocomplete |

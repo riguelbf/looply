@@ -74,6 +74,12 @@ List available packs and artifacts
 
 - options: 1
 
+## [mcp](./commands/mcp)
+
+Manage MCP (Model Context Protocol) server connections
+
+- options: 2
+
 ## [perf](./commands/perf)
 
 Inspect locally recorded looply performance sessions

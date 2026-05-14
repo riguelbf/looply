@@ -10,6 +10,7 @@ O `looply` e uma plataforma de artefatos Markdown para engenharia assistida por 
 
 - pack `engineering-base`
 - workflows `idea-to-prd`, `prd-to-stories`, `story-to-production`, `problem-evaluator`, `workflow-status` e `cloud-workload-design`
+- MCP activation para 7 servicos (GitHub, Kubernetes, Linear, MySQL, PostgreSQL, ELK, Grafana)
 - aliases `/looply:*`
 - CLI de install, sync, doctor, history, integrations e sessoes
 - auto-refresh de code-context e knowledge-graph antes de todo workflow (`refresh-code-context --check`)
