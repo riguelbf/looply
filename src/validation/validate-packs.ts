@@ -5,6 +5,7 @@ import {
   checklistSchema,
   exampleSchema,
   knowledgeSchema,
+  mcpSchema,
   packSchema,
   taskSchema,
   templateSchema,
@@ -13,6 +14,7 @@ import {
   type ChecklistFrontmatter,
   type ExampleFrontmatter,
   type KnowledgeFrontmatter,
+  type McpFrontmatter,
   type PackFrontmatter,
   type TaskFrontmatter,
   type TemplateFrontmatter,
@@ -22,7 +24,7 @@ import { supportedHosts } from "../lib/host-publisher.js";
 import { readMarkdownArtifact } from "../lib/markdown-artifact.js";
 
 type ValidationSeverity = "error" | "warning";
-type ArtifactType = "agent" | "task" | "workflow" | "knowledge" | "checklist" | "template" | "example" | "pack";
+type ArtifactType = "agent" | "task" | "workflow" | "knowledge" | "checklist" | "template" | "example" | "pack" | "mcp";
 
 interface ValidationMessage {
   severity: ValidationSeverity;
@@ -44,6 +46,7 @@ interface PackRegistry {
   checklists: Map<string, NamedArtifact<ChecklistFrontmatter>>;
   templates: Map<string, NamedArtifact<TemplateFrontmatter>>;
   examples: Map<string, NamedArtifact<ExampleFrontmatter>>;
+  mcps: Map<string, NamedArtifact<McpFrontmatter>>;
 }
 
 export interface ValidationReport {
@@ -326,6 +329,10 @@ function inferArtifactType(relativeFile: string): ArtifactType | null {
     return "template";
   }
 
+  if (relativeFile.includes("/mcp/")) {
+    return "mcp";
+  }
+
   return null;
 }
 
@@ -347,6 +354,8 @@ function parseByType(type: ArtifactType, frontmatter: Record<string, unknown>) {
       return exampleSchema.safeParse(frontmatter);
     case "pack":
       return packSchema.safeParse(frontmatter);
+    case "mcp":
+      return mcpSchema.safeParse(frontmatter);
   }
 }
 
@@ -364,7 +373,8 @@ function getOrCreateRegistry(registries: Map<string, PackRegistry>, packName: st
     knowledge: new Map(),
     checklists: new Map(),
     templates: new Map(),
-    examples: new Map()
+    examples: new Map(),
+    mcps: new Map()
   };
 
   registries.set(packName, created);
@@ -383,7 +393,8 @@ function registerArtifact(
     | ChecklistFrontmatter
     | TemplateFrontmatter
     | ExampleFrontmatter
-    | PackFrontmatter,
+    | PackFrontmatter
+    | McpFrontmatter,
   errors: ValidationMessage[]
 ): void {
   if (type === "pack") {
@@ -431,6 +442,8 @@ function getRegistryMap(registry: PackRegistry, type: Exclude<ArtifactType, "pac
       return registry.templates;
     case "example":
       return registry.examples;
+    case "mcp":
+      return registry.mcps;
   }
 }
 

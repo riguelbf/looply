@@ -150,6 +150,28 @@ export const packSchema = artifactSchema.extend({
   })
 });
 
+export const mcpEnvVarSchema = z.object({
+  name: z.string().min(1),
+  label: z.string().min(1),
+  prompt: z.string().min(1),
+  type: z.enum(["password", "text", "confirm"]),
+  required: z.boolean().default(true)
+});
+
+export const mcpConfigTemplateSchema = z.object({
+  opencode: z.string().min(1),
+  codex: z.string().default(""),
+  claude: z.string().default("")
+});
+
+export const mcpSchema = artifactSchema.extend({
+  label: z.string().min(1),
+  description: z.string().min(1),
+  package: z.string().min(1),
+  env_vars: z.array(mcpEnvVarSchema).default([]),
+  config_template: mcpConfigTemplateSchema
+});
+
 export type AgentFrontmatter = z.infer<typeof agentSchema>;
 export type TaskFrontmatter = z.infer<typeof taskSchema>;
 export type WorkflowFrontmatter = z.infer<typeof workflowSchema>;
@@ -158,3 +180,6 @@ export type ChecklistFrontmatter = z.infer<typeof checklistSchema>;
 export type TemplateFrontmatter = z.infer<typeof templateSchema>;
 export type ExampleFrontmatter = z.infer<typeof exampleSchema>;
 export type PackFrontmatter = z.infer<typeof packSchema>;
+export type McpFrontmatter = z.infer<typeof mcpSchema>;
+export type McpEnvVar = z.infer<typeof mcpEnvVarSchema>;
+export type McpConfigTemplate = z.infer<typeof mcpConfigTemplateSchema>;

@@ -11,7 +11,8 @@ export type CatalogArtifactType =
   | "checklist"
   | "template"
   | "example"
-  | "rule";
+  | "rule"
+  | "mcp";
 
 export interface CatalogArtifact {
   type: CatalogArtifactType;
@@ -92,6 +93,10 @@ export function inferArtifactType(relativeFile: string): CatalogArtifactType | n
 
   if (relativeFile.includes("/templates/")) {
     return "template";
+  }
+
+  if (relativeFile.includes("/mcp/")) {
+    return "mcp";
   }
 
   return null;
