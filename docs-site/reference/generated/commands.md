@@ -90,7 +90,7 @@ Reconcile a feature workflow after manual interventions or replay
 
 Refresh multi-language code-context discovery for the current repository
 
-- options: 1
+- options: 3
 
 ## [refresh-context](./commands/refresh-context)
 

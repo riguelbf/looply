@@ -6,7 +6,7 @@ description: Use when the user asks what looply can do, how to start a workflow,
 Use this skill as the main entrypoint for Looply inside Codex.
 
 Primary references:
-- Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
+- Workflow playbook: ../../../.looply/state/workflow-playbook.opencode.md
 - Command index: ../../../LOOPLY_COMMANDS.md
 - Host contract: ../../../HOST_CONTRACT.md
 - Host status contract: ../../../.looply/state/host-status-contract.json
@@ -26,17 +26,13 @@ Behavior:
 5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.
 6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.
 7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.
-8. If the user reports a bug or asks to diagnose a problem in the app, recommend `problem-evaluator`.
-9. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
-10. If the user wants to create a new looply skill or slash command, recommend `skill-creator`.
-11. Before routing to any workflow, run `looply refresh-code-context --check` to auto-detect and auto-refresh stale code-context and knowledge-graph. This ensures all workflows consume current code intelligence without manual intervention.
-12. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
-13. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
-14. When curated examples are referenced by a workflow command, treat them as style guidance only.
-15. Prefer explicit next-step guidance over generic explanations.
-16. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
-17. Respect project mode existing-project and interaction mode balanced.
-18. When context monitoring is enabled (`contextMonitoring.enabled` in `.looply/state/interaction-policy.json`), verify context health from `workflow-status.md` before routing to a specialist. If health is `red`, suggest `/looply:resume` in a fresh session instead.
+8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
+9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
+10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
+11. When curated examples are referenced by a workflow command, treat them as style guidance only.
+12. Prefer explicit next-step guidance over generic explanations.
+13. Use pt-BR for user-facing responses unless the user explicitly asks for another language.
+14. Respect project mode existing-project and interaction mode balanced.
 
 Available workflows:
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`
@@ -49,12 +45,8 @@ Available workflows:
   Evolve shared platform foundation with guardrails, governance and cost review
 - `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
   Break an approved PRD into delivery-ready stories
-- `$looply-problem-evaluator <feature-name> <scope-reference> [problem-description] [constraints...]`
-  Diagnose app problems using looply artifacts with codebase deep-dive as fallback
 - `$looply-resume <feature-name> [session-label] [notes...]`
   Resume the current feature workflow from the persisted state
-- `$looply-skill-creator <skill-name>`
-  Cria novas skills looply de forma interativa. Gera SKILL.md, yamls e atualiza indices.
 - `$looply-story-to-production <feature-name> <story-reference> [constraints...]`
   Execute delivery for a single approved story until release planning
 - `$looply-workflow-status <feature-name> [session-label] [notes...]`
@@ -66,9 +58,7 @@ Recommended sequence:
 3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`
 4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` when cloud topology, async-first or governance is the main problem
 5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` when shared platform baseline or guardrails are the main problem
-6. `$looply-problem-evaluator <feature-name> <scope-reference> [problem-description] [constraints...]` when diagnosing problems or bugs in the app
-7. `$looply-workflow-status <feature-name> [notes...]`
-8. `$looply-skill-creator <skill-name>` to create new looply skills and slash commands
+6. `$looply-workflow-status <feature-name> [notes...]`
 
 Presentation rules:
 - Use clear Markdown section titles.

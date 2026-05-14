@@ -6,53 +6,33 @@ description: Use to discover available looply skills and workflows. Forces skill
 Use this skill as the mandatory discovery layer for looply. Before executing any code generation, file edit, or architecture decision, scan the available looply skills and determine whether a structured workflow should take priority.
 
 Primary references:
-- Skills directory: ../../.agents/skills/
+- Skills directory: ..
 - Command index: ../../../LOOPLY_COMMANDS.md
-- Workflow playbook: ../../.looply/state/workflow-playbook.codex.md
-- Host status contract: ../../.looply/state/host-status-contract.json
+- Workflow playbook: ../../../.looply/state/workflow-playbook.opencode.md
+- Host status contract: ../../../.looply/state/host-status-contract.json
 - Host contract: ../../../HOST_CONTRACT.md
 - Entrypoint: ../../../AGENTS.md
-- Context index: ../../.looply/state/context-index.md
-- Project context: ../../.looply/custom/project-context.md
-- Session context: ../../.looply/custom/session-context.md
-- Interaction policy: ../../.looply/state/interaction-policy.json
+- Context index: ../../../.looply/state/context-index.md
+- Project context: ../../../.looply/custom/project-context.md
+- Session context: ../../../.looply/custom/session-context.md
+- Interaction policy: ../../../.looply/state/interaction-policy.json
 
 ## Purpose
 
 This skill ensures the AI always discovers looply structured workflows before taking ad-hoc code actions. It acts as a priority gate for skill-aware tool selection.
 
-## Registered Looply Skills
-
-The following skills are available and should be checked before any code action:
-
-| Skill | Purpose | Phase |
-|-------|---------|-------|
-| `looply` | Main entrypoint for discovery and routing | - |
-| `looply-idea-to-prd` | Transform an idea into a PRD | discovery |
-| `looply-prd-to-stories` | Break a PRD into delivery stories | planning |
-| `looply-story-to-production` | Story delivery: design, implementation, review, release | delivery |
-| `looply-cloud-workload-design` | Cloud topology, governance, cost direction | planning |
-| `looply-platform-foundation-evolution` | Platform baselines, guardrails, pipelines | planning |
-| `looply-problem-evaluator` | Diagnose app problems with artifact-driven investigation and codebase fallback | diagnosis |
-| `looply-workflow-status` | Inspect or resume feature workflow state | status |
-| `looply-resume` | Resume a persisted feature workflow | status |
-| `looply-next` | Show the next recommended step | status |
-| `looply-skill-creator` | Create new looply skills interactively | - |
-| `looply-skill-search` | This skill — skill discovery and prioritization | - |
-
 ## Priority Rules
 
-1. **Skill-first routing**: Before any code generation, file edit, or architecture decision, scan the registered skills above and determine whether a structured workflow should take priority.
+1. **Skill-first routing**: Before any code generation, file edit, or architecture decision, scan the available looply skills and determine whether a structured workflow should take priority.
 2. **Intent classification**: Map the user request to the most relevant skill:
-   - Raw idea / feature request → `looply-idea-to-prd`
-   - Existing PRD → `looply-prd-to-stories`
-   - Story to implement → `looply-story-to-production`
-   - Cloud design questions → `looply-cloud-workload-design`
-   - Platform / infra questions → `looply-platform-foundation-evolution`
-   - App problem / bug diagnosis → `looply-problem-evaluator`
-   - Unknown where work stopped → `looply-workflow-status` or `looply-resume`
-   - Creating new looply skills → `looply-skill-creator`
-   - Unknown intent → `looply` (root discovery)
+   - Raw idea / feature request -> `looply-idea-to-prd`
+   - Existing PRD -> `looply-prd-to-stories`
+   - Story to implement -> `looply-story-to-production`
+   - Cloud design questions -> `looply-cloud-workload-design`
+   - Platform / infra questions -> `looply-platform-foundation-evolution`
+   - Unknown where work stopped -> `looply-workflow-status` or `looply-resume`
+   - Creating new looply skills -> `looply-skill-creator`
+   - Unknown intent -> `looply` (root discovery)
 3. **Workflow before ad-hoc**: If a looply workflow matches the user intent, invoke the corresponding skill. Only fall back to ad-hoc code actions when no workflow matches or when the user explicitly requests a direct code change.
 4. **State awareness**: Before suggesting a workflow, check `.looply/custom/features/<feature-name>/workflow-status.md` for existing feature state.
 5. **Session binding**: Use `.looply/custom/session-links.json` to bind the current session to the correct feature when resuming.
@@ -63,12 +43,12 @@ The following skills are available and should be checked before any code action:
 2. When the user describes a software engineering task, check if a looply workflow stage is already in progress for that feature.
 3. When suggesting tool usage, prefer looply workflow skills over raw code tools when structured delivery adds value.
 4. When the user rejects workflow guidance, respect the decision and fall back to direct code action.
-5. Do not force workflows for trivial, single-step operations (e.g., "what does git status do?", "add a comment to this function").
+5. Do not force workflows for trivial, single-step operations.
 
 ## Execution Rules
 
 1. Load this skill at the start of every session where developer intent involves software engineering tasks.
-2. Scan registered skills against the user's request before selecting tools.
+2. Scan available looply skills against the user's request before selecting tools.
 3. If a workflow matches, load the corresponding skill and follow its execution rules.
 4. If the user already has an active feature, check workflow state before proposing new work.
 5. Generate user-facing outputs in pt-BR unless the user explicitly asks for another language.

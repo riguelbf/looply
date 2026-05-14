@@ -1,4 +1,4 @@
-# looply Host Contract for Claude Code
+# looply Host Contract for OpenCode
 
 ## Purpose
 
@@ -6,8 +6,8 @@ This document is the host-facing operating contract for looply. The host reasons
 
 ## Primary References
 
-- Host entrypoint: `./CLAUDE.md`
-- Workflow playbook: `.looply/state/workflow-playbook.claude.md`
+- Host entrypoint: `./OPENCODE.md`
+- Workflow playbook: `.looply/state/workflow-playbook.opencode.md`
 - Host contract: `./HOST_CONTRACT.md`
 - Context index: `.looply/state/context-index.md`
 - Project context: `.looply/custom/project-context.md`
@@ -16,7 +16,8 @@ This document is the host-facing operating contract for looply. The host reasons
 - Host status contract: `.looply/state/host-status-contract.json`
 - Context snapshot: `.looply/state/context-snapshot.json`
 - Code-context snapshot: `.looply/state/code-context.json`
-- Command index: `.claude/commands`
+- Knowledge graph: `.looply/state/knowledge-graph.json`
+- Command index: `./OPENCODE_COMMANDS.md`
 
 ## Responsibilities
 
@@ -64,4 +65,4 @@ For a single autonomous cycle, the host may use `looply autonomy <feature>` to d
 - Project mode: `existing-project`
 - Interaction mode: `balanced`
 - Output locale: `pt-BR`
-- Target host: `Claude Code`
+- Target host: `OpenCode`

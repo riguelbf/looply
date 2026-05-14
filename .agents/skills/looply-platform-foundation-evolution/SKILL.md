@@ -8,16 +8,17 @@ Primary orchestrator: `delivery-orchestrator`.
 Quick usage:
 - `$looply-platform-foundation-evolution <initiative-name> "[constraints...]"`
 Primary references:
-- Workflow playbook: ../../../.looply/state/workflow-playbook.codex.md
+- Workflow playbook: ../../../.looply/state/workflow-playbook.opencode.md
 - Host status contract: ../../../.looply/state/host-status-contract.json
 - Managed pack: ../../../.looply/managed/packs/software-delivery-suite
 - Workflow state template: ../../../.looply/managed/packs/product-base/templates/workflow-status-template.md
 - Custom overrides: ../../../.looply/custom
-- Execution hints: ../../../.looply/state/execution-hints.codex.json
-- Example hints: ../../../.looply/state/example-hints.codex.json
+- Execution hints: ../../../.looply/state/execution-hints.opencode.json
+- Example hints: ../../../.looply/state/example-hints.opencode.json
 - Context index: ../../../.looply/state/context-index.md
 - Project context: ../../../.looply/custom/project-context.md
 - Session context: ../../../.looply/custom/session-context.md
+- Knowledge graph: ../../../.looply/state/knowledge-graph.json (use para impacto, dependencias entre modulos e schema de banco)
 Usage:
 - Explicit mention: `$looply-platform-foundation-evolution`
 - Workflow alias to honor: `/looply:platform-foundation-evolution` and `$looply-platform-foundation-evolution` depending on host
@@ -42,7 +43,7 @@ Execution rules:
 10. When curated examples are referenced, use them only for style, structure and quality calibration.
 11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.
 12. Do not use emojis.
-13. When context monitoring is enabled in `.looply/state/interaction-policy.json`, after each stage estimate context consumption against the stage's `context_budget` hint from `execution-hints.codex.json`. Track in `workflow-status.md` (`## Session Context`). At `yellow` (70-85%), compact state. At `red` (>85%), require `/looply:resume` in a fresh session.
+
 ---
 ## Composed Agent Context
 The sections below were pre-composed by looply from agent context_slots. Inline sections contain content resolved during install/sync. Reference sections list files the host should read at runtime.

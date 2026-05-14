@@ -30,13 +30,6 @@ Delivery planning workflow from approved PRD to story backlog
 - phase: `planning`
 - alias principal: `/looply:prd-to-stories`
 
-## [problem-evaluator](./workflows/problem-evaluator)
-
-Diagnose app problems using looply artifacts as primary source, with codebase deep-dive as fallback
-
-- phase: `diagnosis`
-- alias principal: `/looply:problem-evaluator`
-
 ## [story-to-production](./workflows/story-to-production)
 
 Delivery workflow from approved story to release readiness

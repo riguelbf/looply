@@ -64,7 +64,7 @@ Sem summary declarada.
 
 ## [problem-investigator](./agents/problem-investigator)
 
-Agente especializado em diagnostico de problemas em software. Triangula evidencias entre artefatos looply e codebase.
+Sem summary declarada.
 
 - arquivo: `packs/engineering-base/agents/problem-investigator.md`
 
