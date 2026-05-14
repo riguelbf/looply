@@ -1,10 +1,11 @@
 {
   "name": "@looply-cli/looply",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "type": "module",
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "packs"
   ],
   "bin": {
     "looply": "./bin/run.js"
