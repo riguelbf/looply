@@ -14,6 +14,7 @@ import { registerIntegrationsCommand } from "./commands/integrations.js";
 import { registerInspectCommand } from "./commands/inspect.js";
 import { registerInstallCommand } from "./commands/install.js";
 import { registerListCommand } from "./commands/list.js";
+import { registerMcpCommand } from "./commands/mcp.js";
 import { registerPerfCommand } from "./commands/perf.js";
 import { registerReinstallCommand } from "./commands/reinstall.js";
 import { registerRefreshContextCommand } from "./commands/refresh-context.js";
@@ -75,6 +76,7 @@ export function buildProgram(): Command {
   registerIntegrationsCommand(program);
   registerListCommand(program);
   registerInspectCommand(program);
+  registerMcpCommand(program);
   registerCompletionCommand(program);
   registerPerfCommand(program);
 
