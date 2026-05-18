@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-critique"
+  short_description: "Use to perform a deep critique and improvement of the current workflow step artifact (PRD, stories, tech spec, ADR, etc.) with a terminal approval form."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-critique <feature-name> [notes...]"
+
+policy:
+  allow_implicit_invocation: false

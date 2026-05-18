@@ -30,6 +30,7 @@ ICL example guidance: `on`
 Invocable workflow aliases:
 - /looply:help [command-name]
 - /looply:cloud-workload-design <feature-name> <scope-reference> [constraints...]
+- /looply:critique <feature-name> [notes...]
 - /looply:idea-to-prd <feature-name> [problem-statement] [constraints...]
 - /looply:next <feature-name> [session-label] [notes...]
 - /looply:platform-foundation-evolution <initiative-name> [constraints...]

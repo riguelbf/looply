@@ -16,6 +16,9 @@ Available aliases:
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`
   Define cloud topology, governance controls and cost posture for a workload change
   Reference: .looply/state/commands/opencode/looply:cloud-workload-design.md
+- `$looply-critique <feature-name> [notes...]`
+  Perform a deep critique and improvement of the current workflow step artifact with a terminal approval form
+  Reference: .looply/state/commands/opencode/looply:critique.md
 - `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`
   Start discovery and consolidate an idea into an approved PRD
   Reference: .looply/state/commands/opencode/looply:idea-to-prd.md

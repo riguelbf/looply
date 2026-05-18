@@ -20,6 +20,12 @@
 
 ## Recent Updates
 
+### v1.9 — Critique & Refinement
+
+| Update | Description |
+|--------|-------------|
+| **Critique Command** | New `$looply-critique` slash command for deep critique and improvement of any workflow step artifact. Automatically detects the active artifact (PRD, story backlog, tech spec, ADR, etc.), applies artifact-specific critique rules, generates a temporary refinement report with improvements, and presents a terminal decision form (approve, comment, cancel). Loops until the user approves the final version. |
+
 ### v1.8 — Auto-Resume & Session Continuity
 
 | Update | Description |
@@ -207,6 +213,7 @@ looply docs open
 | `cloud-workload-design` | Cloud topology, async-first, queueing, and governance decisions |
 | `platform-foundation-evolution` | Shared foundation, guardrails, pipelines, identity, and observability |
 | `auto-resume` | Auto-detect persisted state on new session, present stage/gate status, always question user before acting |
+| `critique` | Deep critique and improvement of the current workflow step artifact with terminal approval form |
 | `skill-creator` | Interactive creation of new looply skills. Generates SKILL.md, yamls, help files and updates indices |
 | `skill-search` | Mandatory discovery layer. Maps user intent to workflows and enforces skill-first routing |
 
