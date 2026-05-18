@@ -81,6 +81,10 @@ summary: Template for persisted feature workflow state
 
 ## Decision Rationale
 
+## Context Ledger
+
+<!-- The context-ledger.md file accumulates decisions, rationale, constraints and risks per stage. Update it after every stage completion alongside this workflow-status.md. -->
+
 ## Open Questions
 
 ## Constraints

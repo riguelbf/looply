@@ -54,6 +54,7 @@ Cada pack contem agents, workflows, tasks, knowledge, templates e checklists. O 
 
 O looply analisa o codebase e constroi uma camada de contexto que todo agente recebe em cada sessao.
 
+- **Context Ledger** — memoria compartilhada append-only. Decisoes e rationale acumulam entre stages
 - **Knowledge Graph** — classes, funcoes, modulos, tabelas e foreign keys
 - **Schema de banco** — Prisma, Drizzle, TypeORM, SQL migrations (estatico, sem conexao)
 - **Regras do projeto** — convencoes, seguranca, gates de qualidade

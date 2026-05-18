@@ -28,6 +28,7 @@ Cada agente declara no frontmatter quais contextos precisa receber para ser mais
 | `rules` | `inline` | Project rules filtradas por categoria |
 | `stage.inputs` | `reference` | Artefatos do stage anterior (host le em runtime) |
 | `feature` | `reference` | Contexto da feature ativa (host resolve) |
+| `workflow.ledger` | `reference` | Context Ledger da feature (decisoes acumuladas de todos os stages) |
 
 ## Task
 
@@ -39,7 +40,17 @@ Agrupamento de agentes, tasks, workflows e conhecimento sob um dominio. Exemplo:
 
 ## Feature
 
-Unidade de trabalho rastreada pelo looply. Cada feature possui estado de workflow persistido em `.looply/custom/features/<feature-name>/` com `workflow-control.json`, `workflow-status.md` e artefatos de saida (stories, PRD, tech-spec, etc.).
+Unidade de trabalho rastreada pelo looply. Cada feature possui estado de workflow persistido em `.looply/custom/features/<feature-name>/` com `workflow-control.json`, `workflow-status.md`, `context-ledger.md` e artefatos de saida (stories, PRD, tech-spec, etc.).
+
+## Context Ledger
+
+Memoria compartilhada append-only por feature. Cada stage do workflow adiciona decisoes, rationale, constraints e riscos ao final do arquivo `context-ledger.md`. O CLI publica o template e as regras de execucao; os agentes (LLMs) escrevem e leem em runtime.
+
+Duas zonas de leitura:
+- `## Context Summary` (3-5 linhas) — para agents com `context_budget: low`
+- `## Stage Log` — entradas completas por stage, para budgets `medium+`
+
+Integrado ao sistema de `context_slots` via source `workflow.ledger`. Registrado no `context-index.md` para descoberta automatica pelo LLM.
 
 ## Host
 

@@ -20,6 +20,16 @@
 
 ## Recent Updates
 
+### v1.7 — Shared Context Memory
+
+| Update | Description |
+|--------|-------------|
+| **Context Ledger** | Append-only shared memory per feature. Each workflow stage appends decisions, rationale, constraints and risks. Agents read the `Context Summary` (low budget) or full ledger (medium+). Zero new dependencies — pure Markdown on filesystem. |
+| **Pre-Action Gate** | Enforced before any code change across all three hosts. Session binding, feature state check, context-ledger read, and knowledge-graph awareness are mandatory gates via updated `AGENTS.md`/`OPENCODE.md`/`CLAUDE.md` entrypoints. |
+| **Context Index Expansion** | `context-ledger.md`, `knowledge-graph.json` and `code-context.json` now registered in the context-index priority order — LLM discovers all structural memory automatically. |
+| **Knowledge Wiring** | New `workflow.ledger` context slot source for agents. Budget-aware compression: low budget = summary only, medium+ = full ledger. Cross-host enforcement via entrypoint + skill execution rules. |
+| **Directory-based Ledger** | Stage-isolated files avoid write conflicts during parallel intervention/replay. Stage ID deduplication for append-only safety. |
+
 ### v1.6 — MCP Activation
 
 | Update | Description |

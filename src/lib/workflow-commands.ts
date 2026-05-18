@@ -115,6 +115,7 @@ export function renderClaudeWorkflowCommand(input: {
     "",
     "State handling:",
     `- Feature state file: \`${stateFileHint}\``,
+    `- Context ledger: \`.looply/custom/features/<feature-name>/context-ledger.md\` (append decisions after each stage)`,
     "- Read it first when it exists, otherwise create it from the workflow state template.",
     "- Session links file: `.looply/custom/session-links.json`",
     "- If context markdown files are empty, draft or stale, inspect the local codebase before making meaningful decisions.",
@@ -169,12 +170,12 @@ export function renderClaudeWorkflowCommand(input: {
     "Required behavior:",
     "1. Check first whether the user asked for command help.",
     "2. Normalize the incoming arguments into a short problem statement, scope, and constraints.",
-    "3. Create or update the feature state file before deciding the next step.",
+    "3. Create or update the feature state file before deciding the next step. Also read and maintain the context ledger at `.looply/custom/features/<feature-name>/context-ledger.md`.",
     "4. Open the workflow playbook first and follow the documented stages in order.",
     "5. Respect every blocking gate before moving to the next stage.",
     "6. Produce or update the expected artifacts for the current stage before advancing.",
     "7. Fill only the phase-relevant block in the workflow state file: Discovery Focus, Planning Focus or Delivery Focus.",
-    "8. Update the feature state file after every relevant transition.",
+    "8. Update the feature state file after every relevant transition. Append your stage decisions to the context ledger.",
     "9. Preserve managed files as canonical and place local overrides only in `.looply/custom`.",
     "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
     "11. When the current task declares templates or checklists, use them as the default output contract and quality bar.",
@@ -235,6 +236,7 @@ export function renderCodexWorkflowCommand(input: {
     `- interaction mode: ${input.interactionMode}`,
     "",
     `State file: ${stateFileHint}`,
+    "Context ledger: .looply/custom/features/<feature-name>/context-ledger.md (append decisions after each stage)",
     "Read it first when it exists, otherwise create it from the workflow state template.",
     "Session links file: .looply/custom/session-links.json",
     "",
@@ -292,11 +294,11 @@ export function renderCodexWorkflowCommand(input: {
     "Execution rules:",
     "1. Check first whether the user asked for command help.",
     "2. Parse the user message into the declared arguments before taking action.",
-    "3. Create or update the feature state file before deciding the next step.",
+    "3. Create or update the feature state file before deciding the next step. Also read and maintain the context ledger at `.looply/custom/features/<feature-name>/context-ledger.md`.",
     "4. Open the workflow playbook and follow stages sequentially.",
     "5. Do not skip blocking gates.",
     "6. Fill only the phase-relevant block in the workflow state file: Discovery Focus, Planning Focus or Delivery Focus.",
-    "7. Update the feature state file after every relevant transition.",
+    "7. Update the feature state file after every relevant transition. Append your stage decisions to the context ledger.",
     "8. Use managed pack files as the canonical process definition.",
     "9. Read execution hints only as advisory metadata for cost and context selection.",
     "10. Before acting as a specialist, consult the current agent `knowledge_sources`, especially specialist `best-practices` documents.",
@@ -435,6 +437,9 @@ async function resolveContextSlot(
     case "feature": {
       return null; // reference slots are not resolved at build time
     }
+    case "workflow.ledger": {
+      return null; // reference slots are not resolved at build time
+    }
     default:
       return null;
   }
@@ -516,6 +521,7 @@ export function renderCodexSkillDocument(input: {
     `- Host status contract: ${input.statusContractReference}`,
     `- Managed pack: ${input.packReference}`,
     `- Workflow state template: ${input.stateTemplateReference}`,
+    `- Context ledger: .looply/custom/features/<feature-name>/context-ledger.md (shared decision memory)`,
     `- Custom overrides: ${input.customReference}`,
     `- Execution hints: ${input.hintsReference}`,
     `- Example hints: ${input.exampleHintsReference}`,
@@ -539,22 +545,23 @@ export function renderCodexSkillDocument(input: {
     }),
     "",
     "Execution rules:",
-    "1. Start by reading the workflow playbook, the host status contract if it exists, and the feature state file if it already exists.",
+    "1. Start by reading the workflow playbook, the host status contract if it exists, the feature state file if it already exists, and the context ledger at `.looply/custom/features/<feature-name>/context-ledger.md` if it already exists.",
     "2. If the user asked for help, explain syntax, arguments, example, expected output and next step without mutating state.",
     "3. Create or update `.looply/custom/features/<feature-name>/workflow-status.md` before advancing stages.",
-    "4. Respect blocking gates and do not skip required artifacts.",
-    "5. Use managed pack files as canonical process definition and write local state only under `.looply/custom`.",
-    `6. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
+    "4. After completing a workflow stage, append decisions, rationale, constraints and risks to `.looply/custom/features/<feature-name>/context-ledger.md` and update its `## Context Summary` section.",
+    "5. Respect blocking gates and do not skip required artifacts.",
+    "6. Use managed pack files as canonical process definition and write local state only under `.looply/custom`.",
+    `7. Generate user-facing outputs in ${input.outputLocale} unless the user explicitly asks for another language.`,
     input.projectMode === "existing-project"
-      ? "7. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
-      : "7. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
-    "8. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.",
-    `9. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`,
-    "10. When curated examples are referenced, use them only for style, structure and quality calibration.",
-    "11. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
-    "12. Do not use emojis.",
+      ? "8. For existing projects, use the real local codebase as the primary source of truth and use context files only as accelerators."
+      : "8. For greenfield projects, use managed artifacts and explicit assumptions until a codebase exists.",
+    "9. If a context file has `status: empty`, `status: draft` or `status: stale`, validate it against the local codebase before trusting it.",
+    `10. Follow ${input.interactionMode} interaction mode to avoid unnecessary repeated clarifications.`,
+    "11. When curated examples are referenced, use them only for style, structure and quality calibration.",
+    "12. Keep the response visually structured with clear Markdown section titles for Workflow, Stage, Current Task, Gate, Decision and Next Step.",
+    "13. Do not use emojis.",
     skill.workflowName === "story-to-production"
-      ? "13. Before implementing, check `.looply/state/knowledge-graph.json` for module dependencies, database tables and entities impacted by the story. Run `looply refresh-code-context` if the graph is missing or stale."
+      ? "14. Before implementing, check `.looply/state/knowledge-graph.json` for module dependencies, database tables and entities impacted by the story. Run `looply refresh-code-context` if the graph is missing or stale."
       : null
   ];
 

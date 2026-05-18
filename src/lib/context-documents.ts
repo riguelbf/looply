@@ -140,15 +140,18 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "## Priority Order",
     "",
     "1. Feature workflow status: `.looply/custom/features/<feature-name>/workflow-status.md`",
-    "2. Feature context: `.looply/custom/features/<feature-name>/feature-context.md`",
-    "3. Project context: `.looply/custom/project-context.md`",
-    "4. Architecture context: `.looply/custom/architecture-context.md`",
-    "5. Relevant integration context files under `.looply/custom/integrations/`",
-    "6. Project rules under `.looply/custom/rules/`",
+    "2. Context ledger: `.looply/custom/features/<feature-name>/context-ledger.md` (accumulated decisions across all stages)",
+    "3. Feature context: `.looply/custom/features/<feature-name>/feature-context.md`",
+    "4. Knowledge graph: `.looply/state/knowledge-graph.json` (module dependencies and database schema)",
+    "5. Code context: `.looply/state/code-context.json` (symbols, relations and entrypoints)",
+    "6. Project context: `.looply/custom/project-context.md`",
+    "7. Architecture context: `.looply/custom/architecture-context.md`",
+    "8. Relevant integration context files under `.looply/custom/integrations/`",
+    "9. Project rules under `.looply/custom/rules/`",
     input.projectMode === "existing-project"
-      ? "7. Real local codebase under the primary context root"
-      : "7. User instructions and managed artifacts until code exists",
-    "8. Session context: `.looply/custom/session-context.md`",
+      ? "10. Real local codebase under the primary context root"
+      : "10. User instructions and managed artifacts until code exists",
+    "11. Session context: `.looply/custom/session-context.md`",
     "",
     "## Validation Rules",
     "",
@@ -159,15 +162,18 @@ function renderContextIndexMarkdown(input: ContextIndexInput): string {
     "",
     "## Registered Context Files",
     "",
+    "- `.looply/custom/features/<feature-name>/workflow-status.md`",
+    "- `.looply/custom/features/<feature-name>/context-ledger.md` (append-only shared memory)",
+    "- `.looply/custom/features/<feature-name>/feature-context.md`",
+    "- `.looply/state/knowledge-graph.json` (module dependencies and database schema)",
+    "- `.looply/state/code-context.json` (symbols, relations and entrypoints)",
     "- `.looply/custom/project-context.md`",
     "- `.looply/custom/architecture-context.md`",
     "- `.looply/state/project-inventory.md`",
     "- `.looply/state/harness-report.md` (advisory — read before starting a workflow; blocking errors must be resolved first)",
     "- `.looply/custom/session-context.md`",
     "- `.looply/custom/integrations/integrations-index.md`",
-    "- `.looply/custom/rules/rules-index.md`",
-    "- `.looply/custom/features/<feature-name>/workflow-status.md`",
-    "- `.looply/custom/features/<feature-name>/feature-context.md`"
+    "- `.looply/custom/rules/rules-index.md`"
   ].join("\n");
 }
 
