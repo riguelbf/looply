@@ -1,0 +1,8 @@
+interface:
+  display_name: "$looply-auto-resume"
+  short_description: "Auto-resume looply workflow state and always question user before acting. Cross-host (Codex, OpenCode, Claude Code)."
+  brand_color: "#7C3AED"
+  default_prompt: "$looply-auto-resume [feature-name] \"[notes...]\""
+
+policy:
+  allow_implicit_invocation: true

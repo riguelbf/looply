@@ -20,6 +20,13 @@
 
 ## Recent Updates
 
+### v1.8 — Auto-Resume & Session Continuity
+
+| Update | Description |
+|--------|-------------|
+| **Auto-Resume Skill** | New `$looply-auto-resume` slash command that auto-detects persisted workflow state on new session start. Scans `.looply/custom/features/` for active features, presents the current stage/gate status, and always questions the user before taking any action. Cross-host support for Codex, OpenCode and Claude Code with implicit invocation enabled. |
+| **Interview-Driven Continuity** | Never advances stages without explicit user confirmation. After each action, loops back and asks what to do next -- ensuring human-in-the-loop at every workflow transition. |
+
 ### v1.7 — Shared Context Memory
 
 | Update | Description |
@@ -113,6 +120,7 @@ npx @looply-cli/looply --help
 | **Interventions** | `replay`, `run-task`, `run-agent`, `reconcile` — deviate from a workflow without losing state |
 | **Skill Creator** | Interactive slash command to create new looply skills with validation, templates and index updates |
 | **MCP Activation** | Activate MCP servers (GitHub, K8s, Linear, MySQL, PG, ELK, Grafana) with interactive setup, auto-install and cross-host config |
+| **Auto-Resume** | Auto-detects persisted workflow state on new session start, questions user before acting, cross-host implicit invocation |
 | **Skill Search** | Mandatory discovery skill that classifies user intent, maps to workflows, and enforces skill-first routing before code actions |
 | **Project rules** | Six categories (`coding-standards`, `testing-requirements`, `security-policies`, etc.) — standard defaults or custom |
 | **ICL guidance** | In-context example layer that calibrates agent output style and quality |
@@ -198,6 +206,7 @@ looply docs open
 | `workflow-status` | Inspect state and recommend the next step |
 | `cloud-workload-design` | Cloud topology, async-first, queueing, and governance decisions |
 | `platform-foundation-evolution` | Shared foundation, guardrails, pipelines, identity, and observability |
+| `auto-resume` | Auto-detect persisted state on new session, present stage/gate status, always question user before acting |
 | `skill-creator` | Interactive creation of new looply skills. Generates SKILL.md, yamls, help files and updates indices |
 | `skill-search` | Mandatory discovery layer. Maps user intent to workflows and enforces skill-first routing |
 

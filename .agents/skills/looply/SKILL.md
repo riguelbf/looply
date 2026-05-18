@@ -25,9 +25,11 @@ Behavior:
 4. If the user already has a story and wants to implement, recommend `story-to-production`.
 5. If the user needs cloud topology, async-first trade-offs, governance or workload cost direction, recommend `cloud-workload-design`.
 6. If the user needs shared platform baselines, guardrails, pipelines or foundation evolution, recommend `platform-foundation-evolution`.
-7. If the user wants to know where work stopped, recommend `workflow-status`, `resume` or `next`.
+7. If the user wants to know where work stopped, recommend `workflow-status`, `resume`, `auto-resume` or `next`.
+8. If the user starts a new session, recommend `auto-resume` to detect persisted state and continue.
 8. If the user asks for host-driven autonomy, consult `HOST_CONTRACT.md`, `host-status-contract.json` and use `looply autonomy <feature>` to derive the next cycle.
-9. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
+9. If the user wants to create a new looply skill or slash command, recommend `skill-creator`.
+10. Before routing to a specialist, inspect the agent `knowledge_sources`, especially specialist `best-practices` files.
 10. If the current task declares templates or checklists, treat them as the default artifact contract and quality bar.
 11. When curated examples are referenced by a workflow command, treat them as style guidance only.
 12. Prefer explicit next-step guidance over generic explanations.
@@ -35,6 +37,8 @@ Behavior:
 14. Respect project mode existing-project and interaction mode balanced.
 
 Available workflows:
+- `$looply-auto-resume [feature-name] "[notes...]"`
+  Auto-detect persisted workflow state on new session start and always question user before acting
 - `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]`
   Define cloud topology, governance controls and cost posture for a workload change
 - `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`
@@ -53,9 +57,10 @@ Available workflows:
   Inspect or resume the current status of a looply feature workflow
 
 Recommended sequence:
-1. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`
-2. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
-3. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`
+1. `$looply-auto-resume [feature-name]` when starting a new session to detect previous state
+2. `$looply-idea-to-prd <feature-name> [problem-statement] [constraints...]`
+3. `$looply-prd-to-stories <feature-name> [prd-reference] [notes...]`
+4. `$looply-story-to-production <feature-name> <story-reference> [constraints...]`
 4. `$looply-cloud-workload-design <feature-name> <scope-reference> [constraints...]` when cloud topology, async-first or governance is the main problem
 5. `$looply-platform-foundation-evolution <initiative-name> [constraints...]` when shared platform baseline or guardrails are the main problem
 6. `$looply-workflow-status <feature-name> [notes...]`
