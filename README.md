@@ -251,4 +251,4 @@ Looply is an opinionated tool. Contributions are welcome in the form of issues a
 
 ## License
 
-[Apache 2.0](./LICENSE)
+[PolyForm Noncommercial 1.0.0](./LICENSE)
