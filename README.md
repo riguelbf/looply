@@ -12,7 +12,7 @@
   <a href="https://www.npmjs.com/package/@looply-cli/looply"><img src="https://img.shields.io/npm/dw/@looply-cli/looply" alt="npm downloads"></a>
   <a href="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml"><img src="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml/badge.svg" alt="publish"></a>
   <a href="https://github.com/riguelbf/looply/actions/workflows/docs-pages.yml"><img src="https://github.com/riguelbf/looply/actions/workflows/docs-pages.yml/badge.svg" alt="docs"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="license"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue" alt="license"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="node"></a>
   <a href="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml"><img src="https://img.shields.io/badge/trusted_publishers-OIDC-purple" alt="trusted publishers"></a>
 </p>
