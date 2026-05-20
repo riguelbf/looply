@@ -40,15 +40,15 @@ Agrupamento de agentes, tasks, workflows e conhecimento sob um dominio. Exemplo:
 
 ## Feature
 
-Unidade de trabalho rastreada pelo looply. Cada feature possui estado de workflow persistido em `.looply/custom/features/<feature-name>/` com `workflow-control.json`, `workflow-status.md`, `context-ledger.md` e artefatos de saida (stories, PRD, tech-spec, etc.).
+Unidade de trabalho rastreada pelo looply. Cada feature possui estado de workflow persistido em `.looply/custom/features/<feature-name>/` com `workflow-control.json`, `workflow-status.md`, `context-ledger.db` e artefatos de saida (stories, PRD, tech-spec, etc.).
 
 ## Context Ledger
 
-Memoria compartilhada append-only por feature. Cada stage do workflow adiciona decisoes, rationale, constraints e riscos ao final do arquivo `context-ledger.md`. O CLI publica o template e as regras de execucao; os agentes (LLMs) escrevem e leem em runtime.
+Memoria compartilhada append-only por feature. Cada stage do workflow adiciona decisoes, rationale, constraints e riscos ao banco SQLite `context-ledger.db`. O CLI publica o template e as regras de execucao; os agentes (LLMs) interagem com o ledger atraves dos comandos `looply ledger read`, `looply ledger append` e `looply ledger summary`.
 
 Duas zonas de leitura:
-- `## Context Summary` (3-5 linhas) — para agents com `context_budget: low`
-- `## Stage Log` — entradas completas por stage, para budgets `medium+`
+- Summary (3-5 linhas) — para agents com `context_budget: low`, via `looply ledger read --summary-only`
+- Stage log completo — entradas estruturadas por stage, para budgets `medium+`, via `looply ledger read`
 
 Integrado ao sistema de `context_slots` via source `workflow.ledger`. Registrado no `context-index.md` para descoberta automatica pelo LLM.
 

@@ -1,17 +1,17 @@
 ---
-schema: looply/context-ledger@v1
+schema: looply/context-ledger@v2
 name: context-ledger
-summary: Append-only shared memory for accumulated feature decisions, rationale, constraints and risks across workflow stages
+summary: Append-only shared memory for accumulated feature decisions, rationale, constraints and risks across workflow stages. Stored as SQLite database.
 ---
 
 # Context Ledger
 
-## Context Summary
+The context ledger is now stored as a SQLite database at `.looply/custom/features/<feature-name>/context-ledger.db`.
 
-<!-- Keep this updated after completing a stage. Max 3-5 lines summarizing the latest decisions and active risks. Agents on low context_budget read only this section. -->
+**Do not read or write this file directly.** Use the `looply ledger` CLI commands:
 
-## Stage Log
-
-<!-- Append a new ## Stage section after completing each workflow stage. Keep the most recent stages at the top or chronological as preferred. -->
-
----
+- Init: `looply ledger init --feature <feature-name>`
+- Read summary: `looply ledger read --feature <feature-name> --summary-only`
+- Read all: `looply ledger read --feature <feature-name>`
+- Append stage entry: `looply ledger append --feature <feature-name> --stage <name> --decision <text> --rationale <text> --constraints <text> --risks <text>`
+- Update summary: `looply ledger summary update --feature <feature-name> --text <summary>`

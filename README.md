@@ -37,11 +37,11 @@
 
 | Update | Description |
 |--------|-------------|
-| **Context Ledger** | Append-only shared memory per feature. Each workflow stage appends decisions, rationale, constraints and risks. Agents read the `Context Summary` (low budget) or full ledger (medium+). Zero new dependencies — pure Markdown on filesystem. |
+| **Context Ledger** | Append-only shared memory per feature. Each workflow stage appends decisions, rationale, constraints and risks to a SQLite database (`context-ledger.db`). Agents interact via `looply ledger` CLI commands. Budget-aware: `--summary-only` for low budget, full read for medium+. |
 | **Pre-Action Gate** | Enforced before any code change across all three hosts. Session binding, feature state check, context-ledger read, and knowledge-graph awareness are mandatory gates via updated `AGENTS.md`/`OPENCODE.md`/`CLAUDE.md` entrypoints. |
-| **Context Index Expansion** | `context-ledger.md`, `knowledge-graph.json` and `code-context.json` now registered in the context-index priority order — LLM discovers all structural memory automatically. |
+| **Context Index Expansion** | `context-ledger.db`, `knowledge-graph.json` and `code-context.json` now registered in the context-index priority order — LLM discovers all structural memory automatically. |
 | **Knowledge Wiring** | New `workflow.ledger` context slot source for agents. Budget-aware compression: low budget = summary only, medium+ = full ledger. Cross-host enforcement via entrypoint + skill execution rules. |
-| **Directory-based Ledger** | Stage-isolated files avoid write conflicts during parallel intervention/replay. Stage ID deduplication for append-only safety. |
+| **SQLite Ledger** | Structured schema (`entries` + `summary` tables) guarantees field presence. Atomic writes via `better-sqlite3`. CLI commands (`looply ledger read/append/summary`) provide structured JSON output for agents — no Markdown parsing needed. |
 
 ### v1.6 — MCP Activation
 

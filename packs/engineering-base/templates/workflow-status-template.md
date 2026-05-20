@@ -79,7 +79,8 @@ summary: Template for persisted feature workflow state
 
 ## Context Ledger
 
-<!-- The context-ledger.md file accumulates decisions, rationale, constraints and risks per stage. Update it after every stage completion alongside this workflow-status.md. -->
+<!-- The context-ledger.db SQLite database accumulates decisions, rationale, constraints and risks per stage.
+     Update it after every stage completion via looply ledger append/summary alongside this workflow-status.md. -->
 
 ## Related Integrations
 

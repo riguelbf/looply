@@ -12,6 +12,7 @@ import { registerIclCommand } from "./commands/icl.js";
 import { registerInitCommand } from "./commands/init.js";
 import { registerIntegrationsCommand } from "./commands/integrations.js";
 import { registerInspectCommand } from "./commands/inspect.js";
+import { registerLedgerCommand } from "./commands/ledger.js";
 import { registerInstallCommand } from "./commands/install.js";
 import { registerListCommand } from "./commands/list.js";
 import { registerMcpCommand } from "./commands/mcp.js";
@@ -76,6 +77,7 @@ export function buildProgram(): Command {
   registerIntegrationsCommand(program);
   registerListCommand(program);
   registerInspectCommand(program);
+  registerLedgerCommand(program);
   registerMcpCommand(program);
   registerCompletionCommand(program);
   registerPerfCommand(program);
