@@ -68,6 +68,12 @@ Manage external integration contexts for looply
 
 - options: 12
 
+## [ledger](./commands/ledger)
+
+Manage the context ledger for feature workflow decision memory
+
+- options: 5
+
 ## [list](./commands/list)
 
 List available packs and artifacts

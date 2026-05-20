@@ -8,6 +8,12 @@ Template for architecture decision record
 
 - arquivo: `packs/engineering-base/templates/adr-template.md`
 
+## [context-ledger](./templates/context-ledger)
+
+Append-only shared memory for accumulated feature decisions, rationale, constraints and risks across workflow stages. Stored as SQLite database.
+
+- arquivo: `packs/product-base/templates/context-ledger-template.md`
+
 ## [implementation-summary-template](./templates/implementation-summary-template)
 
 Template for implementation summary
