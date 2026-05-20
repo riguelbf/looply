@@ -10,15 +10,25 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@looply-cli/looply"><img src="https://img.shields.io/npm/v/@looply-cli/looply?color=cb0000" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/@looply-cli/looply"><img src="https://img.shields.io/npm/dw/@looply-cli/looply" alt="npm downloads"></a>
-  <a href="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml"><img src="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml/badge.svg" alt="build"></a>
+  <a href="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml"><img src="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml/badge.svg" alt="publish"></a>
   <a href="https://github.com/riguelbf/looply/actions/workflows/docs-pages.yml"><img src="https://github.com/riguelbf/looply/actions/workflows/docs-pages.yml/badge.svg" alt="docs"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="license"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="node"></a>
+  <a href="https://github.com/riguelbf/looply/actions/workflows/publish-npm.yml"><img src="https://img.shields.io/badge/trusted_publishers-OIDC-purple" alt="trusted publishers"></a>
 </p>
 
 ---
 
 ## Recent Updates
+
+### v1.10 — SQLite Context Ledger & Trusted Publishers
+
+| Update | Description |
+|--------|-------------|
+| **SQLite Context Ledger** | Shared memory migrada de Markdown para SQLite (`context-ledger.db`). Schema estruturado com tabelas `entries` e `summary` garante integridade dos campos (stage, decision, rationale, constraints, risks) em todas as entradas. Escritas atômicas eliminam risco de corrupção por concorrência entre agentes. Cross-session: múltiplos agentes em diferentes sessões leem e escrevem o mesmo banco sem conflito. |
+| **`looply ledger` CLI** | App interno para agentes LLM — zero dependências externas. `looply ledger read [--summary-only]` retorna JSON estruturado em vez de Markdown parseado. `looply ledger append --stage --decision --rationale --constraints --risks` insere entrada atômica. `looply ledger summary update` mantém resumo de 3-5 linhas para agents com `context_budget: low`. |
+| **Trusted Publishers (OIDC)** | Publicação no npm migrada para trusted publishers. Autenticação OIDC via GitHub Actions sem tokens de longa duração. Provenance automático comprova origem do build. Node 24 + npm 11.5.1+. |
+| **ADR 0005** | Registro de decisão arquitetural documentando trade-offs: parsing frágil do Markdown, garantias estruturais do SQLite, concorrência segura, evolução de schema futura. |
 
 ### v1.9 — Critique & Refinement
 
@@ -37,11 +47,11 @@
 
 | Update | Description |
 |--------|-------------|
-| **Context Ledger** | Append-only shared memory per feature. Each workflow stage appends decisions, rationale, constraints and risks to a SQLite database (`context-ledger.db`). Agents interact via `looply ledger` CLI commands. Budget-aware: `--summary-only` for low budget, full read for medium+. |
+| **Context Ledger** | Append-only shared memory per feature. Each workflow stage appends decisions, rationale, constraints and risks. Agents read the `Context Summary` (low budget) or full ledger (medium+). Zero new dependencies — pure Markdown on filesystem. |
 | **Pre-Action Gate** | Enforced before any code change across all three hosts. Session binding, feature state check, context-ledger read, and knowledge-graph awareness are mandatory gates via updated `AGENTS.md`/`OPENCODE.md`/`CLAUDE.md` entrypoints. |
-| **Context Index Expansion** | `context-ledger.db`, `knowledge-graph.json` and `code-context.json` now registered in the context-index priority order — LLM discovers all structural memory automatically. |
+| **Context Index Expansion** | `context-ledger.md`, `knowledge-graph.json` and `code-context.json` now registered in the context-index priority order — LLM discovers all structural memory automatically. |
 | **Knowledge Wiring** | New `workflow.ledger` context slot source for agents. Budget-aware compression: low budget = summary only, medium+ = full ledger. Cross-host enforcement via entrypoint + skill execution rules. |
-| **SQLite Ledger** | Structured schema (`entries` + `summary` tables) guarantees field presence. Atomic writes via `better-sqlite3`. CLI commands (`looply ledger read/append/summary`) provide structured JSON output for agents — no Markdown parsing needed. |
+| **Directory-based Ledger** | Stage-isolated files avoid write conflicts during parallel intervention/replay. Stage ID deduplication for append-only safety. |
 
 ### v1.6 — MCP Activation
 
